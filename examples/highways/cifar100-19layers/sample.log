@@ -1,0 +1,3468 @@
+I0605 08:01:05.849751 15126 caffe.cpp:113] Use GPU with device ID 2
+I0605 08:01:06.603092 15126 caffe.cpp:121] Starting Optimization
+I0605 08:01:06.603284 15126 solver.cpp:32] Initializing solver from parameters: 
+test_iter: 100
+test_interval: 500
+base_lr: 0.025
+display: 0
+max_iter: 200000
+lr_policy: "multistep"
+gamma: 0.1
+momentum: 0.9
+weight_decay: 0.001
+snapshot: 5000
+snapshot_prefix: "examples/highways/cifar100_19layers"
+solver_mode: GPU
+device_id: 2
+random_seed: 3785677
+net: "examples/highways/cifar100-19layers/cifar100_network.prototxt"
+test_state {
+  stage: "test-on-test"
+}
+solver_type: NESTEROV
+stepvalue: 100000
+stepvalue: 150000
+stepvalue: 175000
+I0605 08:01:06.603329 15126 solver.cpp:70] Creating training net from net file: examples/highways/cifar100-19layers/cifar100_network.prototxt
+I0605 08:01:06.626016 15126 net.cpp:264] The NetState phase (0) differed from the phase (1) specified by a rule in layer cifar
+I0605 08:01:06.626058 15126 net.cpp:264] The NetState phase (0) differed from the phase (1) specified by a rule in layer cifar
+I0605 08:01:06.626124 15126 net.cpp:264] The NetState phase (0) differed from the phase (1) specified by a rule in layer accuracy
+I0605 08:01:06.627097 15126 net.cpp:42] Initializing net from parameters: 
+name: "CIFAR100_19layers"
+state {
+  phase: TRAIN
+}
+layer {
+  name: "cifar"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    mirror: true
+    crop_size: 32
+    mean_file: "/home/data/cifar100-gcn-leveldb-splits/paddedmean.binaryproto"
+  }
+  data_param {
+    source: "/home/data/cifar100-gcn-leveldb-splits/cifar100_full_train_leveldb_padded"
+    batch_size: 100
+    backend: LEVELDB
+  }
+}
+layer {
+  name: "drop1"
+  type: "Dropout"
+  bottom: "data"
+  top: "drop1"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "drop1"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      value: 0.05
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "conv2"
+  type: "CuDNNHighway"
+  bottom: "conv1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv3"
+  type: "CuDNNHighway"
+  bottom: "conv2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv4"
+  type: "CuDNNHighway"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv5"
+  type: "CuDNNHighway"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "drop2"
+  type: "Dropout"
+  bottom: "pool1"
+  top: "drop2"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "conv6"
+  type: "Convolution"
+  bottom: "drop2"
+  top: "conv6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "conv6"
+  top: "conv6"
+}
+layer {
+  name: "conv7"
+  type: "CuDNNHighway"
+  bottom: "conv6"
+  top: "conv7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv8"
+  type: "CuDNNHighway"
+  bottom: "conv7"
+  top: "conv8"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv9"
+  type: "CuDNNHighway"
+  bottom: "conv8"
+  top: "conv9"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv10"
+  type: "CuDNNHighway"
+  bottom: "conv9"
+  top: "conv10"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv11"
+  type: "CuDNNHighway"
+  bottom: "conv10"
+  top: "conv11"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv11"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "drop3"
+  type: "Dropout"
+  bottom: "pool2"
+  top: "drop3"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "conv12"
+  type: "Convolution"
+  bottom: "drop3"
+  top: "conv12"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu12"
+  type: "ReLU"
+  bottom: "conv12"
+  top: "conv12"
+}
+layer {
+  name: "conv13"
+  type: "CuDNNHighway"
+  bottom: "conv12"
+  top: "conv13"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv14"
+  type: "CuDNNHighway"
+  bottom: "conv13"
+  top: "conv14"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv15"
+  type: "CuDNNHighway"
+  bottom: "conv14"
+  top: "conv15"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv16"
+  type: "CuDNNHighway"
+  bottom: "conv15"
+  top: "conv16"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv17"
+  type: "CuDNNHighway"
+  bottom: "conv16"
+  top: "conv17"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv18"
+  type: "Convolution"
+  bottom: "conv17"
+  top: "conv18"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 100
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu"
+  type: "ReLU"
+  bottom: "conv18"
+  top: "conv18"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv18"
+  top: "pool3"
+  pooling_param {
+    pool: AVE
+    kernel_size: 8
+    stride: 8
+  }
+}
+layer {
+  name: "drop4"
+  type: "Dropout"
+  bottom: "pool3"
+  top: "drop4"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "drop4"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 10
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 100
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
+I0605 08:01:06.627441 15126 layer_factory.hpp:74] Creating layer cifar
+I0605 08:01:06.627509 15126 net.cpp:87] Creating Layer cifar
+I0605 08:01:06.627526 15126 net.cpp:345] cifar -> data
+I0605 08:01:06.627578 15126 net.cpp:345] cifar -> label
+I0605 08:01:06.627599 15126 net.cpp:116] Setting up cifar
+I0605 08:01:06.757036 15126 db.cpp:20] Opened leveldb /home/data/cifar100-gcn-leveldb-splits/cifar100_full_train_leveldb_padded
+I0605 08:01:06.757583 15126 data_layer.cpp:67] output data size: 100,3,32,32
+I0605 08:01:06.757627 15126 data_transformer.cpp:22] Loading mean file from: /home/data/cifar100-gcn-leveldb-splits/paddedmean.binaryproto
+I0605 08:01:06.787376 15126 net.cpp:123] Top shape: 100 3 32 32 (307200)
+I0605 08:01:06.787416 15126 net.cpp:123] Top shape: 100 (100)
+I0605 08:01:06.787431 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:06.787444 15126 layer_factory.hpp:74] Creating layer drop1
+I0605 08:01:06.787472 15126 net.cpp:87] Creating Layer drop1
+I0605 08:01:06.787484 15126 net.cpp:387] drop1 <- data
+I0605 08:01:06.787506 15126 net.cpp:345] drop1 -> drop1
+I0605 08:01:06.787530 15126 net.cpp:116] Setting up drop1
+I0605 08:01:06.787562 15126 net.cpp:123] Top shape: 100 3 32 32 (307200)
+I0605 08:01:06.787574 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:06.787582 15126 layer_factory.hpp:74] Creating layer conv1
+I0605 08:01:06.787611 15126 net.cpp:87] Creating Layer conv1
+I0605 08:01:06.787621 15126 net.cpp:387] conv1 <- drop1
+I0605 08:01:06.787636 15126 net.cpp:345] conv1 -> conv1
+I0605 08:01:06.787657 15126 net.cpp:116] Setting up conv1
+I0605 08:01:07.099442 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.099517 15126 net.cpp:154] With 896 trainable parameters
+I0605 08:01:07.099537 15126 layer_factory.hpp:74] Creating layer relu1
+I0605 08:01:07.099560 15126 net.cpp:87] Creating Layer relu1
+I0605 08:01:07.099572 15126 net.cpp:387] relu1 <- conv1
+I0605 08:01:07.099591 15126 net.cpp:334] relu1 -> conv1 (in-place)
+I0605 08:01:07.099614 15126 net.cpp:116] Setting up relu1
+I0605 08:01:07.099779 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.099797 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.099807 15126 layer_factory.hpp:74] Creating layer conv2
+I0605 08:01:07.099848 15126 net.cpp:87] Creating Layer conv2
+I0605 08:01:07.099859 15126 net.cpp:387] conv2 <- conv1
+I0605 08:01:07.099876 15126 net.cpp:345] conv2 -> conv2
+I0605 08:01:07.099902 15126 net.cpp:116] Setting up conv2
+I0605 08:01:07.102442 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.102485 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.102497 15126 layer_factory.hpp:74] Creating layer conv3
+I0605 08:01:07.102517 15126 net.cpp:87] Creating Layer conv3
+I0605 08:01:07.102529 15126 net.cpp:387] conv3 <- conv2
+I0605 08:01:07.102545 15126 net.cpp:345] conv3 -> conv3
+I0605 08:01:07.102566 15126 net.cpp:116] Setting up conv3
+I0605 08:01:07.105139 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.105180 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.105190 15126 layer_factory.hpp:74] Creating layer conv4
+I0605 08:01:07.105222 15126 net.cpp:87] Creating Layer conv4
+I0605 08:01:07.105236 15126 net.cpp:387] conv4 <- conv3
+I0605 08:01:07.105255 15126 net.cpp:345] conv4 -> conv4
+I0605 08:01:07.105276 15126 net.cpp:116] Setting up conv4
+I0605 08:01:07.107777 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.107813 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.107825 15126 layer_factory.hpp:74] Creating layer conv5
+I0605 08:01:07.107846 15126 net.cpp:87] Creating Layer conv5
+I0605 08:01:07.107857 15126 net.cpp:387] conv5 <- conv4
+I0605 08:01:07.107877 15126 net.cpp:345] conv5 -> conv5
+I0605 08:01:07.107897 15126 net.cpp:116] Setting up conv5
+I0605 08:01:07.110383 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.110421 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.110431 15126 layer_factory.hpp:74] Creating layer pool1
+I0605 08:01:07.110472 15126 net.cpp:87] Creating Layer pool1
+I0605 08:01:07.110486 15126 net.cpp:387] pool1 <- conv5
+I0605 08:01:07.110528 15126 net.cpp:345] pool1 -> pool1
+I0605 08:01:07.110551 15126 net.cpp:116] Setting up pool1
+I0605 08:01:07.110712 15126 net.cpp:123] Top shape: 100 32 16 16 (819200)
+I0605 08:01:07.110726 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.110735 15126 layer_factory.hpp:74] Creating layer drop2
+I0605 08:01:07.110754 15126 net.cpp:87] Creating Layer drop2
+I0605 08:01:07.110764 15126 net.cpp:387] drop2 <- pool1
+I0605 08:01:07.110776 15126 net.cpp:345] drop2 -> drop2
+I0605 08:01:07.110791 15126 net.cpp:116] Setting up drop2
+I0605 08:01:07.110807 15126 net.cpp:123] Top shape: 100 32 16 16 (819200)
+I0605 08:01:07.110816 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.110824 15126 layer_factory.hpp:74] Creating layer conv6
+I0605 08:01:07.110844 15126 net.cpp:87] Creating Layer conv6
+I0605 08:01:07.110854 15126 net.cpp:387] conv6 <- drop2
+I0605 08:01:07.110867 15126 net.cpp:345] conv6 -> conv6
+I0605 08:01:07.110883 15126 net.cpp:116] Setting up conv6
+I0605 08:01:07.113121 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.113153 15126 net.cpp:154] With 23120 trainable parameters
+I0605 08:01:07.113163 15126 layer_factory.hpp:74] Creating layer relu6
+I0605 08:01:07.113181 15126 net.cpp:87] Creating Layer relu6
+I0605 08:01:07.113193 15126 net.cpp:387] relu6 <- conv6
+I0605 08:01:07.113205 15126 net.cpp:334] relu6 -> conv6 (in-place)
+I0605 08:01:07.113220 15126 net.cpp:116] Setting up relu6
+I0605 08:01:07.113349 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.113361 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.113369 15126 layer_factory.hpp:74] Creating layer conv7
+I0605 08:01:07.113389 15126 net.cpp:87] Creating Layer conv7
+I0605 08:01:07.113399 15126 net.cpp:387] conv7 <- conv6
+I0605 08:01:07.113422 15126 net.cpp:345] conv7 -> conv7
+I0605 08:01:07.113440 15126 net.cpp:116] Setting up conv7
+I0605 08:01:07.122143 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.122180 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.122190 15126 layer_factory.hpp:74] Creating layer conv8
+I0605 08:01:07.122211 15126 net.cpp:87] Creating Layer conv8
+I0605 08:01:07.122221 15126 net.cpp:387] conv8 <- conv7
+I0605 08:01:07.122243 15126 net.cpp:345] conv8 -> conv8
+I0605 08:01:07.122263 15126 net.cpp:116] Setting up conv8
+I0605 08:01:07.130609 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.130642 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.130652 15126 layer_factory.hpp:74] Creating layer conv9
+I0605 08:01:07.130671 15126 net.cpp:87] Creating Layer conv9
+I0605 08:01:07.130681 15126 net.cpp:387] conv9 <- conv8
+I0605 08:01:07.130694 15126 net.cpp:345] conv9 -> conv9
+I0605 08:01:07.130710 15126 net.cpp:116] Setting up conv9
+I0605 08:01:07.138685 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.138720 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.138730 15126 layer_factory.hpp:74] Creating layer conv10
+I0605 08:01:07.138751 15126 net.cpp:87] Creating Layer conv10
+I0605 08:01:07.138761 15126 net.cpp:387] conv10 <- conv9
+I0605 08:01:07.138775 15126 net.cpp:345] conv10 -> conv10
+I0605 08:01:07.138790 15126 net.cpp:116] Setting up conv10
+I0605 08:01:07.146361 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.146404 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.146414 15126 layer_factory.hpp:74] Creating layer conv11
+I0605 08:01:07.146438 15126 net.cpp:87] Creating Layer conv11
+I0605 08:01:07.146448 15126 net.cpp:387] conv11 <- conv10
+I0605 08:01:07.146462 15126 net.cpp:345] conv11 -> conv11
+I0605 08:01:07.146477 15126 net.cpp:116] Setting up conv11
+I0605 08:01:07.153872 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.153903 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.153911 15126 layer_factory.hpp:74] Creating layer pool2
+I0605 08:01:07.153924 15126 net.cpp:87] Creating Layer pool2
+I0605 08:01:07.153941 15126 net.cpp:387] pool2 <- conv11
+I0605 08:01:07.153971 15126 net.cpp:345] pool2 -> pool2
+I0605 08:01:07.153988 15126 net.cpp:116] Setting up pool2
+I0605 08:01:07.154273 15126 net.cpp:123] Top shape: 100 80 8 8 (512000)
+I0605 08:01:07.154290 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.154297 15126 layer_factory.hpp:74] Creating layer drop3
+I0605 08:01:07.154312 15126 net.cpp:87] Creating Layer drop3
+I0605 08:01:07.154320 15126 net.cpp:387] drop3 <- pool2
+I0605 08:01:07.154331 15126 net.cpp:345] drop3 -> drop3
+I0605 08:01:07.154343 15126 net.cpp:116] Setting up drop3
+I0605 08:01:07.154359 15126 net.cpp:123] Top shape: 100 80 8 8 (512000)
+I0605 08:01:07.154366 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.154373 15126 layer_factory.hpp:74] Creating layer conv12
+I0605 08:01:07.154386 15126 net.cpp:87] Creating Layer conv12
+I0605 08:01:07.154392 15126 net.cpp:387] conv12 <- drop3
+I0605 08:01:07.154405 15126 net.cpp:345] conv12 -> conv12
+I0605 08:01:07.154418 15126 net.cpp:116] Setting up conv12
+I0605 08:01:07.159808 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.159833 15126 net.cpp:154] With 92288 trainable parameters
+I0605 08:01:07.159842 15126 layer_factory.hpp:74] Creating layer relu12
+I0605 08:01:07.159857 15126 net.cpp:87] Creating Layer relu12
+I0605 08:01:07.159865 15126 net.cpp:387] relu12 <- conv12
+I0605 08:01:07.159875 15126 net.cpp:334] relu12 -> conv12 (in-place)
+I0605 08:01:07.159888 15126 net.cpp:116] Setting up relu12
+I0605 08:01:07.159997 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.160007 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.160014 15126 layer_factory.hpp:74] Creating layer conv13
+I0605 08:01:07.160030 15126 net.cpp:87] Creating Layer conv13
+I0605 08:01:07.160037 15126 net.cpp:387] conv13 <- conv12
+I0605 08:01:07.160051 15126 net.cpp:345] conv13 -> conv13
+I0605 08:01:07.160065 15126 net.cpp:116] Setting up conv13
+I0605 08:01:07.175958 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.175990 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.175998 15126 layer_factory.hpp:74] Creating layer conv14
+I0605 08:01:07.176018 15126 net.cpp:87] Creating Layer conv14
+I0605 08:01:07.176028 15126 net.cpp:387] conv14 <- conv13
+I0605 08:01:07.176043 15126 net.cpp:345] conv14 -> conv14
+I0605 08:01:07.176058 15126 net.cpp:116] Setting up conv14
+I0605 08:01:07.190901 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.190928 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.190940 15126 layer_factory.hpp:74] Creating layer conv15
+I0605 08:01:07.190958 15126 net.cpp:87] Creating Layer conv15
+I0605 08:01:07.190966 15126 net.cpp:387] conv15 <- conv14
+I0605 08:01:07.190979 15126 net.cpp:345] conv15 -> conv15
+I0605 08:01:07.190992 15126 net.cpp:116] Setting up conv15
+I0605 08:01:07.204888 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.204915 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.204921 15126 layer_factory.hpp:74] Creating layer conv16
+I0605 08:01:07.204934 15126 net.cpp:87] Creating Layer conv16
+I0605 08:01:07.204941 15126 net.cpp:387] conv16 <- conv15
+I0605 08:01:07.204954 15126 net.cpp:345] conv16 -> conv16
+I0605 08:01:07.204967 15126 net.cpp:116] Setting up conv16
+I0605 08:01:07.218232 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.218258 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.218266 15126 layer_factory.hpp:74] Creating layer conv17
+I0605 08:01:07.218282 15126 net.cpp:87] Creating Layer conv17
+I0605 08:01:07.218291 15126 net.cpp:387] conv17 <- conv16
+I0605 08:01:07.218303 15126 net.cpp:345] conv17 -> conv17
+I0605 08:01:07.218315 15126 net.cpp:116] Setting up conv17
+I0605 08:01:07.231070 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.231094 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.231101 15126 layer_factory.hpp:74] Creating layer conv18
+I0605 08:01:07.231114 15126 net.cpp:87] Creating Layer conv18
+I0605 08:01:07.231127 15126 net.cpp:387] conv18 <- conv17
+I0605 08:01:07.231153 15126 net.cpp:345] conv18 -> conv18
+I0605 08:01:07.231163 15126 net.cpp:116] Setting up conv18
+I0605 08:01:07.232245 15126 net.cpp:123] Top shape: 100 100 8 8 (640000)
+I0605 08:01:07.232264 15126 net.cpp:154] With 12900 trainable parameters
+I0605 08:01:07.232270 15126 layer_factory.hpp:74] Creating layer relu
+I0605 08:01:07.232278 15126 net.cpp:87] Creating Layer relu
+I0605 08:01:07.232283 15126 net.cpp:387] relu <- conv18
+I0605 08:01:07.232291 15126 net.cpp:334] relu -> conv18 (in-place)
+I0605 08:01:07.232300 15126 net.cpp:116] Setting up relu
+I0605 08:01:07.232403 15126 net.cpp:123] Top shape: 100 100 8 8 (640000)
+I0605 08:01:07.232413 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.232417 15126 layer_factory.hpp:74] Creating layer pool3
+I0605 08:01:07.232426 15126 net.cpp:87] Creating Layer pool3
+I0605 08:01:07.232431 15126 net.cpp:387] pool3 <- conv18
+I0605 08:01:07.232439 15126 net.cpp:345] pool3 -> pool3
+I0605 08:01:07.232447 15126 net.cpp:116] Setting up pool3
+I0605 08:01:07.232529 15126 net.cpp:123] Top shape: 100 100 1 1 (10000)
+I0605 08:01:07.232537 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.232542 15126 layer_factory.hpp:74] Creating layer drop4
+I0605 08:01:07.232549 15126 net.cpp:87] Creating Layer drop4
+I0605 08:01:07.232554 15126 net.cpp:387] drop4 <- pool3
+I0605 08:01:07.232561 15126 net.cpp:345] drop4 -> drop4
+I0605 08:01:07.232569 15126 net.cpp:116] Setting up drop4
+I0605 08:01:07.232578 15126 net.cpp:123] Top shape: 100 100 1 1 (10000)
+I0605 08:01:07.232583 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.232589 15126 layer_factory.hpp:74] Creating layer ip2
+I0605 08:01:07.232604 15126 net.cpp:87] Creating Layer ip2
+I0605 08:01:07.232609 15126 net.cpp:387] ip2 <- drop4
+I0605 08:01:07.232619 15126 net.cpp:345] ip2 -> ip2
+I0605 08:01:07.232630 15126 net.cpp:116] Setting up ip2
+I0605 08:01:07.233041 15126 net.cpp:123] Top shape: 100 100 (10000)
+I0605 08:01:07.233065 15126 net.cpp:154] With 10100 trainable parameters
+I0605 08:01:07.233072 15126 layer_factory.hpp:74] Creating layer loss
+I0605 08:01:07.233080 15126 net.cpp:87] Creating Layer loss
+I0605 08:01:07.233085 15126 net.cpp:387] loss <- ip2
+I0605 08:01:07.233093 15126 net.cpp:387] loss <- label
+I0605 08:01:07.233101 15126 net.cpp:345] loss -> loss
+I0605 08:01:07.233110 15126 net.cpp:116] Setting up loss
+I0605 08:01:07.233119 15126 layer_factory.hpp:74] Creating layer loss
+I0605 08:01:07.233533 15126 net.cpp:123] Top shape: (1)
+I0605 08:01:07.233546 15126 net.cpp:125]     with loss weight 1
+I0605 08:01:07.233568 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.233573 15126 net.cpp:157] The network has total 2265928 trainable parameters.
+I0605 08:01:07.233578 15126 net.cpp:174] loss needs backward computation.
+I0605 08:01:07.233584 15126 net.cpp:174] ip2 needs backward computation.
+I0605 08:01:07.233589 15126 net.cpp:174] drop4 needs backward computation.
+I0605 08:01:07.233594 15126 net.cpp:174] pool3 needs backward computation.
+I0605 08:01:07.233598 15126 net.cpp:174] relu needs backward computation.
+I0605 08:01:07.233603 15126 net.cpp:174] conv18 needs backward computation.
+I0605 08:01:07.233608 15126 net.cpp:174] conv17 needs backward computation.
+I0605 08:01:07.233615 15126 net.cpp:174] conv16 needs backward computation.
+I0605 08:01:07.233620 15126 net.cpp:174] conv15 needs backward computation.
+I0605 08:01:07.233625 15126 net.cpp:174] conv14 needs backward computation.
+I0605 08:01:07.233630 15126 net.cpp:174] conv13 needs backward computation.
+I0605 08:01:07.233635 15126 net.cpp:174] relu12 needs backward computation.
+I0605 08:01:07.233640 15126 net.cpp:174] conv12 needs backward computation.
+I0605 08:01:07.233647 15126 net.cpp:174] drop3 needs backward computation.
+I0605 08:01:07.233652 15126 net.cpp:174] pool2 needs backward computation.
+I0605 08:01:07.233659 15126 net.cpp:174] conv11 needs backward computation.
+I0605 08:01:07.233664 15126 net.cpp:174] conv10 needs backward computation.
+I0605 08:01:07.233669 15126 net.cpp:174] conv9 needs backward computation.
+I0605 08:01:07.233687 15126 net.cpp:174] conv8 needs backward computation.
+I0605 08:01:07.233693 15126 net.cpp:174] conv7 needs backward computation.
+I0605 08:01:07.233698 15126 net.cpp:174] relu6 needs backward computation.
+I0605 08:01:07.233703 15126 net.cpp:174] conv6 needs backward computation.
+I0605 08:01:07.233708 15126 net.cpp:174] drop2 needs backward computation.
+I0605 08:01:07.233713 15126 net.cpp:174] pool1 needs backward computation.
+I0605 08:01:07.233718 15126 net.cpp:174] conv5 needs backward computation.
+I0605 08:01:07.233723 15126 net.cpp:174] conv4 needs backward computation.
+I0605 08:01:07.233728 15126 net.cpp:174] conv3 needs backward computation.
+I0605 08:01:07.233733 15126 net.cpp:174] conv2 needs backward computation.
+I0605 08:01:07.233738 15126 net.cpp:174] relu1 needs backward computation.
+I0605 08:01:07.233742 15126 net.cpp:174] conv1 needs backward computation.
+I0605 08:01:07.233747 15126 net.cpp:176] drop1 does not need backward computation.
+I0605 08:01:07.233753 15126 net.cpp:176] cifar does not need backward computation.
+I0605 08:01:07.233758 15126 net.cpp:212] This network produces output loss
+I0605 08:01:07.233788 15126 net.cpp:454] Collecting Learning Rate and Weight Decay.
+I0605 08:01:07.233805 15126 net.cpp:224] Network initialization done.
+I0605 08:01:07.233810 15126 net.cpp:225] Memory required for data: 177272404
+I0605 08:01:07.235496 15126 solver.cpp:154] Creating test net (#0) specified by net file: examples/highways/cifar100-19layers/cifar100_network.prototxt
+I0605 08:01:07.235573 15126 net.cpp:264] The NetState phase (1) differed from the phase (0) specified by a rule in layer cifar
+I0605 08:01:07.235580 15126 net.cpp:297] The NetState did not contain stage 'test-on-train' specified by a rule in layer cifar
+I0605 08:01:07.236189 15126 net.cpp:42] Initializing net from parameters: 
+name: "CIFAR100_19layers"
+state {
+  phase: TEST
+  stage: "test-on-test"
+}
+layer {
+  name: "cifar"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+    stage: "test-on-test"
+  }
+  transform_param {
+    mirror: false
+    mean_file: "/home/data/cifar100-gcn-leveldb-splits/mean.binaryproto"
+  }
+  data_param {
+    source: "/home/data/cifar100-gcn-leveldb-splits/cifar100_test_leveldb"
+    batch_size: 100
+    backend: LEVELDB
+  }
+}
+layer {
+  name: "drop1"
+  type: "Dropout"
+  bottom: "data"
+  top: "drop1"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "drop1"
+  top: "conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      value: 0.05
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"
+  top: "conv1"
+}
+layer {
+  name: "conv2"
+  type: "CuDNNHighway"
+  bottom: "conv1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv3"
+  type: "CuDNNHighway"
+  bottom: "conv2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv4"
+  type: "CuDNNHighway"
+  bottom: "conv3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv5"
+  type: "CuDNNHighway"
+  bottom: "conv4"
+  top: "conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv5"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "drop2"
+  type: "Dropout"
+  bottom: "pool1"
+  top: "drop2"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "conv6"
+  type: "Convolution"
+  bottom: "drop2"
+  top: "conv6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu6"
+  type: "ReLU"
+  bottom: "conv6"
+  top: "conv6"
+}
+layer {
+  name: "conv7"
+  type: "CuDNNHighway"
+  bottom: "conv6"
+  top: "conv7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv8"
+  type: "CuDNNHighway"
+  bottom: "conv7"
+  top: "conv8"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv9"
+  type: "CuDNNHighway"
+  bottom: "conv8"
+  top: "conv9"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv10"
+  type: "CuDNNHighway"
+  bottom: "conv9"
+  top: "conv10"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv11"
+  type: "CuDNNHighway"
+  bottom: "conv10"
+  top: "conv11"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 80
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv11"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "drop3"
+  type: "Dropout"
+  bottom: "pool2"
+  top: "drop3"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "conv12"
+  type: "Convolution"
+  bottom: "drop3"
+  top: "conv12"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu12"
+  type: "ReLU"
+  bottom: "conv12"
+  top: "conv12"
+}
+layer {
+  name: "conv13"
+  type: "CuDNNHighway"
+  bottom: "conv12"
+  top: "conv13"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv14"
+  type: "CuDNNHighway"
+  bottom: "conv13"
+  top: "conv14"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv15"
+  type: "CuDNNHighway"
+  bottom: "conv14"
+  top: "conv15"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv16"
+  type: "CuDNNHighway"
+  bottom: "conv15"
+  top: "conv16"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv17"
+  type: "CuDNNHighway"
+  bottom: "conv16"
+  top: "conv17"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -2
+    }
+  }
+}
+layer {
+  name: "conv18"
+  type: "Convolution"
+  bottom: "conv17"
+  top: "conv18"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 100
+    pad: 0
+    kernel_size: 1
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu"
+  type: "ReLU"
+  bottom: "conv18"
+  top: "conv18"
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "conv18"
+  top: "pool3"
+  pooling_param {
+    pool: AVE
+    kernel_size: 8
+    stride: 8
+  }
+}
+layer {
+  name: "drop4"
+  type: "Dropout"
+  bottom: "pool3"
+  top: "drop4"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "drop4"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 10
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 100
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "ip2"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
+I0605 08:01:07.236397 15126 layer_factory.hpp:74] Creating layer cifar
+I0605 08:01:07.236413 15126 net.cpp:87] Creating Layer cifar
+I0605 08:01:07.236420 15126 net.cpp:345] cifar -> data
+I0605 08:01:07.236433 15126 net.cpp:345] cifar -> label
+I0605 08:01:07.236443 15126 net.cpp:116] Setting up cifar
+I0605 08:01:07.417726 15126 db.cpp:20] Opened leveldb /home/data/cifar100-gcn-leveldb-splits/cifar100_test_leveldb
+I0605 08:01:07.452049 15126 data_layer.cpp:67] output data size: 100,3,32,32
+I0605 08:01:07.452077 15126 data_transformer.cpp:22] Loading mean file from: /home/data/cifar100-gcn-leveldb-splits/mean.binaryproto
+I0605 08:01:07.453063 15126 net.cpp:123] Top shape: 100 3 32 32 (307200)
+I0605 08:01:07.453083 15126 net.cpp:123] Top shape: 100 (100)
+I0605 08:01:07.453091 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.453097 15126 layer_factory.hpp:74] Creating layer label_cifar_1_split
+I0605 08:01:07.453109 15126 net.cpp:87] Creating Layer label_cifar_1_split
+I0605 08:01:07.453114 15126 net.cpp:387] label_cifar_1_split <- label
+I0605 08:01:07.453122 15126 net.cpp:345] label_cifar_1_split -> label_cifar_1_split_0
+I0605 08:01:07.453135 15126 net.cpp:345] label_cifar_1_split -> label_cifar_1_split_1
+I0605 08:01:07.453145 15126 net.cpp:116] Setting up label_cifar_1_split
+I0605 08:01:07.453153 15126 net.cpp:123] Top shape: 100 (100)
+I0605 08:01:07.453160 15126 net.cpp:123] Top shape: 100 (100)
+I0605 08:01:07.453165 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.453169 15126 layer_factory.hpp:74] Creating layer drop1
+I0605 08:01:07.453177 15126 net.cpp:87] Creating Layer drop1
+I0605 08:01:07.453182 15126 net.cpp:387] drop1 <- data
+I0605 08:01:07.453191 15126 net.cpp:345] drop1 -> drop1
+I0605 08:01:07.453199 15126 net.cpp:116] Setting up drop1
+I0605 08:01:07.453210 15126 net.cpp:123] Top shape: 100 3 32 32 (307200)
+I0605 08:01:07.453215 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.453220 15126 layer_factory.hpp:74] Creating layer conv1
+I0605 08:01:07.453229 15126 net.cpp:87] Creating Layer conv1
+I0605 08:01:07.453234 15126 net.cpp:387] conv1 <- drop1
+I0605 08:01:07.453243 15126 net.cpp:345] conv1 -> conv1
+I0605 08:01:07.453251 15126 net.cpp:116] Setting up conv1
+I0605 08:01:07.453765 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.453793 15126 net.cpp:154] With 896 trainable parameters
+I0605 08:01:07.453799 15126 layer_factory.hpp:74] Creating layer relu1
+I0605 08:01:07.453809 15126 net.cpp:87] Creating Layer relu1
+I0605 08:01:07.453814 15126 net.cpp:387] relu1 <- conv1
+I0605 08:01:07.453822 15126 net.cpp:334] relu1 -> conv1 (in-place)
+I0605 08:01:07.453831 15126 net.cpp:116] Setting up relu1
+I0605 08:01:07.453922 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.453932 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.453935 15126 layer_factory.hpp:74] Creating layer conv2
+I0605 08:01:07.453949 15126 net.cpp:87] Creating Layer conv2
+I0605 08:01:07.453955 15126 net.cpp:387] conv2 <- conv1
+I0605 08:01:07.453966 15126 net.cpp:345] conv2 -> conv2
+I0605 08:01:07.453977 15126 net.cpp:116] Setting up conv2
+I0605 08:01:07.455461 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.455487 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.455493 15126 layer_factory.hpp:74] Creating layer conv3
+I0605 08:01:07.455536 15126 net.cpp:87] Creating Layer conv3
+I0605 08:01:07.455545 15126 net.cpp:387] conv3 <- conv2
+I0605 08:01:07.455555 15126 net.cpp:345] conv3 -> conv3
+I0605 08:01:07.455566 15126 net.cpp:116] Setting up conv3
+I0605 08:01:07.457077 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.457103 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.457108 15126 layer_factory.hpp:74] Creating layer conv4
+I0605 08:01:07.457123 15126 net.cpp:87] Creating Layer conv4
+I0605 08:01:07.457129 15126 net.cpp:387] conv4 <- conv3
+I0605 08:01:07.457141 15126 net.cpp:345] conv4 -> conv4
+I0605 08:01:07.457154 15126 net.cpp:116] Setting up conv4
+I0605 08:01:07.458647 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.458668 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.458674 15126 layer_factory.hpp:74] Creating layer conv5
+I0605 08:01:07.458690 15126 net.cpp:87] Creating Layer conv5
+I0605 08:01:07.458696 15126 net.cpp:387] conv5 <- conv4
+I0605 08:01:07.458709 15126 net.cpp:345] conv5 -> conv5
+I0605 08:01:07.458720 15126 net.cpp:116] Setting up conv5
+I0605 08:01:07.460204 15126 net.cpp:123] Top shape: 100 32 32 32 (3276800)
+I0605 08:01:07.460235 15126 net.cpp:154] With 18496 trainable parameters
+I0605 08:01:07.460243 15126 layer_factory.hpp:74] Creating layer pool1
+I0605 08:01:07.460253 15126 net.cpp:87] Creating Layer pool1
+I0605 08:01:07.460258 15126 net.cpp:387] pool1 <- conv5
+I0605 08:01:07.460269 15126 net.cpp:345] pool1 -> pool1
+I0605 08:01:07.460279 15126 net.cpp:116] Setting up pool1
+I0605 08:01:07.460366 15126 net.cpp:123] Top shape: 100 32 16 16 (819200)
+I0605 08:01:07.460374 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.460379 15126 layer_factory.hpp:74] Creating layer drop2
+I0605 08:01:07.460389 15126 net.cpp:87] Creating Layer drop2
+I0605 08:01:07.460396 15126 net.cpp:387] drop2 <- pool1
+I0605 08:01:07.460402 15126 net.cpp:345] drop2 -> drop2
+I0605 08:01:07.460410 15126 net.cpp:116] Setting up drop2
+I0605 08:01:07.460419 15126 net.cpp:123] Top shape: 100 32 16 16 (819200)
+I0605 08:01:07.460424 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.460428 15126 layer_factory.hpp:74] Creating layer conv6
+I0605 08:01:07.460440 15126 net.cpp:87] Creating Layer conv6
+I0605 08:01:07.460446 15126 net.cpp:387] conv6 <- drop2
+I0605 08:01:07.460454 15126 net.cpp:345] conv6 -> conv6
+I0605 08:01:07.460469 15126 net.cpp:116] Setting up conv6
+I0605 08:01:07.461752 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.461772 15126 net.cpp:154] With 23120 trainable parameters
+I0605 08:01:07.461779 15126 layer_factory.hpp:74] Creating layer relu6
+I0605 08:01:07.461789 15126 net.cpp:87] Creating Layer relu6
+I0605 08:01:07.461796 15126 net.cpp:387] relu6 <- conv6
+I0605 08:01:07.461803 15126 net.cpp:334] relu6 -> conv6 (in-place)
+I0605 08:01:07.461812 15126 net.cpp:116] Setting up relu6
+I0605 08:01:07.461894 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.461902 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.461907 15126 layer_factory.hpp:74] Creating layer conv7
+I0605 08:01:07.461917 15126 net.cpp:87] Creating Layer conv7
+I0605 08:01:07.461922 15126 net.cpp:387] conv7 <- conv6
+I0605 08:01:07.461932 15126 net.cpp:345] conv7 -> conv7
+I0605 08:01:07.461943 15126 net.cpp:116] Setting up conv7
+I0605 08:01:07.467079 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.467108 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.467113 15126 layer_factory.hpp:74] Creating layer conv8
+I0605 08:01:07.467128 15126 net.cpp:87] Creating Layer conv8
+I0605 08:01:07.467133 15126 net.cpp:387] conv8 <- conv7
+I0605 08:01:07.467147 15126 net.cpp:345] conv8 -> conv8
+I0605 08:01:07.467160 15126 net.cpp:116] Setting up conv8
+I0605 08:01:07.472293 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.472319 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.472326 15126 layer_factory.hpp:74] Creating layer conv9
+I0605 08:01:07.472347 15126 net.cpp:87] Creating Layer conv9
+I0605 08:01:07.472368 15126 net.cpp:387] conv9 <- conv8
+I0605 08:01:07.472378 15126 net.cpp:345] conv9 -> conv9
+I0605 08:01:07.472388 15126 net.cpp:116] Setting up conv9
+I0605 08:01:07.477530 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.477553 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.477560 15126 layer_factory.hpp:74] Creating layer conv10
+I0605 08:01:07.477576 15126 net.cpp:87] Creating Layer conv10
+I0605 08:01:07.477582 15126 net.cpp:387] conv10 <- conv9
+I0605 08:01:07.477591 15126 net.cpp:345] conv10 -> conv10
+I0605 08:01:07.477609 15126 net.cpp:116] Setting up conv10
+I0605 08:01:07.482708 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.482738 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.482744 15126 layer_factory.hpp:74] Creating layer conv11
+I0605 08:01:07.482758 15126 net.cpp:87] Creating Layer conv11
+I0605 08:01:07.482765 15126 net.cpp:387] conv11 <- conv10
+I0605 08:01:07.482777 15126 net.cpp:345] conv11 -> conv11
+I0605 08:01:07.482789 15126 net.cpp:116] Setting up conv11
+I0605 08:01:07.487907 15126 net.cpp:123] Top shape: 100 80 16 16 (2048000)
+I0605 08:01:07.487931 15126 net.cpp:154] With 115360 trainable parameters
+I0605 08:01:07.487937 15126 layer_factory.hpp:74] Creating layer pool2
+I0605 08:01:07.487946 15126 net.cpp:87] Creating Layer pool2
+I0605 08:01:07.487952 15126 net.cpp:387] pool2 <- conv11
+I0605 08:01:07.487967 15126 net.cpp:345] pool2 -> pool2
+I0605 08:01:07.487977 15126 net.cpp:116] Setting up pool2
+I0605 08:01:07.488204 15126 net.cpp:123] Top shape: 100 80 8 8 (512000)
+I0605 08:01:07.488217 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.488222 15126 layer_factory.hpp:74] Creating layer drop3
+I0605 08:01:07.488234 15126 net.cpp:87] Creating Layer drop3
+I0605 08:01:07.488240 15126 net.cpp:387] drop3 <- pool2
+I0605 08:01:07.488248 15126 net.cpp:345] drop3 -> drop3
+I0605 08:01:07.488257 15126 net.cpp:116] Setting up drop3
+I0605 08:01:07.488268 15126 net.cpp:123] Top shape: 100 80 8 8 (512000)
+I0605 08:01:07.488275 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.488278 15126 layer_factory.hpp:74] Creating layer conv12
+I0605 08:01:07.488287 15126 net.cpp:87] Creating Layer conv12
+I0605 08:01:07.488292 15126 net.cpp:387] conv12 <- drop3
+I0605 08:01:07.488303 15126 net.cpp:345] conv12 -> conv12
+I0605 08:01:07.488312 15126 net.cpp:116] Setting up conv12
+I0605 08:01:07.492185 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.492208 15126 net.cpp:154] With 92288 trainable parameters
+I0605 08:01:07.492216 15126 layer_factory.hpp:74] Creating layer relu12
+I0605 08:01:07.492225 15126 net.cpp:87] Creating Layer relu12
+I0605 08:01:07.492230 15126 net.cpp:387] relu12 <- conv12
+I0605 08:01:07.492238 15126 net.cpp:334] relu12 -> conv12 (in-place)
+I0605 08:01:07.492247 15126 net.cpp:116] Setting up relu12
+I0605 08:01:07.492326 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.492334 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.492338 15126 layer_factory.hpp:74] Creating layer conv13
+I0605 08:01:07.492348 15126 net.cpp:87] Creating Layer conv13
+I0605 08:01:07.492354 15126 net.cpp:387] conv13 <- conv12
+I0605 08:01:07.492364 15126 net.cpp:345] conv13 -> conv13
+I0605 08:01:07.492375 15126 net.cpp:116] Setting up conv13
+I0605 08:01:07.504216 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.504240 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.504246 15126 layer_factory.hpp:74] Creating layer conv14
+I0605 08:01:07.504263 15126 net.cpp:87] Creating Layer conv14
+I0605 08:01:07.504271 15126 net.cpp:387] conv14 <- conv13
+I0605 08:01:07.504282 15126 net.cpp:345] conv14 -> conv14
+I0605 08:01:07.504293 15126 net.cpp:116] Setting up conv14
+I0605 08:01:07.516145 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.516168 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.516175 15126 layer_factory.hpp:74] Creating layer conv15
+I0605 08:01:07.516199 15126 net.cpp:87] Creating Layer conv15
+I0605 08:01:07.516217 15126 net.cpp:387] conv15 <- conv14
+I0605 08:01:07.516227 15126 net.cpp:345] conv15 -> conv15
+I0605 08:01:07.516237 15126 net.cpp:116] Setting up conv15
+I0605 08:01:07.528033 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.528055 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.528062 15126 layer_factory.hpp:74] Creating layer conv16
+I0605 08:01:07.528072 15126 net.cpp:87] Creating Layer conv16
+I0605 08:01:07.528079 15126 net.cpp:387] conv16 <- conv15
+I0605 08:01:07.528090 15126 net.cpp:345] conv16 -> conv16
+I0605 08:01:07.528100 15126 net.cpp:116] Setting up conv16
+I0605 08:01:07.539897 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.539921 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.539927 15126 layer_factory.hpp:74] Creating layer conv17
+I0605 08:01:07.539944 15126 net.cpp:87] Creating Layer conv17
+I0605 08:01:07.539952 15126 net.cpp:387] conv17 <- conv16
+I0605 08:01:07.539963 15126 net.cpp:345] conv17 -> conv17
+I0605 08:01:07.539974 15126 net.cpp:116] Setting up conv17
+I0605 08:01:07.551771 15126 net.cpp:123] Top shape: 100 128 8 8 (819200)
+I0605 08:01:07.551795 15126 net.cpp:154] With 295168 trainable parameters
+I0605 08:01:07.551800 15126 layer_factory.hpp:74] Creating layer conv18
+I0605 08:01:07.551812 15126 net.cpp:87] Creating Layer conv18
+I0605 08:01:07.551818 15126 net.cpp:387] conv18 <- conv17
+I0605 08:01:07.551827 15126 net.cpp:345] conv18 -> conv18
+I0605 08:01:07.551836 15126 net.cpp:116] Setting up conv18
+I0605 08:01:07.552723 15126 net.cpp:123] Top shape: 100 100 8 8 (640000)
+I0605 08:01:07.552741 15126 net.cpp:154] With 12900 trainable parameters
+I0605 08:01:07.552747 15126 layer_factory.hpp:74] Creating layer relu
+I0605 08:01:07.552754 15126 net.cpp:87] Creating Layer relu
+I0605 08:01:07.552759 15126 net.cpp:387] relu <- conv18
+I0605 08:01:07.552767 15126 net.cpp:334] relu -> conv18 (in-place)
+I0605 08:01:07.552775 15126 net.cpp:116] Setting up relu
+I0605 08:01:07.552894 15126 net.cpp:123] Top shape: 100 100 8 8 (640000)
+I0605 08:01:07.552903 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.552908 15126 layer_factory.hpp:74] Creating layer pool3
+I0605 08:01:07.552917 15126 net.cpp:87] Creating Layer pool3
+I0605 08:01:07.552922 15126 net.cpp:387] pool3 <- conv18
+I0605 08:01:07.552928 15126 net.cpp:345] pool3 -> pool3
+I0605 08:01:07.552937 15126 net.cpp:116] Setting up pool3
+I0605 08:01:07.553145 15126 net.cpp:123] Top shape: 100 100 1 1 (10000)
+I0605 08:01:07.553156 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.553163 15126 layer_factory.hpp:74] Creating layer drop4
+I0605 08:01:07.553170 15126 net.cpp:87] Creating Layer drop4
+I0605 08:01:07.553175 15126 net.cpp:387] drop4 <- pool3
+I0605 08:01:07.553184 15126 net.cpp:345] drop4 -> drop4
+I0605 08:01:07.553191 15126 net.cpp:116] Setting up drop4
+I0605 08:01:07.553200 15126 net.cpp:123] Top shape: 100 100 1 1 (10000)
+I0605 08:01:07.553205 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.553210 15126 layer_factory.hpp:74] Creating layer ip2
+I0605 08:01:07.553220 15126 net.cpp:87] Creating Layer ip2
+I0605 08:01:07.553225 15126 net.cpp:387] ip2 <- drop4
+I0605 08:01:07.553232 15126 net.cpp:345] ip2 -> ip2
+I0605 08:01:07.553241 15126 net.cpp:116] Setting up ip2
+I0605 08:01:07.553629 15126 net.cpp:123] Top shape: 100 100 (10000)
+I0605 08:01:07.553649 15126 net.cpp:154] With 10100 trainable parameters
+I0605 08:01:07.553655 15126 layer_factory.hpp:74] Creating layer ip2_ip2_0_split
+I0605 08:01:07.553668 15126 net.cpp:87] Creating Layer ip2_ip2_0_split
+I0605 08:01:07.553673 15126 net.cpp:387] ip2_ip2_0_split <- ip2
+I0605 08:01:07.553681 15126 net.cpp:345] ip2_ip2_0_split -> ip2_ip2_0_split_0
+I0605 08:01:07.553690 15126 net.cpp:345] ip2_ip2_0_split -> ip2_ip2_0_split_1
+I0605 08:01:07.553697 15126 net.cpp:116] Setting up ip2_ip2_0_split
+I0605 08:01:07.553705 15126 net.cpp:123] Top shape: 100 100 (10000)
+I0605 08:01:07.553711 15126 net.cpp:123] Top shape: 100 100 (10000)
+I0605 08:01:07.553721 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.553737 15126 layer_factory.hpp:74] Creating layer accuracy
+I0605 08:01:07.553751 15126 net.cpp:87] Creating Layer accuracy
+I0605 08:01:07.553757 15126 net.cpp:387] accuracy <- ip2_ip2_0_split_0
+I0605 08:01:07.553763 15126 net.cpp:387] accuracy <- label_cifar_1_split_0
+I0605 08:01:07.553771 15126 net.cpp:345] accuracy -> accuracy
+I0605 08:01:07.553781 15126 net.cpp:116] Setting up accuracy
+I0605 08:01:07.553797 15126 net.cpp:123] Top shape: (1)
+I0605 08:01:07.553802 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.553807 15126 layer_factory.hpp:74] Creating layer loss
+I0605 08:01:07.553817 15126 net.cpp:87] Creating Layer loss
+I0605 08:01:07.553822 15126 net.cpp:387] loss <- ip2_ip2_0_split_1
+I0605 08:01:07.553828 15126 net.cpp:387] loss <- label_cifar_1_split_1
+I0605 08:01:07.553834 15126 net.cpp:345] loss -> loss
+I0605 08:01:07.553843 15126 net.cpp:116] Setting up loss
+I0605 08:01:07.553849 15126 layer_factory.hpp:74] Creating layer loss
+I0605 08:01:07.553962 15126 net.cpp:123] Top shape: (1)
+I0605 08:01:07.553972 15126 net.cpp:125]     with loss weight 1
+I0605 08:01:07.553984 15126 net.cpp:154] With 0 trainable parameters
+I0605 08:01:07.553989 15126 net.cpp:157] The network has total 2265928 trainable parameters.
+I0605 08:01:07.553993 15126 net.cpp:174] loss needs backward computation.
+I0605 08:01:07.553999 15126 net.cpp:176] accuracy does not need backward computation.
+I0605 08:01:07.554003 15126 net.cpp:174] ip2_ip2_0_split needs backward computation.
+I0605 08:01:07.554008 15126 net.cpp:174] ip2 needs backward computation.
+I0605 08:01:07.554013 15126 net.cpp:174] drop4 needs backward computation.
+I0605 08:01:07.554018 15126 net.cpp:174] pool3 needs backward computation.
+I0605 08:01:07.554023 15126 net.cpp:174] relu needs backward computation.
+I0605 08:01:07.554026 15126 net.cpp:174] conv18 needs backward computation.
+I0605 08:01:07.554031 15126 net.cpp:174] conv17 needs backward computation.
+I0605 08:01:07.554035 15126 net.cpp:174] conv16 needs backward computation.
+I0605 08:01:07.554040 15126 net.cpp:174] conv15 needs backward computation.
+I0605 08:01:07.554044 15126 net.cpp:174] conv14 needs backward computation.
+I0605 08:01:07.554049 15126 net.cpp:174] conv13 needs backward computation.
+I0605 08:01:07.554054 15126 net.cpp:174] relu12 needs backward computation.
+I0605 08:01:07.554059 15126 net.cpp:174] conv12 needs backward computation.
+I0605 08:01:07.554062 15126 net.cpp:174] drop3 needs backward computation.
+I0605 08:01:07.554067 15126 net.cpp:174] pool2 needs backward computation.
+I0605 08:01:07.554072 15126 net.cpp:174] conv11 needs backward computation.
+I0605 08:01:07.554076 15126 net.cpp:174] conv10 needs backward computation.
+I0605 08:01:07.554083 15126 net.cpp:174] conv9 needs backward computation.
+I0605 08:01:07.554088 15126 net.cpp:174] conv8 needs backward computation.
+I0605 08:01:07.554093 15126 net.cpp:174] conv7 needs backward computation.
+I0605 08:01:07.554098 15126 net.cpp:174] relu6 needs backward computation.
+I0605 08:01:07.554102 15126 net.cpp:174] conv6 needs backward computation.
+I0605 08:01:07.554107 15126 net.cpp:174] drop2 needs backward computation.
+I0605 08:01:07.554112 15126 net.cpp:174] pool1 needs backward computation.
+I0605 08:01:07.554116 15126 net.cpp:174] conv5 needs backward computation.
+I0605 08:01:07.554121 15126 net.cpp:174] conv4 needs backward computation.
+I0605 08:01:07.554126 15126 net.cpp:174] conv3 needs backward computation.
+I0605 08:01:07.554131 15126 net.cpp:174] conv2 needs backward computation.
+I0605 08:01:07.554136 15126 net.cpp:174] relu1 needs backward computation.
+I0605 08:01:07.554139 15126 net.cpp:174] conv1 needs backward computation.
+I0605 08:01:07.554144 15126 net.cpp:176] drop1 does not need backward computation.
+I0605 08:01:07.554149 15126 net.cpp:176] label_cifar_1_split does not need backward computation.
+I0605 08:01:07.554154 15126 net.cpp:176] cifar does not need backward computation.
+I0605 08:01:07.554159 15126 net.cpp:212] This network produces output accuracy
+I0605 08:01:07.554169 15126 net.cpp:212] This network produces output loss
+I0605 08:01:07.554208 15126 net.cpp:454] Collecting Learning Rate and Weight Decay.
+I0605 08:01:07.554221 15126 net.cpp:224] Network initialization done.
+I0605 08:01:07.554226 15126 net.cpp:225] Memory required for data: 177353208
+I0605 08:01:07.554402 15126 solver.cpp:42] Solver scaffolding done.
+I0605 08:01:07.554535 15126 solver.cpp:226] Solving CIFAR100_19layers
+I0605 08:01:07.554541 15126 solver.cpp:227] Learning Rate Policy: multistep
+I0605 08:01:07.554549 15126 solver.cpp:270] Iteration 0, Testing net (#0)
+I0605 08:01:15.491468 15126 solver.cpp:319]     Test net output #0: accuracy = 0.0094
+I0605 08:01:15.491531 15126 solver.cpp:319]     Test net output #1: loss = 5.71903 (* 1 = 5.71903 loss)
+I0605 08:03:20.545406 15126 solver.cpp:270] Iteration 500, Testing net (#0)
+I0605 08:03:28.735398 15126 solver.cpp:319]     Test net output #0: accuracy = 0.0261
+I0605 08:03:28.735453 15126 solver.cpp:319]     Test net output #1: loss = 4.4107 (* 1 = 4.4107 loss)
+I0605 08:05:34.113003 15126 solver.cpp:270] Iteration 1000, Testing net (#0)
+I0605 08:05:42.335289 15126 solver.cpp:319]     Test net output #0: accuracy = 0.0489
+I0605 08:05:42.335340 15126 solver.cpp:319]     Test net output #1: loss = 4.16215 (* 1 = 4.16215 loss)
+I0605 08:07:47.452868 15126 solver.cpp:270] Iteration 1500, Testing net (#0)
+I0605 08:07:55.695791 15126 solver.cpp:319]     Test net output #0: accuracy = 0.089
+I0605 08:07:55.695904 15126 solver.cpp:319]     Test net output #1: loss = 3.80177 (* 1 = 3.80177 loss)
+I0605 08:10:00.766439 15126 solver.cpp:270] Iteration 2000, Testing net (#0)
+I0605 08:10:08.927399 15126 solver.cpp:319]     Test net output #0: accuracy = 0.1274
+I0605 08:10:08.927469 15126 solver.cpp:319]     Test net output #1: loss = 3.58766 (* 1 = 3.58766 loss)
+I0605 08:12:14.076448 15126 solver.cpp:270] Iteration 2500, Testing net (#0)
+I0605 08:12:22.281239 15126 solver.cpp:319]     Test net output #0: accuracy = 0.1538
+I0605 08:12:22.281291 15126 solver.cpp:319]     Test net output #1: loss = 3.4257 (* 1 = 3.4257 loss)
+I0605 08:14:27.199007 15126 solver.cpp:270] Iteration 3000, Testing net (#0)
+I0605 08:14:35.460827 15126 solver.cpp:319]     Test net output #0: accuracy = 0.1705
+I0605 08:14:35.460867 15126 solver.cpp:319]     Test net output #1: loss = 3.32868 (* 1 = 3.32868 loss)
+I0605 08:16:40.734520 15126 solver.cpp:270] Iteration 3500, Testing net (#0)
+I0605 08:16:48.965494 15126 solver.cpp:319]     Test net output #0: accuracy = 0.2107
+I0605 08:16:48.965559 15126 solver.cpp:319]     Test net output #1: loss = 3.13099 (* 1 = 3.13099 loss)
+I0605 08:18:54.147766 15126 solver.cpp:270] Iteration 4000, Testing net (#0)
+I0605 08:19:02.371636 15126 solver.cpp:319]     Test net output #0: accuracy = 0.2341
+I0605 08:19:02.371708 15126 solver.cpp:319]     Test net output #1: loss = 3.00583 (* 1 = 3.00583 loss)
+I0605 08:21:07.190222 15126 solver.cpp:270] Iteration 4500, Testing net (#0)
+I0605 08:21:15.411156 15126 solver.cpp:319]     Test net output #0: accuracy = 0.2568
+I0605 08:21:15.411229 15126 solver.cpp:319]     Test net output #1: loss = 2.90027 (* 1 = 2.90027 loss)
+I0605 08:23:20.436776 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_5000.caffemodel
+I0605 08:23:20.463935 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_5000.solverstate
+I0605 08:23:20.477565 15126 solver.cpp:270] Iteration 5000, Testing net (#0)
+I0605 08:23:28.594074 15126 solver.cpp:319]     Test net output #0: accuracy = 0.2741
+I0605 08:23:28.594153 15126 solver.cpp:319]     Test net output #1: loss = 2.83745 (* 1 = 2.83745 loss)
+I0605 08:25:33.454987 15126 solver.cpp:270] Iteration 5500, Testing net (#0)
+I0605 08:25:41.727690 15126 solver.cpp:319]     Test net output #0: accuracy = 0.2797
+I0605 08:25:41.727749 15126 solver.cpp:319]     Test net output #1: loss = 2.87958 (* 1 = 2.87958 loss)
+I0605 08:27:46.452752 15126 solver.cpp:270] Iteration 6000, Testing net (#0)
+I0605 08:27:54.745556 15126 solver.cpp:319]     Test net output #0: accuracy = 0.2929
+I0605 08:27:54.745638 15126 solver.cpp:319]     Test net output #1: loss = 2.76132 (* 1 = 2.76132 loss)
+I0605 08:30:00.039366 15126 solver.cpp:270] Iteration 6500, Testing net (#0)
+I0605 08:30:08.306437 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3116
+I0605 08:30:08.306507 15126 solver.cpp:319]     Test net output #1: loss = 2.67119 (* 1 = 2.67119 loss)
+I0605 08:32:13.482223 15126 solver.cpp:270] Iteration 7000, Testing net (#0)
+I0605 08:32:21.778529 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3159
+I0605 08:32:21.778594 15126 solver.cpp:319]     Test net output #1: loss = 2.64205 (* 1 = 2.64205 loss)
+I0605 08:34:26.508225 15126 solver.cpp:270] Iteration 7500, Testing net (#0)
+I0605 08:34:34.797255 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3232
+I0605 08:34:34.797330 15126 solver.cpp:319]     Test net output #1: loss = 2.67387 (* 1 = 2.67387 loss)
+I0605 08:36:39.525442 15126 solver.cpp:270] Iteration 8000, Testing net (#0)
+I0605 08:36:47.783146 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3322
+I0605 08:36:47.783205 15126 solver.cpp:319]     Test net output #1: loss = 2.55982 (* 1 = 2.55982 loss)
+I0605 08:38:52.396781 15126 solver.cpp:270] Iteration 8500, Testing net (#0)
+I0605 08:39:00.597784 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3558
+I0605 08:39:00.597846 15126 solver.cpp:319]     Test net output #1: loss = 2.4829 (* 1 = 2.4829 loss)
+I0605 08:41:05.247463 15126 solver.cpp:270] Iteration 9000, Testing net (#0)
+I0605 08:41:13.532548 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3589
+I0605 08:41:13.532610 15126 solver.cpp:319]     Test net output #1: loss = 2.48343 (* 1 = 2.48343 loss)
+I0605 08:43:18.342209 15126 solver.cpp:270] Iteration 9500, Testing net (#0)
+I0605 08:43:26.494146 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3646
+I0605 08:43:26.494199 15126 solver.cpp:319]     Test net output #1: loss = 2.47058 (* 1 = 2.47058 loss)
+I0605 08:45:31.303207 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_10000.caffemodel
+I0605 08:45:31.342051 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_10000.solverstate
+I0605 08:45:31.364959 15126 solver.cpp:270] Iteration 10000, Testing net (#0)
+I0605 08:45:39.403956 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3699
+I0605 08:45:39.404021 15126 solver.cpp:319]     Test net output #1: loss = 2.41401 (* 1 = 2.41401 loss)
+I0605 08:47:44.029655 15126 solver.cpp:270] Iteration 10500, Testing net (#0)
+I0605 08:47:52.215394 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3927
+I0605 08:47:52.215463 15126 solver.cpp:319]     Test net output #1: loss = 2.30857 (* 1 = 2.30857 loss)
+I0605 08:49:56.869019 15126 solver.cpp:270] Iteration 11000, Testing net (#0)
+I0605 08:50:04.970628 15126 solver.cpp:319]     Test net output #0: accuracy = 0.368
+I0605 08:50:04.970710 15126 solver.cpp:319]     Test net output #1: loss = 2.44044 (* 1 = 2.44044 loss)
+I0605 08:52:09.679184 15126 solver.cpp:270] Iteration 11500, Testing net (#0)
+I0605 08:52:17.959449 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3919
+I0605 08:52:17.959520 15126 solver.cpp:319]     Test net output #1: loss = 2.30639 (* 1 = 2.30639 loss)
+I0605 08:54:22.372486 15126 solver.cpp:270] Iteration 12000, Testing net (#0)
+I0605 08:54:30.588938 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3983
+I0605 08:54:30.588981 15126 solver.cpp:319]     Test net output #1: loss = 2.32565 (* 1 = 2.32565 loss)
+I0605 08:56:35.178087 15126 solver.cpp:270] Iteration 12500, Testing net (#0)
+I0605 08:56:43.385714 15126 solver.cpp:319]     Test net output #0: accuracy = 0.402
+I0605 08:56:43.385764 15126 solver.cpp:319]     Test net output #1: loss = 2.2784 (* 1 = 2.2784 loss)
+I0605 08:58:47.983790 15126 solver.cpp:270] Iteration 13000, Testing net (#0)
+I0605 08:58:56.210580 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3825
+I0605 08:58:56.210650 15126 solver.cpp:319]     Test net output #1: loss = 2.39804 (* 1 = 2.39804 loss)
+I0605 09:01:00.818884 15126 solver.cpp:270] Iteration 13500, Testing net (#0)
+I0605 09:01:09.056654 15126 solver.cpp:319]     Test net output #0: accuracy = 0.3953
+I0605 09:01:09.056740 15126 solver.cpp:319]     Test net output #1: loss = 2.31953 (* 1 = 2.31953 loss)
+I0605 09:03:13.720481 15126 solver.cpp:270] Iteration 14000, Testing net (#0)
+I0605 09:03:21.909265 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4023
+I0605 09:03:21.909320 15126 solver.cpp:319]     Test net output #1: loss = 2.31237 (* 1 = 2.31237 loss)
+I0605 09:05:26.556753 15126 solver.cpp:270] Iteration 14500, Testing net (#0)
+I0605 09:05:34.858448 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4149
+I0605 09:05:34.858523 15126 solver.cpp:319]     Test net output #1: loss = 2.24263 (* 1 = 2.24263 loss)
+I0605 09:07:39.503746 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_15000.caffemodel
+I0605 09:07:39.549645 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_15000.solverstate
+I0605 09:07:39.575189 15126 solver.cpp:270] Iteration 15000, Testing net (#0)
+I0605 09:07:47.628198 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4162
+I0605 09:07:47.628268 15126 solver.cpp:319]     Test net output #1: loss = 2.19839 (* 1 = 2.19839 loss)
+I0605 09:09:52.154559 15126 solver.cpp:270] Iteration 15500, Testing net (#0)
+I0605 09:10:00.448395 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4217
+I0605 09:10:00.448458 15126 solver.cpp:319]     Test net output #1: loss = 2.17121 (* 1 = 2.17121 loss)
+I0605 09:12:05.079463 15126 solver.cpp:270] Iteration 16000, Testing net (#0)
+I0605 09:12:13.341387 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4162
+I0605 09:12:13.341475 15126 solver.cpp:319]     Test net output #1: loss = 2.21877 (* 1 = 2.21877 loss)
+I0605 09:14:18.117470 15126 solver.cpp:270] Iteration 16500, Testing net (#0)
+I0605 09:14:26.370296 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4094
+I0605 09:14:26.370393 15126 solver.cpp:319]     Test net output #1: loss = 2.2625 (* 1 = 2.2625 loss)
+I0605 09:16:31.102010 15126 solver.cpp:270] Iteration 17000, Testing net (#0)
+I0605 09:16:39.313060 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4252
+I0605 09:16:39.313124 15126 solver.cpp:319]     Test net output #1: loss = 2.20133 (* 1 = 2.20133 loss)
+I0605 09:18:43.858935 15126 solver.cpp:270] Iteration 17500, Testing net (#0)
+I0605 09:18:52.081635 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4069
+I0605 09:18:52.081693 15126 solver.cpp:319]     Test net output #1: loss = 2.40137 (* 1 = 2.40137 loss)
+I0605 09:20:56.536406 15126 solver.cpp:270] Iteration 18000, Testing net (#0)
+I0605 09:21:04.840198 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4369
+I0605 09:21:04.840262 15126 solver.cpp:319]     Test net output #1: loss = 2.105 (* 1 = 2.105 loss)
+I0605 09:23:09.495462 15126 solver.cpp:270] Iteration 18500, Testing net (#0)
+I0605 09:23:17.726528 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4188
+I0605 09:23:17.726584 15126 solver.cpp:319]     Test net output #1: loss = 2.24551 (* 1 = 2.24551 loss)
+I0605 09:25:22.230438 15126 solver.cpp:270] Iteration 19000, Testing net (#0)
+I0605 09:25:30.460372 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4302
+I0605 09:25:30.460450 15126 solver.cpp:319]     Test net output #1: loss = 2.22551 (* 1 = 2.22551 loss)
+I0605 09:27:34.874038 15126 solver.cpp:270] Iteration 19500, Testing net (#0)
+I0605 09:27:43.148797 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4164
+I0605 09:27:43.148856 15126 solver.cpp:319]     Test net output #1: loss = 2.32573 (* 1 = 2.32573 loss)
+I0605 09:29:47.959837 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_20000.caffemodel
+I0605 09:29:47.998958 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_20000.solverstate
+I0605 09:29:48.022056 15126 solver.cpp:270] Iteration 20000, Testing net (#0)
+I0605 09:29:56.090018 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4441
+I0605 09:29:56.090093 15126 solver.cpp:319]     Test net output #1: loss = 2.06539 (* 1 = 2.06539 loss)
+I0605 09:32:00.674484 15126 solver.cpp:270] Iteration 20500, Testing net (#0)
+I0605 09:32:08.889669 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4449
+I0605 09:32:08.889714 15126 solver.cpp:319]     Test net output #1: loss = 2.11188 (* 1 = 2.11188 loss)
+I0605 09:34:13.127918 15126 solver.cpp:270] Iteration 21000, Testing net (#0)
+I0605 09:34:21.376289 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4383
+I0605 09:34:21.376348 15126 solver.cpp:319]     Test net output #1: loss = 2.15765 (* 1 = 2.15765 loss)
+I0605 09:36:26.055665 15126 solver.cpp:270] Iteration 21500, Testing net (#0)
+I0605 09:36:34.302898 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4461
+I0605 09:36:34.302958 15126 solver.cpp:319]     Test net output #1: loss = 2.10765 (* 1 = 2.10765 loss)
+I0605 09:38:38.774565 15126 solver.cpp:270] Iteration 22000, Testing net (#0)
+I0605 09:38:47.076334 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4659
+I0605 09:38:47.076401 15126 solver.cpp:319]     Test net output #1: loss = 2.00177 (* 1 = 2.00177 loss)
+I0605 09:40:51.633625 15126 solver.cpp:270] Iteration 22500, Testing net (#0)
+I0605 09:40:59.789432 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4615
+I0605 09:40:59.789501 15126 solver.cpp:319]     Test net output #1: loss = 2.01136 (* 1 = 2.01136 loss)
+I0605 09:43:04.489626 15126 solver.cpp:270] Iteration 23000, Testing net (#0)
+I0605 09:43:12.790971 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4234
+I0605 09:43:12.791074 15126 solver.cpp:319]     Test net output #1: loss = 2.27824 (* 1 = 2.27824 loss)
+I0605 09:45:17.330317 15126 solver.cpp:270] Iteration 23500, Testing net (#0)
+I0605 09:45:25.602565 15126 solver.cpp:319]     Test net output #0: accuracy = 0.458
+I0605 09:45:25.602629 15126 solver.cpp:319]     Test net output #1: loss = 2.02758 (* 1 = 2.02758 loss)
+I0605 09:47:30.192576 15126 solver.cpp:270] Iteration 24000, Testing net (#0)
+I0605 09:47:38.545094 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4494
+I0605 09:47:38.545152 15126 solver.cpp:319]     Test net output #1: loss = 2.09978 (* 1 = 2.09978 loss)
+I0605 09:49:42.992427 15126 solver.cpp:270] Iteration 24500, Testing net (#0)
+I0605 09:49:51.198426 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4579
+I0605 09:49:51.198506 15126 solver.cpp:319]     Test net output #1: loss = 2.04069 (* 1 = 2.04069 loss)
+I0605 09:51:56.022915 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_25000.caffemodel
+I0605 09:51:56.050895 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_25000.solverstate
+I0605 09:51:56.063776 15126 solver.cpp:270] Iteration 25000, Testing net (#0)
+I0605 09:52:04.060935 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4466
+I0605 09:52:04.060997 15126 solver.cpp:319]     Test net output #1: loss = 2.11746 (* 1 = 2.11746 loss)
+I0605 09:54:08.511262 15126 solver.cpp:270] Iteration 25500, Testing net (#0)
+I0605 09:54:16.752229 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4656
+I0605 09:54:16.752296 15126 solver.cpp:319]     Test net output #1: loss = 2.01945 (* 1 = 2.01945 loss)
+I0605 09:56:21.588529 15126 solver.cpp:270] Iteration 26000, Testing net (#0)
+I0605 09:56:29.842366 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4518
+I0605 09:56:29.842430 15126 solver.cpp:319]     Test net output #1: loss = 2.09726 (* 1 = 2.09726 loss)
+I0605 09:58:34.519922 15126 solver.cpp:270] Iteration 26500, Testing net (#0)
+I0605 09:58:42.735687 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4485
+I0605 09:58:42.735793 15126 solver.cpp:319]     Test net output #1: loss = 2.08042 (* 1 = 2.08042 loss)
+I0605 10:00:47.396589 15126 solver.cpp:270] Iteration 27000, Testing net (#0)
+I0605 10:00:55.624609 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4682
+I0605 10:00:55.624670 15126 solver.cpp:319]     Test net output #1: loss = 2.00268 (* 1 = 2.00268 loss)
+I0605 10:03:00.313803 15126 solver.cpp:270] Iteration 27500, Testing net (#0)
+I0605 10:03:08.541688 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4708
+I0605 10:03:08.541754 15126 solver.cpp:319]     Test net output #1: loss = 1.96993 (* 1 = 1.96993 loss)
+I0605 10:05:13.018636 15126 solver.cpp:270] Iteration 28000, Testing net (#0)
+I0605 10:05:21.226789 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4822
+I0605 10:05:21.226848 15126 solver.cpp:319]     Test net output #1: loss = 1.92692 (* 1 = 1.92692 loss)
+I0605 10:07:25.949936 15126 solver.cpp:270] Iteration 28500, Testing net (#0)
+I0605 10:07:34.116883 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4554
+I0605 10:07:34.116971 15126 solver.cpp:319]     Test net output #1: loss = 2.13893 (* 1 = 2.13893 loss)
+I0605 10:09:38.435286 15126 solver.cpp:270] Iteration 29000, Testing net (#0)
+I0605 10:09:46.650204 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4786
+I0605 10:09:46.650279 15126 solver.cpp:319]     Test net output #1: loss = 1.98028 (* 1 = 1.98028 loss)
+I0605 10:11:51.091261 15126 solver.cpp:270] Iteration 29500, Testing net (#0)
+I0605 10:11:59.322623 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4837
+I0605 10:11:59.322675 15126 solver.cpp:319]     Test net output #1: loss = 1.90951 (* 1 = 1.90951 loss)
+I0605 10:14:04.090248 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_30000.caffemodel
+I0605 10:14:04.123694 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_30000.solverstate
+I0605 10:14:04.140377 15126 solver.cpp:270] Iteration 30000, Testing net (#0)
+I0605 10:14:12.300966 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4782
+I0605 10:14:12.301020 15126 solver.cpp:319]     Test net output #1: loss = 1.95465 (* 1 = 1.95465 loss)
+I0605 10:16:16.651015 15126 solver.cpp:270] Iteration 30500, Testing net (#0)
+I0605 10:16:24.890434 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4796
+I0605 10:16:24.890506 15126 solver.cpp:319]     Test net output #1: loss = 2.00153 (* 1 = 2.00153 loss)
+I0605 10:18:29.315933 15126 solver.cpp:270] Iteration 31000, Testing net (#0)
+I0605 10:18:37.541014 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4634
+I0605 10:18:37.541088 15126 solver.cpp:319]     Test net output #1: loss = 2.01827 (* 1 = 2.01827 loss)
+I0605 10:20:41.967744 15126 solver.cpp:270] Iteration 31500, Testing net (#0)
+I0605 10:20:50.228267 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4647
+I0605 10:20:50.228319 15126 solver.cpp:319]     Test net output #1: loss = 2.04217 (* 1 = 2.04217 loss)
+I0605 10:22:54.645020 15126 solver.cpp:270] Iteration 32000, Testing net (#0)
+I0605 10:23:02.851738 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4888
+I0605 10:23:02.851804 15126 solver.cpp:319]     Test net output #1: loss = 1.91876 (* 1 = 1.91876 loss)
+I0605 10:25:07.209606 15126 solver.cpp:270] Iteration 32500, Testing net (#0)
+I0605 10:25:15.463129 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4727
+I0605 10:25:15.463194 15126 solver.cpp:319]     Test net output #1: loss = 1.99038 (* 1 = 1.99038 loss)
+I0605 10:27:19.974305 15126 solver.cpp:270] Iteration 33000, Testing net (#0)
+I0605 10:27:28.244072 15126 solver.cpp:319]     Test net output #0: accuracy = 0.491
+I0605 10:27:28.244132 15126 solver.cpp:319]     Test net output #1: loss = 1.90897 (* 1 = 1.90897 loss)
+I0605 10:29:32.820919 15126 solver.cpp:270] Iteration 33500, Testing net (#0)
+I0605 10:29:41.021029 15126 solver.cpp:319]     Test net output #0: accuracy = 0.486
+I0605 10:29:41.021107 15126 solver.cpp:319]     Test net output #1: loss = 1.90828 (* 1 = 1.90828 loss)
+I0605 10:31:45.453172 15126 solver.cpp:270] Iteration 34000, Testing net (#0)
+I0605 10:31:53.710196 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4769
+I0605 10:31:53.710258 15126 solver.cpp:319]     Test net output #1: loss = 1.97383 (* 1 = 1.97383 loss)
+I0605 10:33:58.086051 15126 solver.cpp:270] Iteration 34500, Testing net (#0)
+I0605 10:34:06.351536 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4781
+I0605 10:34:06.351606 15126 solver.cpp:319]     Test net output #1: loss = 1.98204 (* 1 = 1.98204 loss)
+I0605 10:36:10.960623 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_35000.caffemodel
+I0605 10:36:10.995537 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_35000.solverstate
+I0605 10:36:11.018729 15126 solver.cpp:270] Iteration 35000, Testing net (#0)
+I0605 10:36:19.005775 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4853
+I0605 10:36:19.005825 15126 solver.cpp:319]     Test net output #1: loss = 1.95593 (* 1 = 1.95593 loss)
+I0605 10:38:23.402560 15126 solver.cpp:270] Iteration 35500, Testing net (#0)
+I0605 10:38:31.684460 15126 solver.cpp:319]     Test net output #0: accuracy = 0.492
+I0605 10:38:31.684541 15126 solver.cpp:319]     Test net output #1: loss = 1.89778 (* 1 = 1.89778 loss)
+I0605 10:40:36.037575 15126 solver.cpp:270] Iteration 36000, Testing net (#0)
+I0605 10:40:44.265897 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4696
+I0605 10:40:44.265957 15126 solver.cpp:319]     Test net output #1: loss = 1.99832 (* 1 = 1.99832 loss)
+I0605 10:42:48.802405 15126 solver.cpp:270] Iteration 36500, Testing net (#0)
+I0605 10:42:57.089424 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4967
+I0605 10:42:57.089499 15126 solver.cpp:319]     Test net output #1: loss = 1.88554 (* 1 = 1.88554 loss)
+I0605 10:45:01.421262 15126 solver.cpp:270] Iteration 37000, Testing net (#0)
+I0605 10:45:09.612251 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4876
+I0605 10:45:09.612294 15126 solver.cpp:319]     Test net output #1: loss = 1.95989 (* 1 = 1.95989 loss)
+I0605 10:47:14.298576 15126 solver.cpp:270] Iteration 37500, Testing net (#0)
+I0605 10:47:22.405972 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4999
+I0605 10:47:22.406026 15126 solver.cpp:319]     Test net output #1: loss = 1.89339 (* 1 = 1.89339 loss)
+I0605 10:49:26.996776 15126 solver.cpp:270] Iteration 38000, Testing net (#0)
+I0605 10:49:35.271847 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4829
+I0605 10:49:35.271922 15126 solver.cpp:319]     Test net output #1: loss = 1.93825 (* 1 = 1.93825 loss)
+I0605 10:51:39.851332 15126 solver.cpp:270] Iteration 38500, Testing net (#0)
+I0605 10:51:48.033560 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4755
+I0605 10:51:48.033627 15126 solver.cpp:319]     Test net output #1: loss = 1.9768 (* 1 = 1.9768 loss)
+I0605 10:53:55.409498 15126 solver.cpp:270] Iteration 39000, Testing net (#0)
+I0605 10:54:03.853206 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4954
+I0605 10:54:03.853293 15126 solver.cpp:319]     Test net output #1: loss = 1.87438 (* 1 = 1.87438 loss)
+I0605 10:56:13.264328 15126 solver.cpp:270] Iteration 39500, Testing net (#0)
+I0605 10:56:21.834827 15126 solver.cpp:319]     Test net output #0: accuracy = 0.487
+I0605 10:56:21.834897 15126 solver.cpp:319]     Test net output #1: loss = 1.8955 (* 1 = 1.8955 loss)
+I0605 10:58:31.396916 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_40000.caffemodel
+I0605 10:58:31.436185 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_40000.solverstate
+I0605 10:58:31.458065 15126 solver.cpp:270] Iteration 40000, Testing net (#0)
+I0605 10:58:39.879237 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4982
+I0605 10:58:39.879323 15126 solver.cpp:319]     Test net output #1: loss = 1.9002 (* 1 = 1.9002 loss)
+I0605 11:00:49.536911 15126 solver.cpp:270] Iteration 40500, Testing net (#0)
+I0605 11:00:58.085914 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4808
+I0605 11:00:58.085999 15126 solver.cpp:319]     Test net output #1: loss = 1.9757 (* 1 = 1.9757 loss)
+I0605 11:03:07.751876 15126 solver.cpp:270] Iteration 41000, Testing net (#0)
+I0605 11:03:16.317353 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4835
+I0605 11:03:16.317423 15126 solver.cpp:319]     Test net output #1: loss = 1.98458 (* 1 = 1.98458 loss)
+I0605 11:05:25.981904 15126 solver.cpp:270] Iteration 41500, Testing net (#0)
+I0605 11:05:34.511940 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4827
+I0605 11:05:34.512032 15126 solver.cpp:319]     Test net output #1: loss = 1.99807 (* 1 = 1.99807 loss)
+I0605 11:07:44.272110 15126 solver.cpp:270] Iteration 42000, Testing net (#0)
+I0605 11:07:52.874119 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5048
+I0605 11:07:52.874186 15126 solver.cpp:319]     Test net output #1: loss = 1.85138 (* 1 = 1.85138 loss)
+I0605 11:10:02.721297 15126 solver.cpp:270] Iteration 42500, Testing net (#0)
+I0605 11:10:11.325100 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4859
+I0605 11:10:11.325172 15126 solver.cpp:319]     Test net output #1: loss = 1.95561 (* 1 = 1.95561 loss)
+I0605 11:12:21.182097 15126 solver.cpp:270] Iteration 43000, Testing net (#0)
+I0605 11:12:29.766522 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4789
+I0605 11:12:29.766607 15126 solver.cpp:319]     Test net output #1: loss = 1.9947 (* 1 = 1.9947 loss)
+I0605 11:14:39.511811 15126 solver.cpp:270] Iteration 43500, Testing net (#0)
+I0605 11:14:48.111945 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4933
+I0605 11:14:48.112010 15126 solver.cpp:319]     Test net output #1: loss = 1.94675 (* 1 = 1.94675 loss)
+I0605 11:16:57.873114 15126 solver.cpp:270] Iteration 44000, Testing net (#0)
+I0605 11:17:06.481286 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5065
+I0605 11:17:06.481345 15126 solver.cpp:319]     Test net output #1: loss = 1.88212 (* 1 = 1.88212 loss)
+I0605 11:19:16.342696 15126 solver.cpp:270] Iteration 44500, Testing net (#0)
+I0605 11:19:24.870035 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4924
+I0605 11:19:24.870079 15126 solver.cpp:319]     Test net output #1: loss = 1.92357 (* 1 = 1.92357 loss)
+I0605 11:21:34.669541 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_45000.caffemodel
+I0605 11:21:34.710803 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_45000.solverstate
+I0605 11:21:34.732448 15126 solver.cpp:270] Iteration 45000, Testing net (#0)
+I0605 11:21:43.157245 15126 solver.cpp:319]     Test net output #0: accuracy = 0.489
+I0605 11:21:43.157302 15126 solver.cpp:319]     Test net output #1: loss = 1.94144 (* 1 = 1.94144 loss)
+I0605 11:23:53.338174 15126 solver.cpp:270] Iteration 45500, Testing net (#0)
+I0605 11:24:02.110826 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5008
+I0605 11:24:02.110913 15126 solver.cpp:319]     Test net output #1: loss = 1.86895 (* 1 = 1.86895 loss)
+I0605 11:26:12.220815 15126 solver.cpp:270] Iteration 46000, Testing net (#0)
+I0605 11:26:20.853657 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4974
+I0605 11:26:20.853710 15126 solver.cpp:319]     Test net output #1: loss = 1.87951 (* 1 = 1.87951 loss)
+I0605 11:28:30.673449 15126 solver.cpp:270] Iteration 46500, Testing net (#0)
+I0605 11:28:39.274140 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4936
+I0605 11:28:39.274189 15126 solver.cpp:319]     Test net output #1: loss = 1.94763 (* 1 = 1.94763 loss)
+I0605 11:30:49.066123 15126 solver.cpp:270] Iteration 47000, Testing net (#0)
+I0605 11:30:57.654412 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5077
+I0605 11:30:57.654499 15126 solver.cpp:319]     Test net output #1: loss = 1.82585 (* 1 = 1.82585 loss)
+I0605 11:33:07.407928 15126 solver.cpp:270] Iteration 47500, Testing net (#0)
+I0605 11:33:16.056886 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5069
+I0605 11:33:16.056946 15126 solver.cpp:319]     Test net output #1: loss = 1.87214 (* 1 = 1.87214 loss)
+I0605 11:35:25.681879 15126 solver.cpp:270] Iteration 48000, Testing net (#0)
+I0605 11:35:34.275511 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4957
+I0605 11:35:34.275573 15126 solver.cpp:319]     Test net output #1: loss = 1.93071 (* 1 = 1.93071 loss)
+I0605 11:37:44.364286 15126 solver.cpp:270] Iteration 48500, Testing net (#0)
+I0605 11:37:52.837461 15126 solver.cpp:319]     Test net output #0: accuracy = 0.511
+I0605 11:37:52.837534 15126 solver.cpp:319]     Test net output #1: loss = 1.82711 (* 1 = 1.82711 loss)
+I0605 11:40:00.126988 15126 solver.cpp:270] Iteration 49000, Testing net (#0)
+I0605 11:40:08.403838 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5096
+I0605 11:40:08.403916 15126 solver.cpp:319]     Test net output #1: loss = 1.83051 (* 1 = 1.83051 loss)
+I0605 11:42:13.167275 15126 solver.cpp:270] Iteration 49500, Testing net (#0)
+I0605 11:42:21.469691 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5038
+I0605 11:42:21.469766 15126 solver.cpp:319]     Test net output #1: loss = 1.86426 (* 1 = 1.86426 loss)
+I0605 11:44:26.216761 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_50000.caffemodel
+I0605 11:44:26.254914 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_50000.solverstate
+I0605 11:44:26.281100 15126 solver.cpp:270] Iteration 50000, Testing net (#0)
+I0605 11:44:34.350553 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5205
+I0605 11:44:34.350606 15126 solver.cpp:319]     Test net output #1: loss = 1.80963 (* 1 = 1.80963 loss)
+I0605 11:46:38.706699 15126 solver.cpp:270] Iteration 50500, Testing net (#0)
+I0605 11:46:46.936209 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5004
+I0605 11:46:46.936264 15126 solver.cpp:319]     Test net output #1: loss = 1.89686 (* 1 = 1.89686 loss)
+I0605 11:48:51.580415 15126 solver.cpp:270] Iteration 51000, Testing net (#0)
+I0605 11:48:59.747269 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5094
+I0605 11:48:59.747318 15126 solver.cpp:319]     Test net output #1: loss = 1.86137 (* 1 = 1.86137 loss)
+I0605 11:51:04.225093 15126 solver.cpp:270] Iteration 51500, Testing net (#0)
+I0605 11:51:12.835067 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5058
+I0605 11:51:12.835147 15126 solver.cpp:319]     Test net output #1: loss = 1.86064 (* 1 = 1.86064 loss)
+I0605 11:53:20.504598 15126 solver.cpp:270] Iteration 52000, Testing net (#0)
+I0605 11:53:29.059507 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5025
+I0605 11:53:29.059559 15126 solver.cpp:319]     Test net output #1: loss = 1.89615 (* 1 = 1.89615 loss)
+I0605 11:55:38.826786 15126 solver.cpp:270] Iteration 52500, Testing net (#0)
+I0605 11:55:47.303850 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5144
+I0605 11:55:47.303918 15126 solver.cpp:319]     Test net output #1: loss = 1.83231 (* 1 = 1.83231 loss)
+I0605 11:57:54.003079 15126 solver.cpp:270] Iteration 53000, Testing net (#0)
+I0605 11:58:02.294740 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5098
+I0605 11:58:02.294805 15126 solver.cpp:319]     Test net output #1: loss = 1.84921 (* 1 = 1.84921 loss)
+I0605 12:00:06.972631 15126 solver.cpp:270] Iteration 53500, Testing net (#0)
+I0605 12:00:15.216290 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4956
+I0605 12:00:15.216339 15126 solver.cpp:319]     Test net output #1: loss = 1.89001 (* 1 = 1.89001 loss)
+I0605 12:02:19.736327 15126 solver.cpp:270] Iteration 54000, Testing net (#0)
+I0605 12:02:28.025149 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5051
+I0605 12:02:28.025243 15126 solver.cpp:319]     Test net output #1: loss = 1.9123 (* 1 = 1.9123 loss)
+I0605 12:04:32.430531 15126 solver.cpp:270] Iteration 54500, Testing net (#0)
+I0605 12:04:40.587223 15126 solver.cpp:319]     Test net output #0: accuracy = 0.502
+I0605 12:04:40.587297 15126 solver.cpp:319]     Test net output #1: loss = 1.90615 (* 1 = 1.90615 loss)
+I0605 12:06:45.051009 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_55000.caffemodel
+I0605 12:06:45.078730 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_55000.solverstate
+I0605 12:06:45.092689 15126 solver.cpp:270] Iteration 55000, Testing net (#0)
+I0605 12:06:53.105010 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4864
+I0605 12:06:53.105078 15126 solver.cpp:319]     Test net output #1: loss = 1.92255 (* 1 = 1.92255 loss)
+I0605 12:08:57.628595 15126 solver.cpp:270] Iteration 55500, Testing net (#0)
+I0605 12:09:05.821625 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5202
+I0605 12:09:05.821693 15126 solver.cpp:319]     Test net output #1: loss = 1.78575 (* 1 = 1.78575 loss)
+I0605 12:11:10.174854 15126 solver.cpp:270] Iteration 56000, Testing net (#0)
+I0605 12:11:18.349872 15126 solver.cpp:319]     Test net output #0: accuracy = 0.503
+I0605 12:11:18.349946 15126 solver.cpp:319]     Test net output #1: loss = 1.86681 (* 1 = 1.86681 loss)
+I0605 12:13:22.754567 15126 solver.cpp:270] Iteration 56500, Testing net (#0)
+I0605 12:13:30.903094 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4879
+I0605 12:13:30.903146 15126 solver.cpp:319]     Test net output #1: loss = 1.96787 (* 1 = 1.96787 loss)
+I0605 12:15:35.379575 15126 solver.cpp:270] Iteration 57000, Testing net (#0)
+I0605 12:15:43.644460 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5125
+I0605 12:15:43.644520 15126 solver.cpp:319]     Test net output #1: loss = 1.83741 (* 1 = 1.83741 loss)
+I0605 12:17:48.010890 15126 solver.cpp:270] Iteration 57500, Testing net (#0)
+I0605 12:17:56.278194 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5261
+I0605 12:17:56.278262 15126 solver.cpp:319]     Test net output #1: loss = 1.77571 (* 1 = 1.77571 loss)
+I0605 12:20:00.908045 15126 solver.cpp:270] Iteration 58000, Testing net (#0)
+I0605 12:20:09.151849 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5015
+I0605 12:20:09.151932 15126 solver.cpp:319]     Test net output #1: loss = 1.88729 (* 1 = 1.88729 loss)
+I0605 12:22:13.494137 15126 solver.cpp:270] Iteration 58500, Testing net (#0)
+I0605 12:22:21.738759 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5057
+I0605 12:22:21.738852 15126 solver.cpp:319]     Test net output #1: loss = 1.88022 (* 1 = 1.88022 loss)
+I0605 12:24:26.263425 15126 solver.cpp:270] Iteration 59000, Testing net (#0)
+I0605 12:24:34.468461 15126 solver.cpp:319]     Test net output #0: accuracy = 0.508
+I0605 12:24:34.468543 15126 solver.cpp:319]     Test net output #1: loss = 1.87987 (* 1 = 1.87987 loss)
+I0605 12:26:39.007819 15126 solver.cpp:270] Iteration 59500, Testing net (#0)
+I0605 12:26:47.192113 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5154
+I0605 12:26:47.192173 15126 solver.cpp:319]     Test net output #1: loss = 1.81069 (* 1 = 1.81069 loss)
+I0605 12:28:51.739750 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_60000.caffemodel
+I0605 12:28:51.777863 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_60000.solverstate
+I0605 12:28:51.799413 15126 solver.cpp:270] Iteration 60000, Testing net (#0)
+I0605 12:28:59.838824 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5061
+I0605 12:28:59.838891 15126 solver.cpp:319]     Test net output #1: loss = 1.88638 (* 1 = 1.88638 loss)
+I0605 12:31:04.317345 15126 solver.cpp:270] Iteration 60500, Testing net (#0)
+I0605 12:31:12.613982 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5234
+I0605 12:31:12.614059 15126 solver.cpp:319]     Test net output #1: loss = 1.78677 (* 1 = 1.78677 loss)
+I0605 12:33:16.948783 15126 solver.cpp:270] Iteration 61000, Testing net (#0)
+I0605 12:33:25.142169 15126 solver.cpp:319]     Test net output #0: accuracy = 0.512
+I0605 12:33:25.142235 15126 solver.cpp:319]     Test net output #1: loss = 1.82999 (* 1 = 1.82999 loss)
+I0605 12:35:29.632078 15126 solver.cpp:270] Iteration 61500, Testing net (#0)
+I0605 12:35:37.836694 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5239
+I0605 12:35:37.836755 15126 solver.cpp:319]     Test net output #1: loss = 1.80087 (* 1 = 1.80087 loss)
+I0605 12:37:42.232806 15126 solver.cpp:270] Iteration 62000, Testing net (#0)
+I0605 12:37:50.472743 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5176
+I0605 12:37:50.472826 15126 solver.cpp:319]     Test net output #1: loss = 1.82928 (* 1 = 1.82928 loss)
+I0605 12:39:54.749923 15126 solver.cpp:270] Iteration 62500, Testing net (#0)
+I0605 12:40:02.980939 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5239
+I0605 12:40:02.981008 15126 solver.cpp:319]     Test net output #1: loss = 1.7701 (* 1 = 1.7701 loss)
+I0605 12:42:07.276036 15126 solver.cpp:270] Iteration 63000, Testing net (#0)
+I0605 12:42:15.505096 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5017
+I0605 12:42:15.505168 15126 solver.cpp:319]     Test net output #1: loss = 1.9095 (* 1 = 1.9095 loss)
+I0605 12:44:19.851632 15126 solver.cpp:270] Iteration 63500, Testing net (#0)
+I0605 12:44:27.992120 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5113
+I0605 12:44:27.992159 15126 solver.cpp:319]     Test net output #1: loss = 1.82178 (* 1 = 1.82178 loss)
+I0605 12:46:32.390271 15126 solver.cpp:270] Iteration 64000, Testing net (#0)
+I0605 12:46:40.608361 15126 solver.cpp:319]     Test net output #0: accuracy = 0.493
+I0605 12:46:40.608431 15126 solver.cpp:319]     Test net output #1: loss = 1.92538 (* 1 = 1.92538 loss)
+I0605 12:48:45.086364 15126 solver.cpp:270] Iteration 64500, Testing net (#0)
+I0605 12:48:53.318675 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5011
+I0605 12:48:53.318760 15126 solver.cpp:319]     Test net output #1: loss = 1.92045 (* 1 = 1.92045 loss)
+I0605 12:50:58.146312 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_65000.caffemodel
+I0605 12:50:58.187160 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_65000.solverstate
+I0605 12:50:58.212235 15126 solver.cpp:270] Iteration 65000, Testing net (#0)
+I0605 12:51:06.321693 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5117
+I0605 12:51:06.321781 15126 solver.cpp:319]     Test net output #1: loss = 1.8404 (* 1 = 1.8404 loss)
+I0605 12:53:11.065430 15126 solver.cpp:270] Iteration 65500, Testing net (#0)
+I0605 12:53:19.354957 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5194
+I0605 12:53:19.355027 15126 solver.cpp:319]     Test net output #1: loss = 1.80233 (* 1 = 1.80233 loss)
+I0605 12:55:23.872557 15126 solver.cpp:270] Iteration 66000, Testing net (#0)
+I0605 12:55:32.078763 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5122
+I0605 12:55:32.078824 15126 solver.cpp:319]     Test net output #1: loss = 1.80006 (* 1 = 1.80006 loss)
+I0605 12:57:36.430709 15126 solver.cpp:270] Iteration 66500, Testing net (#0)
+I0605 12:57:44.706012 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5233
+I0605 12:57:44.706065 15126 solver.cpp:319]     Test net output #1: loss = 1.78601 (* 1 = 1.78601 loss)
+I0605 12:59:49.088014 15126 solver.cpp:270] Iteration 67000, Testing net (#0)
+I0605 12:59:57.355654 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5256
+I0605 12:59:57.355741 15126 solver.cpp:319]     Test net output #1: loss = 1.77644 (* 1 = 1.77644 loss)
+I0605 13:02:01.930153 15126 solver.cpp:270] Iteration 67500, Testing net (#0)
+I0605 13:02:10.243369 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5153
+I0605 13:02:10.243471 15126 solver.cpp:319]     Test net output #1: loss = 1.82179 (* 1 = 1.82179 loss)
+I0605 13:04:14.576453 15126 solver.cpp:270] Iteration 68000, Testing net (#0)
+I0605 13:04:22.787081 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5258
+I0605 13:04:22.787127 15126 solver.cpp:319]     Test net output #1: loss = 1.76469 (* 1 = 1.76469 loss)
+I0605 13:06:27.218214 15126 solver.cpp:270] Iteration 68500, Testing net (#0)
+I0605 13:06:35.447412 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5128
+I0605 13:06:35.447482 15126 solver.cpp:319]     Test net output #1: loss = 1.82342 (* 1 = 1.82342 loss)
+I0605 13:08:39.720263 15126 solver.cpp:270] Iteration 69000, Testing net (#0)
+I0605 13:08:47.885522 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5016
+I0605 13:08:47.885601 15126 solver.cpp:319]     Test net output #1: loss = 1.88844 (* 1 = 1.88844 loss)
+I0605 13:10:52.342876 15126 solver.cpp:270] Iteration 69500, Testing net (#0)
+I0605 13:11:00.539258 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5224
+I0605 13:11:00.539301 15126 solver.cpp:319]     Test net output #1: loss = 1.80433 (* 1 = 1.80433 loss)
+I0605 13:13:05.027597 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_70000.caffemodel
+I0605 13:13:05.066562 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_70000.solverstate
+I0605 13:13:05.088575 15126 solver.cpp:270] Iteration 70000, Testing net (#0)
+I0605 13:13:13.123170 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5286
+I0605 13:13:13.123231 15126 solver.cpp:319]     Test net output #1: loss = 1.77263 (* 1 = 1.77263 loss)
+I0605 13:15:17.316828 15126 solver.cpp:270] Iteration 70500, Testing net (#0)
+I0605 13:15:25.471412 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5176
+I0605 13:15:25.471467 15126 solver.cpp:319]     Test net output #1: loss = 1.80654 (* 1 = 1.80654 loss)
+I0605 13:17:29.649848 15126 solver.cpp:270] Iteration 71000, Testing net (#0)
+I0605 13:17:37.859179 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5201
+I0605 13:17:37.859252 15126 solver.cpp:319]     Test net output #1: loss = 1.80715 (* 1 = 1.80715 loss)
+I0605 13:19:42.206953 15126 solver.cpp:270] Iteration 71500, Testing net (#0)
+I0605 13:19:50.455159 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5322
+I0605 13:19:50.455235 15126 solver.cpp:319]     Test net output #1: loss = 1.76371 (* 1 = 1.76371 loss)
+I0605 13:21:54.875542 15126 solver.cpp:270] Iteration 72000, Testing net (#0)
+I0605 13:22:03.080912 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5214
+I0605 13:22:03.080982 15126 solver.cpp:319]     Test net output #1: loss = 1.79194 (* 1 = 1.79194 loss)
+I0605 13:24:07.675084 15126 solver.cpp:270] Iteration 72500, Testing net (#0)
+I0605 13:24:15.846582 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5101
+I0605 13:24:15.846655 15126 solver.cpp:319]     Test net output #1: loss = 1.83248 (* 1 = 1.83248 loss)
+I0605 13:26:20.141536 15126 solver.cpp:270] Iteration 73000, Testing net (#0)
+I0605 13:26:28.248471 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5316
+I0605 13:26:28.248534 15126 solver.cpp:319]     Test net output #1: loss = 1.77678 (* 1 = 1.77678 loss)
+I0605 13:28:32.622936 15126 solver.cpp:270] Iteration 73500, Testing net (#0)
+I0605 13:28:40.860018 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5277
+I0605 13:28:40.860088 15126 solver.cpp:319]     Test net output #1: loss = 1.77252 (* 1 = 1.77252 loss)
+I0605 13:30:45.164582 15126 solver.cpp:270] Iteration 74000, Testing net (#0)
+I0605 13:30:53.436081 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5252
+I0605 13:30:53.436156 15126 solver.cpp:319]     Test net output #1: loss = 1.76527 (* 1 = 1.76527 loss)
+I0605 13:32:58.072830 15126 solver.cpp:270] Iteration 74500, Testing net (#0)
+I0605 13:33:06.208190 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5308
+I0605 13:33:06.208259 15126 solver.cpp:319]     Test net output #1: loss = 1.75805 (* 1 = 1.75805 loss)
+I0605 13:35:10.784962 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_75000.caffemodel
+I0605 13:35:10.823420 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_75000.solverstate
+I0605 13:35:10.842314 15126 solver.cpp:270] Iteration 75000, Testing net (#0)
+I0605 13:35:18.874487 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5266
+I0605 13:35:18.874549 15126 solver.cpp:319]     Test net output #1: loss = 1.76766 (* 1 = 1.76766 loss)
+I0605 13:37:23.082916 15126 solver.cpp:270] Iteration 75500, Testing net (#0)
+I0605 13:37:31.276583 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5257
+I0605 13:37:31.276638 15126 solver.cpp:319]     Test net output #1: loss = 1.79221 (* 1 = 1.79221 loss)
+I0605 13:39:35.567610 15126 solver.cpp:270] Iteration 76000, Testing net (#0)
+I0605 13:39:43.733481 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5198
+I0605 13:39:43.733538 15126 solver.cpp:319]     Test net output #1: loss = 1.8284 (* 1 = 1.8284 loss)
+I0605 13:41:48.188865 15126 solver.cpp:270] Iteration 76500, Testing net (#0)
+I0605 13:41:56.413686 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5287
+I0605 13:41:56.413756 15126 solver.cpp:319]     Test net output #1: loss = 1.78439 (* 1 = 1.78439 loss)
+I0605 13:44:00.817652 15126 solver.cpp:270] Iteration 77000, Testing net (#0)
+I0605 13:44:09.044190 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5199
+I0605 13:44:09.044280 15126 solver.cpp:319]     Test net output #1: loss = 1.82255 (* 1 = 1.82255 loss)
+I0605 13:46:13.250455 15126 solver.cpp:270] Iteration 77500, Testing net (#0)
+I0605 13:46:21.457622 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5178
+I0605 13:46:21.457669 15126 solver.cpp:319]     Test net output #1: loss = 1.86777 (* 1 = 1.86777 loss)
+I0605 13:48:25.972511 15126 solver.cpp:270] Iteration 78000, Testing net (#0)
+I0605 13:48:34.227497 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5221
+I0605 13:48:34.227578 15126 solver.cpp:319]     Test net output #1: loss = 1.8168 (* 1 = 1.8168 loss)
+I0605 13:50:38.626467 15126 solver.cpp:270] Iteration 78500, Testing net (#0)
+I0605 13:50:46.895431 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5156
+I0605 13:50:46.895508 15126 solver.cpp:319]     Test net output #1: loss = 1.84025 (* 1 = 1.84025 loss)
+I0605 13:52:51.234127 15126 solver.cpp:270] Iteration 79000, Testing net (#0)
+I0605 13:52:59.444880 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5155
+I0605 13:52:59.444959 15126 solver.cpp:319]     Test net output #1: loss = 1.84752 (* 1 = 1.84752 loss)
+I0605 13:55:03.779585 15126 solver.cpp:270] Iteration 79500, Testing net (#0)
+I0605 13:55:12.018987 15126 solver.cpp:319]     Test net output #0: accuracy = 0.53
+I0605 13:55:12.019067 15126 solver.cpp:319]     Test net output #1: loss = 1.77441 (* 1 = 1.77441 loss)
+I0605 13:57:16.680589 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_80000.caffemodel
+I0605 13:57:16.719915 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_80000.solverstate
+I0605 13:57:16.741816 15126 solver.cpp:270] Iteration 80000, Testing net (#0)
+I0605 13:57:24.764421 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5209
+I0605 13:57:24.764484 15126 solver.cpp:319]     Test net output #1: loss = 1.80213 (* 1 = 1.80213 loss)
+I0605 13:59:29.163687 15126 solver.cpp:270] Iteration 80500, Testing net (#0)
+I0605 13:59:37.314060 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5206
+I0605 13:59:37.314136 15126 solver.cpp:319]     Test net output #1: loss = 1.81192 (* 1 = 1.81192 loss)
+I0605 14:01:41.847400 15126 solver.cpp:270] Iteration 81000, Testing net (#0)
+I0605 14:01:50.062263 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5208
+I0605 14:01:50.062329 15126 solver.cpp:319]     Test net output #1: loss = 1.78877 (* 1 = 1.78877 loss)
+I0605 14:03:54.640319 15126 solver.cpp:270] Iteration 81500, Testing net (#0)
+I0605 14:04:02.808372 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5287
+I0605 14:04:02.808429 15126 solver.cpp:319]     Test net output #1: loss = 1.7801 (* 1 = 1.7801 loss)
+I0605 14:06:07.181359 15126 solver.cpp:270] Iteration 82000, Testing net (#0)
+I0605 14:06:15.436745 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5246
+I0605 14:06:15.436815 15126 solver.cpp:319]     Test net output #1: loss = 1.78667 (* 1 = 1.78667 loss)
+I0605 14:08:19.949358 15126 solver.cpp:270] Iteration 82500, Testing net (#0)
+I0605 14:08:28.218338 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5214
+I0605 14:08:28.218402 15126 solver.cpp:319]     Test net output #1: loss = 1.81995 (* 1 = 1.81995 loss)
+I0605 14:10:32.436075 15126 solver.cpp:270] Iteration 83000, Testing net (#0)
+I0605 14:10:40.652765 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5266
+I0605 14:10:40.652817 15126 solver.cpp:319]     Test net output #1: loss = 1.79604 (* 1 = 1.79604 loss)
+I0605 14:12:44.997676 15126 solver.cpp:270] Iteration 83500, Testing net (#0)
+I0605 14:12:53.180965 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5182
+I0605 14:12:53.181037 15126 solver.cpp:319]     Test net output #1: loss = 1.82669 (* 1 = 1.82669 loss)
+I0605 14:14:57.602004 15126 solver.cpp:270] Iteration 84000, Testing net (#0)
+I0605 14:15:05.839360 15126 solver.cpp:319]     Test net output #0: accuracy = 0.518
+I0605 14:15:05.839426 15126 solver.cpp:319]     Test net output #1: loss = 1.79557 (* 1 = 1.79557 loss)
+I0605 14:17:10.381506 15126 solver.cpp:270] Iteration 84500, Testing net (#0)
+I0605 14:17:18.629592 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5044
+I0605 14:17:18.629657 15126 solver.cpp:319]     Test net output #1: loss = 1.89991 (* 1 = 1.89991 loss)
+I0605 14:19:23.822459 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_85000.caffemodel
+I0605 14:19:23.869007 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_85000.solverstate
+I0605 14:19:23.894418 15126 solver.cpp:270] Iteration 85000, Testing net (#0)
+I0605 14:19:32.121153 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5153
+I0605 14:19:32.121218 15126 solver.cpp:319]     Test net output #1: loss = 1.81693 (* 1 = 1.81693 loss)
+I0605 14:21:37.098944 15126 solver.cpp:270] Iteration 85500, Testing net (#0)
+I0605 14:21:45.472954 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5159
+I0605 14:21:45.473003 15126 solver.cpp:319]     Test net output #1: loss = 1.86189 (* 1 = 1.86189 loss)
+I0605 14:23:49.917114 15126 solver.cpp:270] Iteration 86000, Testing net (#0)
+I0605 14:23:58.129793 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5146
+I0605 14:23:58.129854 15126 solver.cpp:319]     Test net output #1: loss = 1.85789 (* 1 = 1.85789 loss)
+I0605 14:26:02.529357 15126 solver.cpp:270] Iteration 86500, Testing net (#0)
+I0605 14:26:10.815424 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4736
+I0605 14:26:10.815512 15126 solver.cpp:319]     Test net output #1: loss = 2.0822 (* 1 = 2.0822 loss)
+I0605 14:28:15.108036 15126 solver.cpp:270] Iteration 87000, Testing net (#0)
+I0605 14:28:23.262713 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5279
+I0605 14:28:23.262765 15126 solver.cpp:319]     Test net output #1: loss = 1.76771 (* 1 = 1.76771 loss)
+I0605 14:30:27.657793 15126 solver.cpp:270] Iteration 87500, Testing net (#0)
+I0605 14:30:35.820670 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5358
+I0605 14:30:35.820720 15126 solver.cpp:319]     Test net output #1: loss = 1.74583 (* 1 = 1.74583 loss)
+I0605 14:32:40.161921 15126 solver.cpp:270] Iteration 88000, Testing net (#0)
+I0605 14:32:48.384347 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5178
+I0605 14:32:48.384394 15126 solver.cpp:319]     Test net output #1: loss = 1.83261 (* 1 = 1.83261 loss)
+I0605 14:34:52.734640 15126 solver.cpp:270] Iteration 88500, Testing net (#0)
+I0605 14:35:00.966074 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5395
+I0605 14:35:00.966121 15126 solver.cpp:319]     Test net output #1: loss = 1.73348 (* 1 = 1.73348 loss)
+I0605 14:37:05.292219 15126 solver.cpp:270] Iteration 89000, Testing net (#0)
+I0605 14:37:13.442028 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5231
+I0605 14:37:13.442104 15126 solver.cpp:319]     Test net output #1: loss = 1.84134 (* 1 = 1.84134 loss)
+I0605 14:39:17.782204 15126 solver.cpp:270] Iteration 89500, Testing net (#0)
+I0605 14:39:26.012478 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5066
+I0605 14:39:26.012565 15126 solver.cpp:319]     Test net output #1: loss = 1.91158 (* 1 = 1.91158 loss)
+I0605 14:41:30.610148 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_90000.caffemodel
+I0605 14:41:30.628648 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_90000.solverstate
+I0605 14:41:30.641247 15126 solver.cpp:270] Iteration 90000, Testing net (#0)
+I0605 14:41:38.716704 15126 solver.cpp:319]     Test net output #0: accuracy = 0.4987
+I0605 14:41:38.716773 15126 solver.cpp:319]     Test net output #1: loss = 1.96789 (* 1 = 1.96789 loss)
+I0605 14:43:43.114856 15126 solver.cpp:270] Iteration 90500, Testing net (#0)
+I0605 14:43:51.332397 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5133
+I0605 14:43:51.332466 15126 solver.cpp:319]     Test net output #1: loss = 1.85639 (* 1 = 1.85639 loss)
+I0605 14:45:55.706974 15126 solver.cpp:270] Iteration 91000, Testing net (#0)
+I0605 14:46:03.912907 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5159
+I0605 14:46:03.912974 15126 solver.cpp:319]     Test net output #1: loss = 1.81945 (* 1 = 1.81945 loss)
+I0605 14:48:08.333263 15126 solver.cpp:270] Iteration 91500, Testing net (#0)
+I0605 14:48:16.596166 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5227
+I0605 14:48:16.596230 15126 solver.cpp:319]     Test net output #1: loss = 1.83986 (* 1 = 1.83986 loss)
+I0605 14:50:21.120344 15126 solver.cpp:270] Iteration 92000, Testing net (#0)
+I0605 14:50:29.268983 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5248
+I0605 14:50:29.269057 15126 solver.cpp:319]     Test net output #1: loss = 1.81105 (* 1 = 1.81105 loss)
+I0605 14:52:33.951817 15126 solver.cpp:270] Iteration 92500, Testing net (#0)
+I0605 14:52:42.264276 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5201
+I0605 14:52:42.264333 15126 solver.cpp:319]     Test net output #1: loss = 1.80908 (* 1 = 1.80908 loss)
+I0605 14:54:46.877463 15126 solver.cpp:270] Iteration 93000, Testing net (#0)
+I0605 14:54:55.087532 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5259
+I0605 14:54:55.087589 15126 solver.cpp:319]     Test net output #1: loss = 1.80774 (* 1 = 1.80774 loss)
+I0605 14:56:59.686945 15126 solver.cpp:270] Iteration 93500, Testing net (#0)
+I0605 14:57:07.934423 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5203
+I0605 14:57:07.934485 15126 solver.cpp:319]     Test net output #1: loss = 1.83385 (* 1 = 1.83385 loss)
+I0605 14:59:12.390488 15126 solver.cpp:270] Iteration 94000, Testing net (#0)
+I0605 14:59:20.522096 15126 solver.cpp:319]     Test net output #0: accuracy = 0.516
+I0605 14:59:20.522150 15126 solver.cpp:319]     Test net output #1: loss = 1.88725 (* 1 = 1.88725 loss)
+I0605 15:01:25.037053 15126 solver.cpp:270] Iteration 94500, Testing net (#0)
+I0605 15:01:33.249778 15126 solver.cpp:319]     Test net output #0: accuracy = 0.53
+I0605 15:01:33.249836 15126 solver.cpp:319]     Test net output #1: loss = 1.77201 (* 1 = 1.77201 loss)
+I0605 15:03:37.730839 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_95000.caffemodel
+I0605 15:03:37.754920 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_95000.solverstate
+I0605 15:03:37.770360 15126 solver.cpp:270] Iteration 95000, Testing net (#0)
+I0605 15:03:45.851311 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5305
+I0605 15:03:45.851377 15126 solver.cpp:319]     Test net output #1: loss = 1.76813 (* 1 = 1.76813 loss)
+I0605 15:05:50.274029 15126 solver.cpp:270] Iteration 95500, Testing net (#0)
+I0605 15:05:58.439978 15126 solver.cpp:319]     Test net output #0: accuracy = 0.523
+I0605 15:05:58.440045 15126 solver.cpp:319]     Test net output #1: loss = 1.79788 (* 1 = 1.79788 loss)
+I0605 15:08:02.843567 15126 solver.cpp:270] Iteration 96000, Testing net (#0)
+I0605 15:08:11.058377 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5243
+I0605 15:08:11.058460 15126 solver.cpp:319]     Test net output #1: loss = 1.79852 (* 1 = 1.79852 loss)
+I0605 15:10:15.370517 15126 solver.cpp:270] Iteration 96500, Testing net (#0)
+I0605 15:10:23.565394 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5235
+I0605 15:10:23.565449 15126 solver.cpp:319]     Test net output #1: loss = 1.8193 (* 1 = 1.8193 loss)
+I0605 15:12:28.101701 15126 solver.cpp:270] Iteration 97000, Testing net (#0)
+I0605 15:12:36.316272 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5149
+I0605 15:12:36.316328 15126 solver.cpp:319]     Test net output #1: loss = 1.83012 (* 1 = 1.83012 loss)
+I0605 15:14:40.787318 15126 solver.cpp:270] Iteration 97500, Testing net (#0)
+I0605 15:14:48.969074 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5313
+I0605 15:14:48.969131 15126 solver.cpp:319]     Test net output #1: loss = 1.7661 (* 1 = 1.7661 loss)
+I0605 15:16:53.274456 15126 solver.cpp:270] Iteration 98000, Testing net (#0)
+I0605 15:17:01.387600 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5316
+I0605 15:17:01.387661 15126 solver.cpp:319]     Test net output #1: loss = 1.77386 (* 1 = 1.77386 loss)
+I0605 15:19:05.456271 15126 solver.cpp:270] Iteration 98500, Testing net (#0)
+I0605 15:19:13.609225 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5169
+I0605 15:19:13.609283 15126 solver.cpp:319]     Test net output #1: loss = 1.83222 (* 1 = 1.83222 loss)
+I0605 15:21:17.874615 15126 solver.cpp:270] Iteration 99000, Testing net (#0)
+I0605 15:21:26.047735 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5265
+I0605 15:21:26.047808 15126 solver.cpp:319]     Test net output #1: loss = 1.77985 (* 1 = 1.77985 loss)
+I0605 15:23:30.449254 15126 solver.cpp:270] Iteration 99500, Testing net (#0)
+I0605 15:23:38.620198 15126 solver.cpp:319]     Test net output #0: accuracy = 0.533
+I0605 15:23:38.620266 15126 solver.cpp:319]     Test net output #1: loss = 1.75945 (* 1 = 1.75945 loss)
+I0605 15:25:43.165143 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_100000.caffemodel
+I0605 15:25:43.196277 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_100000.solverstate
+I0605 15:25:43.212359 15126 solver.cpp:270] Iteration 100000, Testing net (#0)
+I0605 15:25:51.339671 15126 solver.cpp:319]     Test net output #0: accuracy = 0.5268
+I0605 15:25:51.339745 15126 solver.cpp:319]     Test net output #1: loss = 1.81029 (* 1 = 1.81029 loss)
+I0605 15:25:51.427894 15126 solver.cpp:399] MultiStep Status: Iteration 100000, step = 1
+I0605 15:27:55.677028 15126 solver.cpp:270] Iteration 100500, Testing net (#0)
+I0605 15:28:03.898540 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6079
+I0605 15:28:03.898594 15126 solver.cpp:319]     Test net output #1: loss = 1.42107 (* 1 = 1.42107 loss)
+I0605 15:30:08.224942 15126 solver.cpp:270] Iteration 101000, Testing net (#0)
+I0605 15:30:16.368098 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6137
+I0605 15:30:16.368152 15126 solver.cpp:319]     Test net output #1: loss = 1.38726 (* 1 = 1.38726 loss)
+I0605 15:32:20.810134 15126 solver.cpp:270] Iteration 101500, Testing net (#0)
+I0605 15:32:29.027772 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6221
+I0605 15:32:29.027832 15126 solver.cpp:319]     Test net output #1: loss = 1.34298 (* 1 = 1.34298 loss)
+I0605 15:34:33.571502 15126 solver.cpp:270] Iteration 102000, Testing net (#0)
+I0605 15:34:41.741462 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6223
+I0605 15:34:41.741559 15126 solver.cpp:319]     Test net output #1: loss = 1.34214 (* 1 = 1.34214 loss)
+I0605 15:36:46.204495 15126 solver.cpp:270] Iteration 102500, Testing net (#0)
+I0605 15:36:54.381845 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6264
+I0605 15:36:54.381914 15126 solver.cpp:319]     Test net output #1: loss = 1.33575 (* 1 = 1.33575 loss)
+I0605 15:38:58.886919 15126 solver.cpp:270] Iteration 103000, Testing net (#0)
+I0605 15:39:07.065857 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6252
+I0605 15:39:07.065932 15126 solver.cpp:319]     Test net output #1: loss = 1.33249 (* 1 = 1.33249 loss)
+I0605 15:41:11.635164 15126 solver.cpp:270] Iteration 103500, Testing net (#0)
+I0605 15:41:19.806174 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6302
+I0605 15:41:19.806233 15126 solver.cpp:319]     Test net output #1: loss = 1.32165 (* 1 = 1.32165 loss)
+I0605 15:43:24.564847 15126 solver.cpp:270] Iteration 104000, Testing net (#0)
+I0605 15:43:32.741236 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6248
+I0605 15:43:32.741303 15126 solver.cpp:319]     Test net output #1: loss = 1.335 (* 1 = 1.335 loss)
+I0605 15:45:37.368777 15126 solver.cpp:270] Iteration 104500, Testing net (#0)
+I0605 15:45:45.653009 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6278
+I0605 15:45:45.653079 15126 solver.cpp:319]     Test net output #1: loss = 1.33094 (* 1 = 1.33094 loss)
+I0605 15:47:51.031535 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_105000.caffemodel
+I0605 15:47:51.077201 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_105000.solverstate
+I0605 15:47:51.099426 15126 solver.cpp:270] Iteration 105000, Testing net (#0)
+I0605 15:47:59.139431 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6337
+I0605 15:47:59.139487 15126 solver.cpp:319]     Test net output #1: loss = 1.3087 (* 1 = 1.3087 loss)
+I0605 15:50:03.778363 15126 solver.cpp:270] Iteration 105500, Testing net (#0)
+I0605 15:50:12.018340 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6323
+I0605 15:50:12.018393 15126 solver.cpp:319]     Test net output #1: loss = 1.31177 (* 1 = 1.31177 loss)
+I0605 15:52:16.638322 15126 solver.cpp:270] Iteration 106000, Testing net (#0)
+I0605 15:52:24.845429 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6241
+I0605 15:52:24.845494 15126 solver.cpp:319]     Test net output #1: loss = 1.34565 (* 1 = 1.34565 loss)
+I0605 15:54:29.430979 15126 solver.cpp:270] Iteration 106500, Testing net (#0)
+I0605 15:54:37.657834 15126 solver.cpp:319]     Test net output #0: accuracy = 0.633
+I0605 15:54:37.657888 15126 solver.cpp:319]     Test net output #1: loss = 1.30969 (* 1 = 1.30969 loss)
+I0605 15:56:42.376344 15126 solver.cpp:270] Iteration 107000, Testing net (#0)
+I0605 15:56:50.649263 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6386
+I0605 15:56:50.649317 15126 solver.cpp:319]     Test net output #1: loss = 1.29439 (* 1 = 1.29439 loss)
+I0605 15:58:55.395238 15126 solver.cpp:270] Iteration 107500, Testing net (#0)
+I0605 15:59:03.587092 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6335
+I0605 15:59:03.587162 15126 solver.cpp:319]     Test net output #1: loss = 1.32443 (* 1 = 1.32443 loss)
+I0605 16:01:08.213773 15126 solver.cpp:270] Iteration 108000, Testing net (#0)
+I0605 16:01:16.455127 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6371
+I0605 16:01:16.455188 15126 solver.cpp:319]     Test net output #1: loss = 1.29892 (* 1 = 1.29892 loss)
+I0605 16:03:21.173863 15126 solver.cpp:270] Iteration 108500, Testing net (#0)
+I0605 16:03:29.372160 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6358
+I0605 16:03:29.372228 15126 solver.cpp:319]     Test net output #1: loss = 1.30573 (* 1 = 1.30573 loss)
+I0605 16:05:34.089323 15126 solver.cpp:270] Iteration 109000, Testing net (#0)
+I0605 16:05:42.353077 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6307
+I0605 16:05:42.353123 15126 solver.cpp:319]     Test net output #1: loss = 1.33698 (* 1 = 1.33698 loss)
+I0605 16:07:47.105821 15126 solver.cpp:270] Iteration 109500, Testing net (#0)
+I0605 16:07:55.425606 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6335
+I0605 16:07:55.425689 15126 solver.cpp:319]     Test net output #1: loss = 1.32077 (* 1 = 1.32077 loss)
+I0605 16:10:00.064345 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_110000.caffemodel
+I0605 16:10:00.103304 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_110000.solverstate
+I0605 16:10:00.126643 15126 solver.cpp:270] Iteration 110000, Testing net (#0)
+I0605 16:10:08.172412 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6371
+I0605 16:10:08.172476 15126 solver.cpp:319]     Test net output #1: loss = 1.31357 (* 1 = 1.31357 loss)
+I0605 16:12:12.743026 15126 solver.cpp:270] Iteration 110500, Testing net (#0)
+I0605 16:12:21.032202 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6396
+I0605 16:12:21.032261 15126 solver.cpp:319]     Test net output #1: loss = 1.28898 (* 1 = 1.28898 loss)
+I0605 16:14:25.892866 15126 solver.cpp:270] Iteration 111000, Testing net (#0)
+I0605 16:14:34.077867 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6382
+I0605 16:14:34.077929 15126 solver.cpp:319]     Test net output #1: loss = 1.29233 (* 1 = 1.29233 loss)
+I0605 16:16:38.725342 15126 solver.cpp:270] Iteration 111500, Testing net (#0)
+I0605 16:16:46.917295 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6382
+I0605 16:16:46.917354 15126 solver.cpp:319]     Test net output #1: loss = 1.28811 (* 1 = 1.28811 loss)
+I0605 16:18:51.715904 15126 solver.cpp:270] Iteration 112000, Testing net (#0)
+I0605 16:18:59.819243 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6342
+I0605 16:18:59.819306 15126 solver.cpp:319]     Test net output #1: loss = 1.31195 (* 1 = 1.31195 loss)
+I0605 16:21:04.688346 15126 solver.cpp:270] Iteration 112500, Testing net (#0)
+I0605 16:21:12.911260 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6375
+I0605 16:21:12.911353 15126 solver.cpp:319]     Test net output #1: loss = 1.29463 (* 1 = 1.29463 loss)
+I0605 16:23:17.570983 15126 solver.cpp:270] Iteration 113000, Testing net (#0)
+I0605 16:23:25.746214 15126 solver.cpp:319]     Test net output #0: accuracy = 0.644
+I0605 16:23:25.746271 15126 solver.cpp:319]     Test net output #1: loss = 1.28334 (* 1 = 1.28334 loss)
+I0605 16:25:30.436621 15126 solver.cpp:270] Iteration 113500, Testing net (#0)
+I0605 16:25:38.589115 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6381
+I0605 16:25:38.589159 15126 solver.cpp:319]     Test net output #1: loss = 1.29853 (* 1 = 1.29853 loss)
+I0605 16:27:43.175997 15126 solver.cpp:270] Iteration 114000, Testing net (#0)
+I0605 16:27:51.392715 15126 solver.cpp:319]     Test net output #0: accuracy = 0.637
+I0605 16:27:51.392779 15126 solver.cpp:319]     Test net output #1: loss = 1.3097 (* 1 = 1.3097 loss)
+I0605 16:29:56.120429 15126 solver.cpp:270] Iteration 114500, Testing net (#0)
+I0605 16:30:04.235177 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6409
+I0605 16:30:04.235235 15126 solver.cpp:319]     Test net output #1: loss = 1.30063 (* 1 = 1.30063 loss)
+I0605 16:32:09.001236 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_115000.caffemodel
+I0605 16:32:09.038774 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_115000.solverstate
+I0605 16:32:09.059578 15126 solver.cpp:270] Iteration 115000, Testing net (#0)
+I0605 16:32:17.100872 15126 solver.cpp:319]     Test net output #0: accuracy = 0.637
+I0605 16:32:17.100937 15126 solver.cpp:319]     Test net output #1: loss = 1.30131 (* 1 = 1.30131 loss)
+I0605 16:34:21.842386 15126 solver.cpp:270] Iteration 115500, Testing net (#0)
+I0605 16:34:30.001907 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6362
+I0605 16:34:30.001953 15126 solver.cpp:319]     Test net output #1: loss = 1.31189 (* 1 = 1.31189 loss)
+I0605 16:36:36.319738 15126 solver.cpp:270] Iteration 116000, Testing net (#0)
+I0605 16:36:44.844168 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6394
+I0605 16:36:44.844225 15126 solver.cpp:319]     Test net output #1: loss = 1.309 (* 1 = 1.309 loss)
+I0605 16:38:52.033666 15126 solver.cpp:270] Iteration 116500, Testing net (#0)
+I0605 16:39:00.529268 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6398
+I0605 16:39:00.529340 15126 solver.cpp:319]     Test net output #1: loss = 1.28233 (* 1 = 1.28233 loss)
+I0605 16:41:07.274796 15126 solver.cpp:270] Iteration 117000, Testing net (#0)
+I0605 16:41:15.682454 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6439
+I0605 16:41:15.682518 15126 solver.cpp:319]     Test net output #1: loss = 1.28633 (* 1 = 1.28633 loss)
+I0605 16:43:22.449525 15126 solver.cpp:270] Iteration 117500, Testing net (#0)
+I0605 16:43:30.883000 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6403
+I0605 16:43:30.883054 15126 solver.cpp:319]     Test net output #1: loss = 1.29048 (* 1 = 1.29048 loss)
+I0605 16:45:37.507418 15126 solver.cpp:270] Iteration 118000, Testing net (#0)
+I0605 16:45:45.862108 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6404
+I0605 16:45:45.862174 15126 solver.cpp:319]     Test net output #1: loss = 1.28508 (* 1 = 1.28508 loss)
+I0605 16:47:52.677455 15126 solver.cpp:270] Iteration 118500, Testing net (#0)
+I0605 16:48:01.153491 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6369
+I0605 16:48:01.153563 15126 solver.cpp:319]     Test net output #1: loss = 1.2946 (* 1 = 1.2946 loss)
+I0605 16:50:07.912240 15126 solver.cpp:270] Iteration 119000, Testing net (#0)
+I0605 16:50:16.314208 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6416
+I0605 16:50:16.314280 15126 solver.cpp:319]     Test net output #1: loss = 1.28893 (* 1 = 1.28893 loss)
+I0605 16:52:23.069427 15126 solver.cpp:270] Iteration 119500, Testing net (#0)
+I0605 16:52:31.662997 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6433
+I0605 16:52:31.663079 15126 solver.cpp:319]     Test net output #1: loss = 1.28051 (* 1 = 1.28051 loss)
+I0605 16:54:38.634577 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_120000.caffemodel
+I0605 16:54:38.663072 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_120000.solverstate
+I0605 16:54:38.677819 15126 solver.cpp:270] Iteration 120000, Testing net (#0)
+I0605 16:54:46.890316 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6419
+I0605 16:54:46.890385 15126 solver.cpp:319]     Test net output #1: loss = 1.28681 (* 1 = 1.28681 loss)
+I0605 16:56:53.756521 15126 solver.cpp:270] Iteration 120500, Testing net (#0)
+I0605 16:57:02.240473 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6382
+I0605 16:57:02.240536 15126 solver.cpp:319]     Test net output #1: loss = 1.30478 (* 1 = 1.30478 loss)
+I0605 16:59:08.863198 15126 solver.cpp:270] Iteration 121000, Testing net (#0)
+I0605 16:59:17.317301 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6398
+I0605 16:59:17.317376 15126 solver.cpp:319]     Test net output #1: loss = 1.29417 (* 1 = 1.29417 loss)
+I0605 17:01:23.922724 15126 solver.cpp:270] Iteration 121500, Testing net (#0)
+I0605 17:01:32.351193 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6375
+I0605 17:01:32.351245 15126 solver.cpp:319]     Test net output #1: loss = 1.30016 (* 1 = 1.30016 loss)
+I0605 17:03:38.997994 15126 solver.cpp:270] Iteration 122000, Testing net (#0)
+I0605 17:03:47.440320 15126 solver.cpp:319]     Test net output #0: accuracy = 0.632
+I0605 17:03:47.440395 15126 solver.cpp:319]     Test net output #1: loss = 1.33727 (* 1 = 1.33727 loss)
+I0605 17:05:54.015759 15126 solver.cpp:270] Iteration 122500, Testing net (#0)
+I0605 17:06:02.392195 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6401
+I0605 17:06:02.392251 15126 solver.cpp:319]     Test net output #1: loss = 1.30836 (* 1 = 1.30836 loss)
+I0605 17:08:09.070668 15126 solver.cpp:270] Iteration 123000, Testing net (#0)
+I0605 17:08:17.579027 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6322
+I0605 17:08:17.579089 15126 solver.cpp:319]     Test net output #1: loss = 1.33187 (* 1 = 1.33187 loss)
+I0605 17:10:24.269469 15126 solver.cpp:270] Iteration 123500, Testing net (#0)
+I0605 17:10:32.690032 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6373
+I0605 17:10:32.690099 15126 solver.cpp:319]     Test net output #1: loss = 1.31247 (* 1 = 1.31247 loss)
+I0605 17:12:39.170297 15126 solver.cpp:270] Iteration 124000, Testing net (#0)
+I0605 17:12:47.568462 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6423
+I0605 17:12:47.568517 15126 solver.cpp:319]     Test net output #1: loss = 1.29404 (* 1 = 1.29404 loss)
+I0605 17:14:54.121343 15126 solver.cpp:270] Iteration 124500, Testing net (#0)
+I0605 17:15:02.629314 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6382
+I0605 17:15:02.629398 15126 solver.cpp:319]     Test net output #1: loss = 1.29871 (* 1 = 1.29871 loss)
+I0605 17:17:09.403959 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_125000.caffemodel
+I0605 17:17:09.454754 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_125000.solverstate
+I0605 17:17:09.482983 15126 solver.cpp:270] Iteration 125000, Testing net (#0)
+I0605 17:17:17.817955 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6386
+I0605 17:17:17.818022 15126 solver.cpp:319]     Test net output #1: loss = 1.32533 (* 1 = 1.32533 loss)
+I0605 17:19:24.597981 15126 solver.cpp:270] Iteration 125500, Testing net (#0)
+I0605 17:19:33.064625 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6346
+I0605 17:19:33.064718 15126 solver.cpp:319]     Test net output #1: loss = 1.32669 (* 1 = 1.32669 loss)
+I0605 17:21:39.701161 15126 solver.cpp:270] Iteration 126000, Testing net (#0)
+I0605 17:21:48.203112 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6363
+I0605 17:21:48.203177 15126 solver.cpp:319]     Test net output #1: loss = 1.3111 (* 1 = 1.3111 loss)
+I0605 17:23:54.873849 15126 solver.cpp:270] Iteration 126500, Testing net (#0)
+I0605 17:24:03.346729 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6322
+I0605 17:24:03.346806 15126 solver.cpp:319]     Test net output #1: loss = 1.30677 (* 1 = 1.30677 loss)
+I0605 17:26:10.089223 15126 solver.cpp:270] Iteration 127000, Testing net (#0)
+I0605 17:26:18.523211 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6405
+I0605 17:26:18.523272 15126 solver.cpp:319]     Test net output #1: loss = 1.27381 (* 1 = 1.27381 loss)
+I0605 17:28:25.452621 15126 solver.cpp:270] Iteration 127500, Testing net (#0)
+I0605 17:28:33.889863 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6427
+I0605 17:28:33.889906 15126 solver.cpp:319]     Test net output #1: loss = 1.2916 (* 1 = 1.2916 loss)
+I0605 17:30:40.474608 15126 solver.cpp:270] Iteration 128000, Testing net (#0)
+I0605 17:30:49.023857 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6324
+I0605 17:30:49.023921 15126 solver.cpp:319]     Test net output #1: loss = 1.31988 (* 1 = 1.31988 loss)
+I0605 17:32:55.533382 15126 solver.cpp:270] Iteration 128500, Testing net (#0)
+I0605 17:33:03.860769 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6356
+I0605 17:33:03.860818 15126 solver.cpp:319]     Test net output #1: loss = 1.31344 (* 1 = 1.31344 loss)
+I0605 17:35:10.371546 15126 solver.cpp:270] Iteration 129000, Testing net (#0)
+I0605 17:35:18.824055 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6316
+I0605 17:35:18.824100 15126 solver.cpp:319]     Test net output #1: loss = 1.30988 (* 1 = 1.30988 loss)
+I0605 17:37:25.633142 15126 solver.cpp:270] Iteration 129500, Testing net (#0)
+I0605 17:37:34.144906 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6419
+I0605 17:37:34.144965 15126 solver.cpp:319]     Test net output #1: loss = 1.28882 (* 1 = 1.28882 loss)
+I0605 17:39:40.951164 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_130000.caffemodel
+I0605 17:39:40.997972 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_130000.solverstate
+I0605 17:39:41.022837 15126 solver.cpp:270] Iteration 130000, Testing net (#0)
+I0605 17:39:49.291367 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6387
+I0605 17:39:49.291427 15126 solver.cpp:319]     Test net output #1: loss = 1.31366 (* 1 = 1.31366 loss)
+I0605 17:41:55.990466 15126 solver.cpp:270] Iteration 130500, Testing net (#0)
+I0605 17:42:04.456742 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6391
+I0605 17:42:04.456802 15126 solver.cpp:319]     Test net output #1: loss = 1.30625 (* 1 = 1.30625 loss)
+I0605 17:44:11.008759 15126 solver.cpp:270] Iteration 131000, Testing net (#0)
+I0605 17:44:19.455273 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6429
+I0605 17:44:19.455343 15126 solver.cpp:319]     Test net output #1: loss = 1.30078 (* 1 = 1.30078 loss)
+I0605 17:46:26.151541 15126 solver.cpp:270] Iteration 131500, Testing net (#0)
+I0605 17:46:34.575736 15126 solver.cpp:319]     Test net output #0: accuracy = 0.642
+I0605 17:46:34.575829 15126 solver.cpp:319]     Test net output #1: loss = 1.30383 (* 1 = 1.30383 loss)
+I0605 17:48:41.275060 15126 solver.cpp:270] Iteration 132000, Testing net (#0)
+I0605 17:48:49.783092 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6383
+I0605 17:48:49.783143 15126 solver.cpp:319]     Test net output #1: loss = 1.31278 (* 1 = 1.31278 loss)
+I0605 17:50:56.424664 15126 solver.cpp:270] Iteration 132500, Testing net (#0)
+I0605 17:51:04.871342 15126 solver.cpp:319]     Test net output #0: accuracy = 0.643
+I0605 17:51:04.871402 15126 solver.cpp:319]     Test net output #1: loss = 1.3006 (* 1 = 1.3006 loss)
+I0605 17:53:11.459890 15126 solver.cpp:270] Iteration 133000, Testing net (#0)
+I0605 17:53:19.923087 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6339
+I0605 17:53:19.923141 15126 solver.cpp:319]     Test net output #1: loss = 1.32933 (* 1 = 1.32933 loss)
+I0605 17:55:26.456161 15126 solver.cpp:270] Iteration 133500, Testing net (#0)
+I0605 17:55:34.884587 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6414
+I0605 17:55:34.884645 15126 solver.cpp:319]     Test net output #1: loss = 1.3015 (* 1 = 1.3015 loss)
+I0605 17:57:41.411276 15126 solver.cpp:270] Iteration 134000, Testing net (#0)
+I0605 17:57:49.899621 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6333
+I0605 17:57:49.899682 15126 solver.cpp:319]     Test net output #1: loss = 1.31508 (* 1 = 1.31508 loss)
+I0605 17:59:56.641964 15126 solver.cpp:270] Iteration 134500, Testing net (#0)
+I0605 18:00:05.099905 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6357
+I0605 18:00:05.099961 15126 solver.cpp:319]     Test net output #1: loss = 1.32449 (* 1 = 1.32449 loss)
+I0605 18:02:11.833413 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_135000.caffemodel
+I0605 18:02:11.872387 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_135000.solverstate
+I0605 18:02:11.894521 15126 solver.cpp:270] Iteration 135000, Testing net (#0)
+I0605 18:02:20.222972 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6402
+I0605 18:02:20.223029 15126 solver.cpp:319]     Test net output #1: loss = 1.29172 (* 1 = 1.29172 loss)
+I0605 18:04:27.057003 15126 solver.cpp:270] Iteration 135500, Testing net (#0)
+I0605 18:04:35.490744 15126 solver.cpp:319]     Test net output #0: accuracy = 0.634
+I0605 18:04:35.490806 15126 solver.cpp:319]     Test net output #1: loss = 1.32618 (* 1 = 1.32618 loss)
+I0605 18:06:42.093356 15126 solver.cpp:270] Iteration 136000, Testing net (#0)
+I0605 18:06:50.539966 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6343
+I0605 18:06:50.540050 15126 solver.cpp:319]     Test net output #1: loss = 1.35202 (* 1 = 1.35202 loss)
+I0605 18:08:57.270180 15126 solver.cpp:270] Iteration 136500, Testing net (#0)
+I0605 18:09:05.670542 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6396
+I0605 18:09:05.670616 15126 solver.cpp:319]     Test net output #1: loss = 1.33694 (* 1 = 1.33694 loss)
+I0605 18:11:12.218762 15126 solver.cpp:270] Iteration 137000, Testing net (#0)
+I0605 18:11:20.729574 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6253
+I0605 18:11:20.729629 15126 solver.cpp:319]     Test net output #1: loss = 1.37593 (* 1 = 1.37593 loss)
+I0605 18:13:27.524181 15126 solver.cpp:270] Iteration 137500, Testing net (#0)
+I0605 18:13:36.034265 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6398
+I0605 18:13:36.034315 15126 solver.cpp:319]     Test net output #1: loss = 1.31235 (* 1 = 1.31235 loss)
+I0605 18:15:42.735313 15126 solver.cpp:270] Iteration 138000, Testing net (#0)
+I0605 18:15:51.153996 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6333
+I0605 18:15:51.154042 15126 solver.cpp:319]     Test net output #1: loss = 1.35161 (* 1 = 1.35161 loss)
+I0605 18:17:57.696802 15126 solver.cpp:270] Iteration 138500, Testing net (#0)
+I0605 18:18:06.187052 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6322
+I0605 18:18:06.187115 15126 solver.cpp:319]     Test net output #1: loss = 1.34897 (* 1 = 1.34897 loss)
+I0605 18:20:12.646929 15126 solver.cpp:270] Iteration 139000, Testing net (#0)
+I0605 18:20:21.046526 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6314
+I0605 18:20:21.046581 15126 solver.cpp:319]     Test net output #1: loss = 1.33667 (* 1 = 1.33667 loss)
+I0605 18:22:27.615622 15126 solver.cpp:270] Iteration 139500, Testing net (#0)
+I0605 18:22:36.093705 15126 solver.cpp:319]     Test net output #0: accuracy = 0.642
+I0605 18:22:36.093760 15126 solver.cpp:319]     Test net output #1: loss = 1.29004 (* 1 = 1.29004 loss)
+I0605 18:24:42.798071 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_140000.caffemodel
+I0605 18:24:42.826326 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_140000.solverstate
+I0605 18:24:42.841572 15126 solver.cpp:270] Iteration 140000, Testing net (#0)
+I0605 18:24:51.135449 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6366
+I0605 18:24:51.135504 15126 solver.cpp:319]     Test net output #1: loss = 1.31487 (* 1 = 1.31487 loss)
+I0605 18:26:57.856843 15126 solver.cpp:270] Iteration 140500, Testing net (#0)
+I0605 18:27:06.297425 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6389
+I0605 18:27:06.297500 15126 solver.cpp:319]     Test net output #1: loss = 1.31189 (* 1 = 1.31189 loss)
+I0605 18:29:12.869165 15126 solver.cpp:270] Iteration 141000, Testing net (#0)
+I0605 18:29:21.268543 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6309
+I0605 18:29:21.268600 15126 solver.cpp:319]     Test net output #1: loss = 1.34536 (* 1 = 1.34536 loss)
+I0605 18:31:27.839890 15126 solver.cpp:270] Iteration 141500, Testing net (#0)
+I0605 18:31:36.252055 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6317
+I0605 18:31:36.252115 15126 solver.cpp:319]     Test net output #1: loss = 1.36243 (* 1 = 1.36243 loss)
+I0605 18:33:42.687033 15126 solver.cpp:270] Iteration 142000, Testing net (#0)
+I0605 18:33:51.217241 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6399
+I0605 18:33:51.217319 15126 solver.cpp:319]     Test net output #1: loss = 1.31693 (* 1 = 1.31693 loss)
+I0605 18:35:57.896572 15126 solver.cpp:270] Iteration 142500, Testing net (#0)
+I0605 18:36:06.325278 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6354
+I0605 18:36:06.325358 15126 solver.cpp:319]     Test net output #1: loss = 1.31536 (* 1 = 1.31536 loss)
+I0605 18:38:12.634464 15126 solver.cpp:270] Iteration 143000, Testing net (#0)
+I0605 18:38:21.084625 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6331
+I0605 18:38:21.084710 15126 solver.cpp:319]     Test net output #1: loss = 1.33708 (* 1 = 1.33708 loss)
+I0605 18:40:27.802906 15126 solver.cpp:270] Iteration 143500, Testing net (#0)
+I0605 18:40:36.210945 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6379
+I0605 18:40:36.211007 15126 solver.cpp:319]     Test net output #1: loss = 1.31226 (* 1 = 1.31226 loss)
+I0605 18:42:42.461760 15126 solver.cpp:270] Iteration 144000, Testing net (#0)
+I0605 18:42:50.852257 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6357
+I0605 18:42:50.852313 15126 solver.cpp:319]     Test net output #1: loss = 1.31595 (* 1 = 1.31595 loss)
+I0605 18:44:57.323768 15126 solver.cpp:270] Iteration 144500, Testing net (#0)
+I0605 18:45:05.757297 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6291
+I0605 18:45:05.757349 15126 solver.cpp:319]     Test net output #1: loss = 1.36037 (* 1 = 1.36037 loss)
+I0605 18:47:12.549805 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_145000.caffemodel
+I0605 18:47:12.592540 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_145000.solverstate
+I0605 18:47:12.614357 15126 solver.cpp:270] Iteration 145000, Testing net (#0)
+I0605 18:47:20.837162 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6397
+I0605 18:47:20.837230 15126 solver.cpp:319]     Test net output #1: loss = 1.30271 (* 1 = 1.30271 loss)
+I0605 18:49:27.376194 15126 solver.cpp:270] Iteration 145500, Testing net (#0)
+I0605 18:49:35.899420 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6447
+I0605 18:49:35.899495 15126 solver.cpp:319]     Test net output #1: loss = 1.31688 (* 1 = 1.31688 loss)
+I0605 18:51:42.227275 15126 solver.cpp:270] Iteration 146000, Testing net (#0)
+I0605 18:51:50.658845 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6326
+I0605 18:51:50.658916 15126 solver.cpp:319]     Test net output #1: loss = 1.33906 (* 1 = 1.33906 loss)
+I0605 18:53:57.037691 15126 solver.cpp:270] Iteration 146500, Testing net (#0)
+I0605 18:54:05.499806 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6374
+I0605 18:54:05.499872 15126 solver.cpp:319]     Test net output #1: loss = 1.32309 (* 1 = 1.32309 loss)
+I0605 18:56:12.052353 15126 solver.cpp:270] Iteration 147000, Testing net (#0)
+I0605 18:56:20.513945 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6384
+I0605 18:56:20.513998 15126 solver.cpp:319]     Test net output #1: loss = 1.3342 (* 1 = 1.3342 loss)
+I0605 18:58:26.941252 15126 solver.cpp:270] Iteration 147500, Testing net (#0)
+I0605 18:58:35.429056 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6338
+I0605 18:58:35.429110 15126 solver.cpp:319]     Test net output #1: loss = 1.32561 (* 1 = 1.32561 loss)
+I0605 19:00:41.912822 15126 solver.cpp:270] Iteration 148000, Testing net (#0)
+I0605 19:00:50.341816 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6319
+I0605 19:00:50.341868 15126 solver.cpp:319]     Test net output #1: loss = 1.35606 (* 1 = 1.35606 loss)
+I0605 19:02:56.828353 15126 solver.cpp:270] Iteration 148500, Testing net (#0)
+I0605 19:03:05.216513 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6285
+I0605 19:03:05.216569 15126 solver.cpp:319]     Test net output #1: loss = 1.3775 (* 1 = 1.3775 loss)
+I0605 19:05:11.783324 15126 solver.cpp:270] Iteration 149000, Testing net (#0)
+I0605 19:05:20.203917 15126 solver.cpp:319]     Test net output #0: accuracy = 0.633
+I0605 19:05:20.203963 15126 solver.cpp:319]     Test net output #1: loss = 1.36961 (* 1 = 1.36961 loss)
+I0605 19:07:26.657845 15126 solver.cpp:270] Iteration 149500, Testing net (#0)
+I0605 19:07:35.084396 15126 solver.cpp:319]     Test net output #0: accuracy = 0.633
+I0605 19:07:35.084460 15126 solver.cpp:319]     Test net output #1: loss = 1.35751 (* 1 = 1.35751 loss)
+I0605 19:09:41.698988 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_150000.caffemodel
+I0605 19:09:41.745790 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_150000.solverstate
+I0605 19:09:41.768854 15126 solver.cpp:270] Iteration 150000, Testing net (#0)
+I0605 19:09:49.999279 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6333
+I0605 19:09:49.999323 15126 solver.cpp:319]     Test net output #1: loss = 1.36211 (* 1 = 1.36211 loss)
+I0605 19:09:50.160898 15126 solver.cpp:399] MultiStep Status: Iteration 150000, step = 2
+I0605 19:11:56.562465 15126 solver.cpp:270] Iteration 150500, Testing net (#0)
+I0605 19:12:04.987948 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6611
+I0605 19:12:04.988023 15126 solver.cpp:319]     Test net output #1: loss = 1.24125 (* 1 = 1.24125 loss)
+I0605 19:14:11.546031 15126 solver.cpp:270] Iteration 151000, Testing net (#0)
+I0605 19:14:19.986799 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6618
+I0605 19:14:19.986865 15126 solver.cpp:319]     Test net output #1: loss = 1.23923 (* 1 = 1.23923 loss)
+I0605 19:16:26.560403 15126 solver.cpp:270] Iteration 151500, Testing net (#0)
+I0605 19:16:35.005159 15126 solver.cpp:319]     Test net output #0: accuracy = 0.664
+I0605 19:16:35.005233 15126 solver.cpp:319]     Test net output #1: loss = 1.23838 (* 1 = 1.23838 loss)
+I0605 19:18:41.533658 15126 solver.cpp:270] Iteration 152000, Testing net (#0)
+I0605 19:18:49.950507 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6706
+I0605 19:18:49.950587 15126 solver.cpp:319]     Test net output #1: loss = 1.22219 (* 1 = 1.22219 loss)
+I0605 19:20:56.500607 15126 solver.cpp:270] Iteration 152500, Testing net (#0)
+I0605 19:21:04.966776 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6708
+I0605 19:21:04.966845 15126 solver.cpp:319]     Test net output #1: loss = 1.22765 (* 1 = 1.22765 loss)
+I0605 19:23:11.415029 15126 solver.cpp:270] Iteration 153000, Testing net (#0)
+I0605 19:23:19.797282 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6685
+I0605 19:23:19.797336 15126 solver.cpp:319]     Test net output #1: loss = 1.22141 (* 1 = 1.22141 loss)
+I0605 19:25:26.316531 15126 solver.cpp:270] Iteration 153500, Testing net (#0)
+I0605 19:25:34.680438 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6721
+I0605 19:25:34.680500 15126 solver.cpp:319]     Test net output #1: loss = 1.21597 (* 1 = 1.21597 loss)
+I0605 19:27:41.137378 15126 solver.cpp:270] Iteration 154000, Testing net (#0)
+I0605 19:27:49.596360 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6689
+I0605 19:27:49.596405 15126 solver.cpp:319]     Test net output #1: loss = 1.22773 (* 1 = 1.22773 loss)
+I0605 19:29:56.196802 15126 solver.cpp:270] Iteration 154500, Testing net (#0)
+I0605 19:30:04.618386 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6726
+I0605 19:30:04.618430 15126 solver.cpp:319]     Test net output #1: loss = 1.22293 (* 1 = 1.22293 loss)
+I0605 19:32:11.373709 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_155000.caffemodel
+I0605 19:32:11.417673 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_155000.solverstate
+I0605 19:32:11.441768 15126 solver.cpp:270] Iteration 155000, Testing net (#0)
+I0605 19:32:19.795596 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6703
+I0605 19:32:19.795667 15126 solver.cpp:319]     Test net output #1: loss = 1.21081 (* 1 = 1.21081 loss)
+I0605 19:34:26.246351 15126 solver.cpp:270] Iteration 155500, Testing net (#0)
+I0605 19:34:34.756093 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6738
+I0605 19:34:34.756161 15126 solver.cpp:319]     Test net output #1: loss = 1.2085 (* 1 = 1.2085 loss)
+I0605 19:36:41.393375 15126 solver.cpp:270] Iteration 156000, Testing net (#0)
+I0605 19:36:49.830411 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6745
+I0605 19:36:49.830466 15126 solver.cpp:319]     Test net output #1: loss = 1.21468 (* 1 = 1.21468 loss)
+I0605 19:38:56.427567 15126 solver.cpp:270] Iteration 156500, Testing net (#0)
+I0605 19:39:04.870111 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6714
+I0605 19:39:04.870178 15126 solver.cpp:319]     Test net output #1: loss = 1.21829 (* 1 = 1.21829 loss)
+I0605 19:41:11.620854 15126 solver.cpp:270] Iteration 157000, Testing net (#0)
+I0605 19:41:20.105671 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6735
+I0605 19:41:20.105742 15126 solver.cpp:319]     Test net output #1: loss = 1.21317 (* 1 = 1.21317 loss)
+I0605 19:43:26.641935 15126 solver.cpp:270] Iteration 157500, Testing net (#0)
+I0605 19:43:35.144203 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6749
+I0605 19:43:35.144270 15126 solver.cpp:319]     Test net output #1: loss = 1.21383 (* 1 = 1.21383 loss)
+I0605 19:45:41.736925 15126 solver.cpp:270] Iteration 158000, Testing net (#0)
+I0605 19:45:50.146731 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6678
+I0605 19:45:50.146795 15126 solver.cpp:319]     Test net output #1: loss = 1.21639 (* 1 = 1.21639 loss)
+I0605 19:47:56.665112 15126 solver.cpp:270] Iteration 158500, Testing net (#0)
+I0605 19:48:05.101982 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6734
+I0605 19:48:05.102030 15126 solver.cpp:319]     Test net output #1: loss = 1.21974 (* 1 = 1.21974 loss)
+I0605 19:50:11.808193 15126 solver.cpp:270] Iteration 159000, Testing net (#0)
+I0605 19:50:20.185566 15126 solver.cpp:319]     Test net output #0: accuracy = 0.67
+I0605 19:50:20.185639 15126 solver.cpp:319]     Test net output #1: loss = 1.22107 (* 1 = 1.22107 loss)
+I0605 19:52:26.724164 15126 solver.cpp:270] Iteration 159500, Testing net (#0)
+I0605 19:52:35.193953 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6734
+I0605 19:52:35.194035 15126 solver.cpp:319]     Test net output #1: loss = 1.20531 (* 1 = 1.20531 loss)
+I0605 19:54:41.850071 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_160000.caffemodel
+I0605 19:54:41.891542 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_160000.solverstate
+I0605 19:54:41.915204 15126 solver.cpp:270] Iteration 160000, Testing net (#0)
+I0605 19:54:50.223526 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6742
+I0605 19:54:50.223600 15126 solver.cpp:319]     Test net output #1: loss = 1.22526 (* 1 = 1.22526 loss)
+I0605 19:56:56.695044 15126 solver.cpp:270] Iteration 160500, Testing net (#0)
+I0605 19:57:05.092974 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6726
+I0605 19:57:05.093047 15126 solver.cpp:319]     Test net output #1: loss = 1.21555 (* 1 = 1.21555 loss)
+I0605 19:59:11.482130 15126 solver.cpp:270] Iteration 161000, Testing net (#0)
+I0605 19:59:19.938612 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6722
+I0605 19:59:19.938688 15126 solver.cpp:319]     Test net output #1: loss = 1.21706 (* 1 = 1.21706 loss)
+I0605 20:01:26.367020 15126 solver.cpp:270] Iteration 161500, Testing net (#0)
+I0605 20:01:34.749809 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6696
+I0605 20:01:34.749855 15126 solver.cpp:319]     Test net output #1: loss = 1.23208 (* 1 = 1.23208 loss)
+I0605 20:03:41.458824 15126 solver.cpp:270] Iteration 162000, Testing net (#0)
+I0605 20:03:49.959461 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6722
+I0605 20:03:49.959538 15126 solver.cpp:319]     Test net output #1: loss = 1.22643 (* 1 = 1.22643 loss)
+I0605 20:05:56.540071 15126 solver.cpp:270] Iteration 162500, Testing net (#0)
+I0605 20:06:04.977032 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6747
+I0605 20:06:04.977073 15126 solver.cpp:319]     Test net output #1: loss = 1.20362 (* 1 = 1.20362 loss)
+I0605 20:08:11.581300 15126 solver.cpp:270] Iteration 163000, Testing net (#0)
+I0605 20:08:20.025986 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6707
+I0605 20:08:20.026048 15126 solver.cpp:319]     Test net output #1: loss = 1.22149 (* 1 = 1.22149 loss)
+I0605 20:10:26.550310 15126 solver.cpp:270] Iteration 163500, Testing net (#0)
+I0605 20:10:34.991780 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6742
+I0605 20:10:34.991837 15126 solver.cpp:319]     Test net output #1: loss = 1.20584 (* 1 = 1.20584 loss)
+I0605 20:12:42.008565 15126 solver.cpp:270] Iteration 164000, Testing net (#0)
+I0605 20:12:50.434957 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6752
+I0605 20:12:50.435029 15126 solver.cpp:319]     Test net output #1: loss = 1.22213 (* 1 = 1.22213 loss)
+I0605 20:14:57.098192 15126 solver.cpp:270] Iteration 164500, Testing net (#0)
+I0605 20:15:05.566458 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6737
+I0605 20:15:05.566515 15126 solver.cpp:319]     Test net output #1: loss = 1.22321 (* 1 = 1.22321 loss)
+I0605 20:17:12.313730 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_165000.caffemodel
+I0605 20:17:12.347081 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_165000.solverstate
+I0605 20:17:12.368397 15126 solver.cpp:270] Iteration 165000, Testing net (#0)
+I0605 20:17:20.642277 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6759
+I0605 20:17:20.642350 15126 solver.cpp:319]     Test net output #1: loss = 1.21362 (* 1 = 1.21362 loss)
+I0605 20:19:27.479737 15126 solver.cpp:270] Iteration 165500, Testing net (#0)
+I0605 20:19:35.895725 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6723
+I0605 20:19:35.895771 15126 solver.cpp:319]     Test net output #1: loss = 1.22145 (* 1 = 1.22145 loss)
+I0605 20:21:42.494985 15126 solver.cpp:270] Iteration 166000, Testing net (#0)
+I0605 20:21:50.967458 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6678
+I0605 20:21:50.967514 15126 solver.cpp:319]     Test net output #1: loss = 1.23956 (* 1 = 1.23956 loss)
+I0605 20:23:57.624271 15126 solver.cpp:270] Iteration 166500, Testing net (#0)
+I0605 20:24:06.062038 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6755
+I0605 20:24:06.062121 15126 solver.cpp:319]     Test net output #1: loss = 1.22408 (* 1 = 1.22408 loss)
+I0605 20:26:12.726542 15126 solver.cpp:270] Iteration 167000, Testing net (#0)
+I0605 20:26:21.207867 15126 solver.cpp:319]     Test net output #0: accuracy = 0.671
+I0605 20:26:21.207932 15126 solver.cpp:319]     Test net output #1: loss = 1.22416 (* 1 = 1.22416 loss)
+I0605 20:28:27.741150 15126 solver.cpp:270] Iteration 167500, Testing net (#0)
+I0605 20:28:36.233235 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6752
+I0605 20:28:36.233302 15126 solver.cpp:319]     Test net output #1: loss = 1.21105 (* 1 = 1.21105 loss)
+I0605 20:30:43.118517 15126 solver.cpp:270] Iteration 168000, Testing net (#0)
+I0605 20:30:51.537765 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6723
+I0605 20:30:51.537824 15126 solver.cpp:319]     Test net output #1: loss = 1.21699 (* 1 = 1.21699 loss)
+I0605 20:32:58.274073 15126 solver.cpp:270] Iteration 168500, Testing net (#0)
+I0605 20:33:06.736590 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6738
+I0605 20:33:06.736649 15126 solver.cpp:319]     Test net output #1: loss = 1.21065 (* 1 = 1.21065 loss)
+I0605 20:35:13.381556 15126 solver.cpp:270] Iteration 169000, Testing net (#0)
+I0605 20:35:21.862061 15126 solver.cpp:319]     Test net output #0: accuracy = 0.673
+I0605 20:35:21.862112 15126 solver.cpp:319]     Test net output #1: loss = 1.21568 (* 1 = 1.21568 loss)
+I0605 20:37:28.539597 15126 solver.cpp:270] Iteration 169500, Testing net (#0)
+I0605 20:37:37.081142 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6713
+I0605 20:37:37.081187 15126 solver.cpp:319]     Test net output #1: loss = 1.23164 (* 1 = 1.23164 loss)
+I0605 20:39:43.968065 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_170000.caffemodel
+I0605 20:39:44.011677 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_170000.solverstate
+I0605 20:39:44.037933 15126 solver.cpp:270] Iteration 170000, Testing net (#0)
+I0605 20:39:52.390139 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6732
+I0605 20:39:52.390198 15126 solver.cpp:319]     Test net output #1: loss = 1.22084 (* 1 = 1.22084 loss)
+I0605 20:41:59.014545 15126 solver.cpp:270] Iteration 170500, Testing net (#0)
+I0605 20:42:07.471534 15126 solver.cpp:319]     Test net output #0: accuracy = 0.67
+I0605 20:42:07.501103 15126 solver.cpp:319]     Test net output #1: loss = 1.23452 (* 1 = 1.23452 loss)
+I0605 20:44:14.271505 15126 solver.cpp:270] Iteration 171000, Testing net (#0)
+I0605 20:44:22.638571 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6767
+I0605 20:44:22.638633 15126 solver.cpp:319]     Test net output #1: loss = 1.20903 (* 1 = 1.20903 loss)
+I0605 20:46:29.726362 15126 solver.cpp:270] Iteration 171500, Testing net (#0)
+I0605 20:46:38.129781 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6701
+I0605 20:46:38.129843 15126 solver.cpp:319]     Test net output #1: loss = 1.21815 (* 1 = 1.21815 loss)
+I0605 20:48:44.835278 15126 solver.cpp:270] Iteration 172000, Testing net (#0)
+I0605 20:48:53.260624 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6709
+I0605 20:48:53.260694 15126 solver.cpp:319]     Test net output #1: loss = 1.22564 (* 1 = 1.22564 loss)
+I0605 20:51:00.097847 15126 solver.cpp:270] Iteration 172500, Testing net (#0)
+I0605 20:51:08.500558 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6703
+I0605 20:51:08.500614 15126 solver.cpp:319]     Test net output #1: loss = 1.22101 (* 1 = 1.22101 loss)
+I0605 20:53:15.062002 15126 solver.cpp:270] Iteration 173000, Testing net (#0)
+I0605 20:53:23.509613 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6714
+I0605 20:53:23.509670 15126 solver.cpp:319]     Test net output #1: loss = 1.24125 (* 1 = 1.24125 loss)
+I0605 20:55:30.196792 15126 solver.cpp:270] Iteration 173500, Testing net (#0)
+I0605 20:55:38.641158 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6749
+I0605 20:55:38.641218 15126 solver.cpp:319]     Test net output #1: loss = 1.21562 (* 1 = 1.21562 loss)
+I0605 20:57:45.162339 15126 solver.cpp:270] Iteration 174000, Testing net (#0)
+I0605 20:57:53.574198 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6741
+I0605 20:57:53.574260 15126 solver.cpp:319]     Test net output #1: loss = 1.22801 (* 1 = 1.22801 loss)
+I0605 21:00:00.509701 15126 solver.cpp:270] Iteration 174500, Testing net (#0)
+I0605 21:00:08.893052 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6689
+I0605 21:00:08.893120 15126 solver.cpp:319]     Test net output #1: loss = 1.23382 (* 1 = 1.23382 loss)
+I0605 21:02:15.961714 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_175000.caffemodel
+I0605 21:02:16.000852 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_175000.solverstate
+I0605 21:02:16.020375 15126 solver.cpp:270] Iteration 175000, Testing net (#0)
+I0605 21:02:24.365391 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6708
+I0605 21:02:24.365458 15126 solver.cpp:319]     Test net output #1: loss = 1.23011 (* 1 = 1.23011 loss)
+I0605 21:02:24.458899 15126 solver.cpp:399] MultiStep Status: Iteration 175000, step = 3
+I0605 21:04:31.484496 15126 solver.cpp:270] Iteration 175500, Testing net (#0)
+I0605 21:04:39.945233 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6754
+I0605 21:04:39.945281 15126 solver.cpp:319]     Test net output #1: loss = 1.2206 (* 1 = 1.2206 loss)
+I0605 21:06:46.741849 15126 solver.cpp:270] Iteration 176000, Testing net (#0)
+I0605 21:06:55.004760 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6752
+I0605 21:06:55.004834 15126 solver.cpp:319]     Test net output #1: loss = 1.21924 (* 1 = 1.21924 loss)
+I0605 21:09:01.591964 15126 solver.cpp:270] Iteration 176500, Testing net (#0)
+I0605 21:09:10.075268 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6754
+I0605 21:09:10.075340 15126 solver.cpp:319]     Test net output #1: loss = 1.21859 (* 1 = 1.21859 loss)
+I0605 21:11:16.796773 15126 solver.cpp:270] Iteration 177000, Testing net (#0)
+I0605 21:11:25.242060 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6769
+I0605 21:11:25.242141 15126 solver.cpp:319]     Test net output #1: loss = 1.2158 (* 1 = 1.2158 loss)
+I0605 21:13:32.153472 15126 solver.cpp:270] Iteration 177500, Testing net (#0)
+I0605 21:13:40.590262 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6769
+I0605 21:13:40.590318 15126 solver.cpp:319]     Test net output #1: loss = 1.21504 (* 1 = 1.21504 loss)
+I0605 21:15:47.323498 15126 solver.cpp:270] Iteration 178000, Testing net (#0)
+I0605 21:15:55.809525 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6784
+I0605 21:15:55.809576 15126 solver.cpp:319]     Test net output #1: loss = 1.21969 (* 1 = 1.21969 loss)
+I0605 21:18:02.644850 15126 solver.cpp:270] Iteration 178500, Testing net (#0)
+I0605 21:18:11.151028 15126 solver.cpp:319]     Test net output #0: accuracy = 0.679
+I0605 21:18:11.151087 15126 solver.cpp:319]     Test net output #1: loss = 1.21853 (* 1 = 1.21853 loss)
+I0605 21:20:18.042531 15126 solver.cpp:270] Iteration 179000, Testing net (#0)
+I0605 21:20:26.538177 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6792
+I0605 21:20:26.538244 15126 solver.cpp:319]     Test net output #1: loss = 1.2093 (* 1 = 1.2093 loss)
+I0605 21:22:33.527550 15126 solver.cpp:270] Iteration 179500, Testing net (#0)
+I0605 21:22:41.961060 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6778
+I0605 21:22:41.961138 15126 solver.cpp:319]     Test net output #1: loss = 1.21277 (* 1 = 1.21277 loss)
+I0605 21:24:48.861384 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_180000.caffemodel
+I0605 21:24:48.903611 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_180000.solverstate
+I0605 21:24:48.924777 15126 solver.cpp:270] Iteration 180000, Testing net (#0)
+I0605 21:24:57.221413 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6778
+I0605 21:24:57.221480 15126 solver.cpp:319]     Test net output #1: loss = 1.21585 (* 1 = 1.21585 loss)
+I0605 21:27:03.886122 15126 solver.cpp:270] Iteration 180500, Testing net (#0)
+I0605 21:27:12.342591 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6789
+I0605 21:27:12.342648 15126 solver.cpp:319]     Test net output #1: loss = 1.21299 (* 1 = 1.21299 loss)
+I0605 21:29:19.148115 15126 solver.cpp:270] Iteration 181000, Testing net (#0)
+I0605 21:29:27.585367 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6784
+I0605 21:29:27.585428 15126 solver.cpp:319]     Test net output #1: loss = 1.21713 (* 1 = 1.21713 loss)
+I0605 21:31:34.373579 15126 solver.cpp:270] Iteration 181500, Testing net (#0)
+I0605 21:31:42.828421 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6775
+I0605 21:31:42.828488 15126 solver.cpp:319]     Test net output #1: loss = 1.21246 (* 1 = 1.21246 loss)
+I0605 21:33:49.520443 15126 solver.cpp:270] Iteration 182000, Testing net (#0)
+I0605 21:33:57.972347 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6794
+I0605 21:33:57.972435 15126 solver.cpp:319]     Test net output #1: loss = 1.21259 (* 1 = 1.21259 loss)
+I0605 21:36:04.791215 15126 solver.cpp:270] Iteration 182500, Testing net (#0)
+I0605 21:36:13.215860 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6791
+I0605 21:36:13.215920 15126 solver.cpp:319]     Test net output #1: loss = 1.21054 (* 1 = 1.21054 loss)
+I0605 21:38:20.116147 15126 solver.cpp:270] Iteration 183000, Testing net (#0)
+I0605 21:38:28.547117 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6788
+I0605 21:38:28.547180 15126 solver.cpp:319]     Test net output #1: loss = 1.21685 (* 1 = 1.21685 loss)
+I0605 21:40:35.067426 15126 solver.cpp:270] Iteration 183500, Testing net (#0)
+I0605 21:40:43.454938 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6796
+I0605 21:40:43.454999 15126 solver.cpp:319]     Test net output #1: loss = 1.21435 (* 1 = 1.21435 loss)
+I0605 21:42:50.355803 15126 solver.cpp:270] Iteration 184000, Testing net (#0)
+I0605 21:42:58.777154 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6777
+I0605 21:42:58.777210 15126 solver.cpp:319]     Test net output #1: loss = 1.21567 (* 1 = 1.21567 loss)
+I0605 21:45:05.537943 15126 solver.cpp:270] Iteration 184500, Testing net (#0)
+I0605 21:45:14.067612 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6796
+I0605 21:45:14.067701 15126 solver.cpp:319]     Test net output #1: loss = 1.21309 (* 1 = 1.21309 loss)
+I0605 21:47:21.092993 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_185000.caffemodel
+I0605 21:47:21.113973 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_185000.solverstate
+I0605 21:47:21.126796 15126 solver.cpp:270] Iteration 185000, Testing net (#0)
+I0605 21:47:29.440410 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6794
+I0605 21:47:29.440489 15126 solver.cpp:319]     Test net output #1: loss = 1.21191 (* 1 = 1.21191 loss)
+I0605 21:49:36.168223 15126 solver.cpp:270] Iteration 185500, Testing net (#0)
+I0605 21:49:44.628202 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6789
+I0605 21:49:44.628249 15126 solver.cpp:319]     Test net output #1: loss = 1.21005 (* 1 = 1.21005 loss)
+I0605 21:51:51.554054 15126 solver.cpp:270] Iteration 186000, Testing net (#0)
+I0605 21:51:59.984653 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6802
+I0605 21:51:59.984705 15126 solver.cpp:319]     Test net output #1: loss = 1.21602 (* 1 = 1.21602 loss)
+I0605 21:54:06.616714 15126 solver.cpp:270] Iteration 186500, Testing net (#0)
+I0605 21:54:15.129210 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6772
+I0605 21:54:15.129276 15126 solver.cpp:319]     Test net output #1: loss = 1.22026 (* 1 = 1.22026 loss)
+I0605 21:56:21.952270 15126 solver.cpp:270] Iteration 187000, Testing net (#0)
+I0605 21:56:30.379734 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6784
+I0605 21:56:30.379802 15126 solver.cpp:319]     Test net output #1: loss = 1.21573 (* 1 = 1.21573 loss)
+I0605 21:58:37.035971 15126 solver.cpp:270] Iteration 187500, Testing net (#0)
+I0605 21:58:45.473595 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6779
+I0605 21:58:45.473660 15126 solver.cpp:319]     Test net output #1: loss = 1.21684 (* 1 = 1.21684 loss)
+I0605 22:00:52.071713 15126 solver.cpp:270] Iteration 188000, Testing net (#0)
+I0605 22:01:00.562605 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6805
+I0605 22:01:00.562690 15126 solver.cpp:319]     Test net output #1: loss = 1.21799 (* 1 = 1.21799 loss)
+I0605 22:03:07.163977 15126 solver.cpp:270] Iteration 188500, Testing net (#0)
+I0605 22:03:15.541450 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6786
+I0605 22:03:15.541501 15126 solver.cpp:319]     Test net output #1: loss = 1.21856 (* 1 = 1.21856 loss)
+I0605 22:05:22.093211 15126 solver.cpp:270] Iteration 189000, Testing net (#0)
+I0605 22:05:30.568897 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6798
+I0605 22:05:30.568948 15126 solver.cpp:319]     Test net output #1: loss = 1.21676 (* 1 = 1.21676 loss)
+I0605 22:07:37.262294 15126 solver.cpp:270] Iteration 189500, Testing net (#0)
+I0605 22:07:45.662081 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6802
+I0605 22:07:45.662138 15126 solver.cpp:319]     Test net output #1: loss = 1.21479 (* 1 = 1.21479 loss)
+I0605 22:09:52.516047 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_190000.caffemodel
+I0605 22:09:52.555798 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_190000.solverstate
+I0605 22:09:52.578888 15126 solver.cpp:270] Iteration 190000, Testing net (#0)
+I0605 22:10:00.831781 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6772
+I0605 22:10:00.831848 15126 solver.cpp:319]     Test net output #1: loss = 1.21799 (* 1 = 1.21799 loss)
+I0605 22:12:07.454855 15126 solver.cpp:270] Iteration 190500, Testing net (#0)
+I0605 22:12:15.925202 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6785
+I0605 22:12:15.925247 15126 solver.cpp:319]     Test net output #1: loss = 1.21363 (* 1 = 1.21363 loss)
+I0605 22:14:22.506742 15126 solver.cpp:270] Iteration 191000, Testing net (#0)
+I0605 22:14:30.972347 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6771
+I0605 22:14:30.972404 15126 solver.cpp:319]     Test net output #1: loss = 1.21692 (* 1 = 1.21692 loss)
+I0605 22:16:37.627519 15126 solver.cpp:270] Iteration 191500, Testing net (#0)
+I0605 22:16:46.105303 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6782
+I0605 22:16:46.105372 15126 solver.cpp:319]     Test net output #1: loss = 1.21786 (* 1 = 1.21786 loss)
+I0605 22:18:52.797468 15126 solver.cpp:270] Iteration 192000, Testing net (#0)
+I0605 22:19:01.416098 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6784
+I0605 22:19:01.416164 15126 solver.cpp:319]     Test net output #1: loss = 1.21358 (* 1 = 1.21358 loss)
+I0605 22:21:08.092315 15126 solver.cpp:270] Iteration 192500, Testing net (#0)
+I0605 22:21:16.567700 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6785
+I0605 22:21:16.567775 15126 solver.cpp:319]     Test net output #1: loss = 1.21635 (* 1 = 1.21635 loss)
+I0605 22:23:23.354822 15126 solver.cpp:270] Iteration 193000, Testing net (#0)
+I0605 22:23:31.810642 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6792
+I0605 22:23:31.810708 15126 solver.cpp:319]     Test net output #1: loss = 1.21859 (* 1 = 1.21859 loss)
+I0605 22:25:38.729960 15126 solver.cpp:270] Iteration 193500, Testing net (#0)
+I0605 22:25:47.107331 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6788
+I0605 22:25:47.107381 15126 solver.cpp:319]     Test net output #1: loss = 1.21045 (* 1 = 1.21045 loss)
+I0605 22:27:53.686331 15126 solver.cpp:270] Iteration 194000, Testing net (#0)
+I0605 22:28:02.162120 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6799
+I0605 22:28:02.162200 15126 solver.cpp:319]     Test net output #1: loss = 1.21228 (* 1 = 1.21228 loss)
+I0605 22:30:08.808439 15126 solver.cpp:270] Iteration 194500, Testing net (#0)
+I0605 22:30:17.305436 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6785
+I0605 22:30:17.305527 15126 solver.cpp:319]     Test net output #1: loss = 1.21536 (* 1 = 1.21536 loss)
+I0605 22:32:24.459102 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_195000.caffemodel
+I0605 22:32:24.499409 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_195000.solverstate
+I0605 22:32:24.524531 15126 solver.cpp:270] Iteration 195000, Testing net (#0)
+I0605 22:32:32.805815 15126 solver.cpp:319]     Test net output #0: accuracy = 0.679
+I0605 22:32:32.805878 15126 solver.cpp:319]     Test net output #1: loss = 1.21388 (* 1 = 1.21388 loss)
+I0605 22:34:39.485759 15126 solver.cpp:270] Iteration 195500, Testing net (#0)
+I0605 22:34:47.961580 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6803
+I0605 22:34:47.961627 15126 solver.cpp:319]     Test net output #1: loss = 1.21309 (* 1 = 1.21309 loss)
+I0605 22:36:54.629444 15126 solver.cpp:270] Iteration 196000, Testing net (#0)
+I0605 22:37:03.084141 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6782
+I0605 22:37:03.084192 15126 solver.cpp:319]     Test net output #1: loss = 1.21826 (* 1 = 1.21826 loss)
+I0605 22:39:09.761893 15126 solver.cpp:270] Iteration 196500, Testing net (#0)
+I0605 22:39:18.159000 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6795
+I0605 22:39:18.159059 15126 solver.cpp:319]     Test net output #1: loss = 1.21561 (* 1 = 1.21561 loss)
+I0605 22:41:25.028655 15126 solver.cpp:270] Iteration 197000, Testing net (#0)
+I0605 22:41:33.386204 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6789
+I0605 22:41:33.386265 15126 solver.cpp:319]     Test net output #1: loss = 1.20901 (* 1 = 1.20901 loss)
+I0605 22:43:40.132658 15126 solver.cpp:270] Iteration 197500, Testing net (#0)
+I0605 22:43:48.587659 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6799
+I0605 22:43:48.587739 15126 solver.cpp:319]     Test net output #1: loss = 1.21719 (* 1 = 1.21719 loss)
+I0605 22:45:55.647825 15126 solver.cpp:270] Iteration 198000, Testing net (#0)
+I0605 22:46:04.073156 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6791
+I0605 22:46:04.073214 15126 solver.cpp:319]     Test net output #1: loss = 1.21424 (* 1 = 1.21424 loss)
+I0605 22:48:10.812000 15126 solver.cpp:270] Iteration 198500, Testing net (#0)
+I0605 22:48:19.253643 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6803
+I0605 22:48:19.253697 15126 solver.cpp:319]     Test net output #1: loss = 1.214 (* 1 = 1.214 loss)
+I0605 22:50:26.041991 15126 solver.cpp:270] Iteration 199000, Testing net (#0)
+I0605 22:50:34.519296 15126 solver.cpp:319]     Test net output #0: accuracy = 0.679
+I0605 22:50:34.519363 15126 solver.cpp:319]     Test net output #1: loss = 1.21486 (* 1 = 1.21486 loss)
+I0605 22:52:41.064563 15126 solver.cpp:270] Iteration 199500, Testing net (#0)
+I0605 22:52:49.499835 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6804
+I0605 22:52:49.499904 15126 solver.cpp:319]     Test net output #1: loss = 1.21367 (* 1 = 1.21367 loss)
+I0605 22:54:56.302305 15126 solver.cpp:337] Snapshotting to examples/highways/cifar100_19layers_iter_200000.caffemodel
+I0605 22:54:56.345830 15126 solver.cpp:345] Snapshotting solver state to examples/highways/cifar100_19layers_iter_200000.solverstate
+I0605 22:54:56.369071 15126 solver.cpp:270] Iteration 200000, Testing net (#0)
+I0605 22:55:04.692370 15126 solver.cpp:319]     Test net output #0: accuracy = 0.6809
+I0605 22:55:04.692415 15126 solver.cpp:319]     Test net output #1: loss = 1.21187 (* 1 = 1.21187 loss)
+I0605 22:55:04.692423 15126 solver.cpp:257] Optimization Done.
+I0605 22:55:04.692428 15126 caffe.cpp:134] Optimization Done.

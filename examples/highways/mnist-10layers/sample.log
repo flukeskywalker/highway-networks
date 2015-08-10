@@ -1,0 +1,2845 @@
+I0605 18:58:13.181834 12321 caffe.cpp:113] Use GPU with device ID 0
+I0605 18:58:13.522418 12321 caffe.cpp:121] Starting Optimization
+I0605 18:58:13.522533 12321 solver.cpp:32] Initializing solver from parameters: 
+test_iter: 100
+test_interval: 600
+base_lr: 0.01
+display: 0
+max_iter: 180000
+lr_policy: "multistep"
+gamma: 0.1
+momentum: 0.9
+weight_decay: 0.001
+snapshot: 600
+snapshot_prefix: "examples/highways/mnist-10layers"
+solver_mode: GPU
+device_id: 0
+random_seed: 6349390
+net: "examples/highways/mnist-10layers/mnist_network.prototxt"
+test_state {
+  stage: "test-on-test"
+}
+solver_type: NESTEROV
+stepvalue: 60000
+stepvalue: 120000
+I0605 18:58:13.522559 12321 solver.cpp:70] Creating training net from net file: examples/highways/mnist-10layers/mnist_network.prototxt
+I0605 18:58:13.523113 12321 net.cpp:264] The NetState phase (0) differed from the phase (1) specified by a rule in layer mnist
+I0605 18:58:13.523120 12321 net.cpp:264] The NetState phase (0) differed from the phase (1) specified by a rule in layer mnist
+I0605 18:58:13.523133 12321 net.cpp:264] The NetState phase (0) differed from the phase (1) specified by a rule in layer accuracy
+I0605 18:58:13.523315 12321 net.cpp:42] Initializing net from parameters: 
+name: "MNIST_Highway"
+state {
+  phase: TRAIN
+}
+layer {
+  name: "mnist"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TRAIN
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "/home/data/mnist/mnist_train_lmdb"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "drop1"
+  type: "Dropout"
+  bottom: "data"
+  top: "drop1"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "s1-conv1"
+  type: "Convolution"
+  bottom: "drop1"
+  top: "s1-conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu"
+  type: "ReLU"
+  bottom: "s1-conv1"
+  top: "s1-conv1"
+}
+layer {
+  name: "s1-conv2"
+  type: "CuDNNHighway"
+  bottom: "s1-conv1"
+  top: "s1-conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s1-conv3"
+  type: "CuDNNHighway"
+  bottom: "s1-conv2"
+  top: "s1-conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "s1-conv3"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+layer {
+  name: "drop2"
+  type: "Dropout"
+  bottom: "pool1"
+  top: "drop2"
+  dropout_param {
+    dropout_ratio: 0.3
+  }
+}
+layer {
+  name: "s2-conv1"
+  type: "CuDNNHighway"
+  bottom: "drop2"
+  top: "s2-conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s2-conv2"
+  type: "CuDNNHighway"
+  bottom: "s2-conv1"
+  top: "s2-conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s2-conv3"
+  type: "CuDNNHighway"
+  bottom: "s2-conv2"
+  top: "s2-conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "s2-conv3"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+layer {
+  name: "drop3"
+  type: "Dropout"
+  bottom: "pool2"
+  top: "drop3"
+  dropout_param {
+    dropout_ratio: 0.4
+  }
+}
+layer {
+  name: "s3-conv1"
+  type: "CuDNNHighway"
+  bottom: "drop3"
+  top: "s3-conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s3-conv2"
+  type: "CuDNNHighway"
+  bottom: "s3-conv1"
+  top: "s3-conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s3-conv3"
+  type: "CuDNNHighway"
+  bottom: "s3-conv2"
+  top: "s3-conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "s3-conv3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "drop4"
+  type: "Dropout"
+  bottom: "pool3"
+  top: "drop4"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "drop4"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 10
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
+I0605 18:58:13.523398 12321 layer_factory.hpp:74] Creating layer mnist
+I0605 18:58:13.523416 12321 net.cpp:87] Creating Layer mnist
+I0605 18:58:13.523421 12321 net.cpp:345] mnist -> data
+I0605 18:58:13.523440 12321 net.cpp:345] mnist -> label
+I0605 18:58:13.523448 12321 net.cpp:116] Setting up mnist
+I0605 18:58:13.523499 12321 db.cpp:34] Opened lmdb /home/data/mnist/mnist_train_lmdb
+I0605 18:58:13.523527 12321 data_layer.cpp:67] output data size: 100,1,28,28
+I0605 18:58:13.523634 12321 net.cpp:123] Top shape: 100 1 28 28 (78400)
+I0605 18:58:13.523644 12321 net.cpp:123] Top shape: 100 (100)
+I0605 18:58:13.523650 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.523654 12321 layer_factory.hpp:74] Creating layer drop1
+I0605 18:58:13.523663 12321 net.cpp:87] Creating Layer drop1
+I0605 18:58:13.523666 12321 net.cpp:387] drop1 <- data
+I0605 18:58:13.523674 12321 net.cpp:345] drop1 -> drop1
+I0605 18:58:13.523681 12321 net.cpp:116] Setting up drop1
+I0605 18:58:13.523691 12321 net.cpp:123] Top shape: 100 1 28 28 (78400)
+I0605 18:58:13.523694 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.523697 12321 layer_factory.hpp:74] Creating layer s1-conv1
+I0605 18:58:13.523705 12321 net.cpp:87] Creating Layer s1-conv1
+I0605 18:58:13.523708 12321 net.cpp:387] s1-conv1 <- drop1
+I0605 18:58:13.523713 12321 net.cpp:345] s1-conv1 -> s1-conv1
+I0605 18:58:13.523720 12321 net.cpp:116] Setting up s1-conv1
+I0605 18:58:13.556006 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.556041 12321 net.cpp:154] With 832 trainable parameters
+I0605 18:58:13.556047 12321 layer_factory.hpp:74] Creating layer relu
+I0605 18:58:13.556056 12321 net.cpp:87] Creating Layer relu
+I0605 18:58:13.556061 12321 net.cpp:387] relu <- s1-conv1
+I0605 18:58:13.556066 12321 net.cpp:334] relu -> s1-conv1 (in-place)
+I0605 18:58:13.556076 12321 net.cpp:116] Setting up relu
+I0605 18:58:13.556118 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.556123 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.556125 12321 layer_factory.hpp:74] Creating layer s1-conv2
+I0605 18:58:13.556138 12321 net.cpp:87] Creating Layer s1-conv2
+I0605 18:58:13.556141 12321 net.cpp:387] s1-conv2 <- s1-conv1
+I0605 18:58:13.556145 12321 net.cpp:345] s1-conv2 -> s1-conv2
+I0605 18:58:13.556154 12321 net.cpp:116] Setting up s1-conv2
+I0605 18:58:13.556921 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.556932 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.556936 12321 layer_factory.hpp:74] Creating layer s1-conv3
+I0605 18:58:13.556941 12321 net.cpp:87] Creating Layer s1-conv3
+I0605 18:58:13.556944 12321 net.cpp:387] s1-conv3 <- s1-conv2
+I0605 18:58:13.556949 12321 net.cpp:345] s1-conv3 -> s1-conv3
+I0605 18:58:13.556954 12321 net.cpp:116] Setting up s1-conv3
+I0605 18:58:13.557723 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.557734 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.557736 12321 layer_factory.hpp:74] Creating layer pool1
+I0605 18:58:13.557744 12321 net.cpp:87] Creating Layer pool1
+I0605 18:58:13.557747 12321 net.cpp:387] pool1 <- s1-conv3
+I0605 18:58:13.557751 12321 net.cpp:345] pool1 -> pool1
+I0605 18:58:13.557756 12321 net.cpp:116] Setting up pool1
+I0605 18:58:13.557806 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.557811 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.557814 12321 layer_factory.hpp:74] Creating layer drop2
+I0605 18:58:13.557819 12321 net.cpp:87] Creating Layer drop2
+I0605 18:58:13.557822 12321 net.cpp:387] drop2 <- pool1
+I0605 18:58:13.557826 12321 net.cpp:345] drop2 -> drop2
+I0605 18:58:13.557832 12321 net.cpp:116] Setting up drop2
+I0605 18:58:13.557837 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.557838 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.557842 12321 layer_factory.hpp:74] Creating layer s2-conv1
+I0605 18:58:13.557847 12321 net.cpp:87] Creating Layer s2-conv1
+I0605 18:58:13.557850 12321 net.cpp:387] s2-conv1 <- drop2
+I0605 18:58:13.557855 12321 net.cpp:345] s2-conv1 -> s2-conv1
+I0605 18:58:13.557860 12321 net.cpp:116] Setting up s2-conv1
+I0605 18:58:13.558639 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.558648 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.558652 12321 layer_factory.hpp:74] Creating layer s2-conv2
+I0605 18:58:13.558660 12321 net.cpp:87] Creating Layer s2-conv2
+I0605 18:58:13.558662 12321 net.cpp:387] s2-conv2 <- s2-conv1
+I0605 18:58:13.558666 12321 net.cpp:345] s2-conv2 -> s2-conv2
+I0605 18:58:13.558678 12321 net.cpp:116] Setting up s2-conv2
+I0605 18:58:13.559473 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.559484 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.559486 12321 layer_factory.hpp:74] Creating layer s2-conv3
+I0605 18:58:13.559492 12321 net.cpp:87] Creating Layer s2-conv3
+I0605 18:58:13.559494 12321 net.cpp:387] s2-conv3 <- s2-conv2
+I0605 18:58:13.559500 12321 net.cpp:345] s2-conv3 -> s2-conv3
+I0605 18:58:13.559505 12321 net.cpp:116] Setting up s2-conv3
+I0605 18:58:13.560281 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.560291 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.560293 12321 layer_factory.hpp:74] Creating layer pool2
+I0605 18:58:13.560298 12321 net.cpp:87] Creating Layer pool2
+I0605 18:58:13.560302 12321 net.cpp:387] pool2 <- s2-conv3
+I0605 18:58:13.560307 12321 net.cpp:345] pool2 -> pool2
+I0605 18:58:13.560312 12321 net.cpp:116] Setting up pool2
+I0605 18:58:13.560350 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.560355 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.560358 12321 layer_factory.hpp:74] Creating layer drop3
+I0605 18:58:13.560363 12321 net.cpp:87] Creating Layer drop3
+I0605 18:58:13.560365 12321 net.cpp:387] drop3 <- pool2
+I0605 18:58:13.560369 12321 net.cpp:345] drop3 -> drop3
+I0605 18:58:13.560374 12321 net.cpp:116] Setting up drop3
+I0605 18:58:13.560379 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.560380 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.560384 12321 layer_factory.hpp:74] Creating layer s3-conv1
+I0605 18:58:13.560389 12321 net.cpp:87] Creating Layer s3-conv1
+I0605 18:58:13.560392 12321 net.cpp:387] s3-conv1 <- drop3
+I0605 18:58:13.560396 12321 net.cpp:345] s3-conv1 -> s3-conv1
+I0605 18:58:13.560401 12321 net.cpp:116] Setting up s3-conv1
+I0605 18:58:13.561180 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.561190 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.561194 12321 layer_factory.hpp:74] Creating layer s3-conv2
+I0605 18:58:13.561200 12321 net.cpp:87] Creating Layer s3-conv2
+I0605 18:58:13.561203 12321 net.cpp:387] s3-conv2 <- s3-conv1
+I0605 18:58:13.561208 12321 net.cpp:345] s3-conv2 -> s3-conv2
+I0605 18:58:13.561214 12321 net.cpp:116] Setting up s3-conv2
+I0605 18:58:13.561992 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.562001 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.562005 12321 layer_factory.hpp:74] Creating layer s3-conv3
+I0605 18:58:13.562011 12321 net.cpp:87] Creating Layer s3-conv3
+I0605 18:58:13.562013 12321 net.cpp:387] s3-conv3 <- s3-conv2
+I0605 18:58:13.562018 12321 net.cpp:345] s3-conv3 -> s3-conv3
+I0605 18:58:13.562024 12321 net.cpp:116] Setting up s3-conv3
+I0605 18:58:13.562816 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.562827 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.562831 12321 layer_factory.hpp:74] Creating layer pool3
+I0605 18:58:13.562837 12321 net.cpp:87] Creating Layer pool3
+I0605 18:58:13.562840 12321 net.cpp:387] pool3 <- s3-conv3
+I0605 18:58:13.562845 12321 net.cpp:345] pool3 -> pool3
+I0605 18:58:13.562851 12321 net.cpp:116] Setting up pool3
+I0605 18:58:13.562978 12321 net.cpp:123] Top shape: 100 32 3 3 (28800)
+I0605 18:58:13.562983 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.562986 12321 layer_factory.hpp:74] Creating layer drop4
+I0605 18:58:13.562990 12321 net.cpp:87] Creating Layer drop4
+I0605 18:58:13.562994 12321 net.cpp:387] drop4 <- pool3
+I0605 18:58:13.562997 12321 net.cpp:345] drop4 -> drop4
+I0605 18:58:13.563002 12321 net.cpp:116] Setting up drop4
+I0605 18:58:13.563007 12321 net.cpp:123] Top shape: 100 32 3 3 (28800)
+I0605 18:58:13.563010 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.563012 12321 layer_factory.hpp:74] Creating layer ip2
+I0605 18:58:13.563019 12321 net.cpp:87] Creating Layer ip2
+I0605 18:58:13.563022 12321 net.cpp:387] ip2 <- drop4
+I0605 18:58:13.563027 12321 net.cpp:345] ip2 -> ip2
+I0605 18:58:13.563036 12321 net.cpp:116] Setting up ip2
+I0605 18:58:13.563107 12321 net.cpp:123] Top shape: 100 10 (1000)
+I0605 18:58:13.563112 12321 net.cpp:154] With 2890 trainable parameters
+I0605 18:58:13.563115 12321 layer_factory.hpp:74] Creating layer loss
+I0605 18:58:13.563123 12321 net.cpp:87] Creating Layer loss
+I0605 18:58:13.563127 12321 net.cpp:387] loss <- ip2
+I0605 18:58:13.563129 12321 net.cpp:387] loss <- label
+I0605 18:58:13.563134 12321 net.cpp:345] loss -> loss
+I0605 18:58:13.563139 12321 net.cpp:116] Setting up loss
+I0605 18:58:13.563144 12321 layer_factory.hpp:74] Creating layer loss
+I0605 18:58:13.563194 12321 net.cpp:123] Top shape: (1)
+I0605 18:58:13.563199 12321 net.cpp:125]     with loss weight 1
+I0605 18:58:13.563210 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.563213 12321 net.cpp:157] The network has total 151690 trainable parameters.
+I0605 18:58:13.563215 12321 net.cpp:174] loss needs backward computation.
+I0605 18:58:13.563218 12321 net.cpp:174] ip2 needs backward computation.
+I0605 18:58:13.563221 12321 net.cpp:174] drop4 needs backward computation.
+I0605 18:58:13.563223 12321 net.cpp:174] pool3 needs backward computation.
+I0605 18:58:13.563227 12321 net.cpp:174] s3-conv3 needs backward computation.
+I0605 18:58:13.563231 12321 net.cpp:174] s3-conv2 needs backward computation.
+I0605 18:58:13.563233 12321 net.cpp:174] s3-conv1 needs backward computation.
+I0605 18:58:13.563236 12321 net.cpp:174] drop3 needs backward computation.
+I0605 18:58:13.563240 12321 net.cpp:174] pool2 needs backward computation.
+I0605 18:58:13.563241 12321 net.cpp:174] s2-conv3 needs backward computation.
+I0605 18:58:13.563244 12321 net.cpp:174] s2-conv2 needs backward computation.
+I0605 18:58:13.563246 12321 net.cpp:174] s2-conv1 needs backward computation.
+I0605 18:58:13.563249 12321 net.cpp:174] drop2 needs backward computation.
+I0605 18:58:13.563252 12321 net.cpp:174] pool1 needs backward computation.
+I0605 18:58:13.563254 12321 net.cpp:174] s1-conv3 needs backward computation.
+I0605 18:58:13.563257 12321 net.cpp:174] s1-conv2 needs backward computation.
+I0605 18:58:13.563259 12321 net.cpp:174] relu needs backward computation.
+I0605 18:58:13.563262 12321 net.cpp:174] s1-conv1 needs backward computation.
+I0605 18:58:13.563264 12321 net.cpp:176] drop1 does not need backward computation.
+I0605 18:58:13.563267 12321 net.cpp:176] mnist does not need backward computation.
+I0605 18:58:13.563271 12321 net.cpp:212] This network produces output loss
+I0605 18:58:13.563280 12321 net.cpp:454] Collecting Learning Rate and Weight Decay.
+I0605 18:58:13.563287 12321 net.cpp:224] Network initialization done.
+I0605 18:58:13.563289 12321 net.cpp:225] Memory required for data: 41873204
+I0605 18:58:13.563855 12321 solver.cpp:154] Creating test net (#0) specified by net file: examples/highways/mnist-10layers/mnist_network.prototxt
+I0605 18:58:13.563884 12321 net.cpp:264] The NetState phase (1) differed from the phase (0) specified by a rule in layer mnist
+I0605 18:58:13.563887 12321 net.cpp:297] The NetState did not contain stage 'test-on-train' specified by a rule in layer mnist
+I0605 18:58:13.564084 12321 net.cpp:42] Initializing net from parameters: 
+name: "MNIST_Highway"
+state {
+  phase: TEST
+  stage: "test-on-test"
+}
+layer {
+  name: "mnist"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+    stage: "test-on-test"
+  }
+  transform_param {
+    scale: 0.00390625
+  }
+  data_param {
+    source: "/home/data/mnist/mnist_test_lmdb"
+    batch_size: 100
+    backend: LMDB
+  }
+}
+layer {
+  name: "drop1"
+  type: "Dropout"
+  bottom: "data"
+  top: "drop1"
+  dropout_param {
+    dropout_ratio: 0.2
+  }
+}
+layer {
+  name: "s1-conv1"
+  type: "Convolution"
+  bottom: "drop1"
+  top: "s1-conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 0
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "relu"
+  type: "ReLU"
+  bottom: "s1-conv1"
+  top: "s1-conv1"
+}
+layer {
+  name: "s1-conv2"
+  type: "CuDNNHighway"
+  bottom: "s1-conv1"
+  top: "s1-conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s1-conv3"
+  type: "CuDNNHighway"
+  bottom: "s1-conv2"
+  top: "s1-conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "s1-conv3"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+layer {
+  name: "drop2"
+  type: "Dropout"
+  bottom: "pool1"
+  top: "drop2"
+  dropout_param {
+    dropout_ratio: 0.3
+  }
+}
+layer {
+  name: "s2-conv1"
+  type: "CuDNNHighway"
+  bottom: "drop2"
+  top: "s2-conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s2-conv2"
+  type: "CuDNNHighway"
+  bottom: "s2-conv1"
+  top: "s2-conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s2-conv3"
+  type: "CuDNNHighway"
+  bottom: "s2-conv2"
+  top: "s2-conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "s2-conv3"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+layer {
+  name: "drop3"
+  type: "Dropout"
+  bottom: "pool2"
+  top: "drop3"
+  dropout_param {
+    dropout_ratio: 0.4
+  }
+}
+layer {
+  name: "s3-conv1"
+  type: "CuDNNHighway"
+  bottom: "drop3"
+  top: "s3-conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s3-conv2"
+  type: "CuDNNHighway"
+  bottom: "s3-conv1"
+  top: "s3-conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "s3-conv3"
+  type: "CuDNNHighway"
+  bottom: "s3-conv2"
+  top: "s3-conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  highway_conv_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+    transform_bias_filler {
+      type: "constant"
+      value: -1
+    }
+  }
+}
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "s3-conv3"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {
+  name: "drop4"
+  type: "Dropout"
+  bottom: "pool3"
+  top: "drop4"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "drop4"
+  top: "ip2"
+  param {
+    lr_mult: 1
+    decay_mult: 10
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.1
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "ip2"
+  bottom: "label"
+  top: "accuracy"
+  include {
+    phase: TEST
+  }
+}
+layer {
+  name: "loss"
+  type: "SoftmaxWithLoss"
+  bottom: "ip2"
+  bottom: "label"
+  top: "loss"
+}
+I0605 18:58:13.564167 12321 layer_factory.hpp:74] Creating layer mnist
+I0605 18:58:13.564173 12321 net.cpp:87] Creating Layer mnist
+I0605 18:58:13.564177 12321 net.cpp:345] mnist -> data
+I0605 18:58:13.564184 12321 net.cpp:345] mnist -> label
+I0605 18:58:13.564189 12321 net.cpp:116] Setting up mnist
+I0605 18:58:13.564227 12321 db.cpp:34] Opened lmdb /home/data/mnist/mnist_test_lmdb
+I0605 18:58:13.564242 12321 data_layer.cpp:67] output data size: 100,1,28,28
+I0605 18:58:13.564333 12321 net.cpp:123] Top shape: 100 1 28 28 (78400)
+I0605 18:58:13.564339 12321 net.cpp:123] Top shape: 100 (100)
+I0605 18:58:13.564342 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.564345 12321 layer_factory.hpp:74] Creating layer label_mnist_1_split
+I0605 18:58:13.564349 12321 net.cpp:87] Creating Layer label_mnist_1_split
+I0605 18:58:13.564352 12321 net.cpp:387] label_mnist_1_split <- label
+I0605 18:58:13.564358 12321 net.cpp:345] label_mnist_1_split -> label_mnist_1_split_0
+I0605 18:58:13.564363 12321 net.cpp:345] label_mnist_1_split -> label_mnist_1_split_1
+I0605 18:58:13.564368 12321 net.cpp:116] Setting up label_mnist_1_split
+I0605 18:58:13.564373 12321 net.cpp:123] Top shape: 100 (100)
+I0605 18:58:13.564376 12321 net.cpp:123] Top shape: 100 (100)
+I0605 18:58:13.564378 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.564381 12321 layer_factory.hpp:74] Creating layer drop1
+I0605 18:58:13.564385 12321 net.cpp:87] Creating Layer drop1
+I0605 18:58:13.564388 12321 net.cpp:387] drop1 <- data
+I0605 18:58:13.564391 12321 net.cpp:345] drop1 -> drop1
+I0605 18:58:13.564396 12321 net.cpp:116] Setting up drop1
+I0605 18:58:13.564401 12321 net.cpp:123] Top shape: 100 1 28 28 (78400)
+I0605 18:58:13.564404 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.564407 12321 layer_factory.hpp:74] Creating layer s1-conv1
+I0605 18:58:13.564411 12321 net.cpp:87] Creating Layer s1-conv1
+I0605 18:58:13.564414 12321 net.cpp:387] s1-conv1 <- drop1
+I0605 18:58:13.564419 12321 net.cpp:345] s1-conv1 -> s1-conv1
+I0605 18:58:13.564424 12321 net.cpp:116] Setting up s1-conv1
+I0605 18:58:13.564679 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.564688 12321 net.cpp:154] With 832 trainable parameters
+I0605 18:58:13.564692 12321 layer_factory.hpp:74] Creating layer relu
+I0605 18:58:13.564697 12321 net.cpp:87] Creating Layer relu
+I0605 18:58:13.564699 12321 net.cpp:387] relu <- s1-conv1
+I0605 18:58:13.564707 12321 net.cpp:334] relu -> s1-conv1 (in-place)
+I0605 18:58:13.564715 12321 net.cpp:116] Setting up relu
+I0605 18:58:13.564756 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.564760 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.564764 12321 layer_factory.hpp:74] Creating layer s1-conv2
+I0605 18:58:13.564769 12321 net.cpp:87] Creating Layer s1-conv2
+I0605 18:58:13.564770 12321 net.cpp:387] s1-conv2 <- s1-conv1
+I0605 18:58:13.564776 12321 net.cpp:345] s1-conv2 -> s1-conv2
+I0605 18:58:13.564781 12321 net.cpp:116] Setting up s1-conv2
+I0605 18:58:13.565572 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.565583 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.565587 12321 layer_factory.hpp:74] Creating layer s1-conv3
+I0605 18:58:13.565594 12321 net.cpp:87] Creating Layer s1-conv3
+I0605 18:58:13.565598 12321 net.cpp:387] s1-conv3 <- s1-conv2
+I0605 18:58:13.565603 12321 net.cpp:345] s1-conv3 -> s1-conv3
+I0605 18:58:13.565608 12321 net.cpp:116] Setting up s1-conv3
+I0605 18:58:13.566400 12321 net.cpp:123] Top shape: 100 32 24 24 (1843200)
+I0605 18:58:13.566412 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.566416 12321 layer_factory.hpp:74] Creating layer pool1
+I0605 18:58:13.566421 12321 net.cpp:87] Creating Layer pool1
+I0605 18:58:13.566423 12321 net.cpp:387] pool1 <- s1-conv3
+I0605 18:58:13.566427 12321 net.cpp:345] pool1 -> pool1
+I0605 18:58:13.566433 12321 net.cpp:116] Setting up pool1
+I0605 18:58:13.566474 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.566479 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.566481 12321 layer_factory.hpp:74] Creating layer drop2
+I0605 18:58:13.566486 12321 net.cpp:87] Creating Layer drop2
+I0605 18:58:13.566489 12321 net.cpp:387] drop2 <- pool1
+I0605 18:58:13.566493 12321 net.cpp:345] drop2 -> drop2
+I0605 18:58:13.566498 12321 net.cpp:116] Setting up drop2
+I0605 18:58:13.566504 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.566506 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.566509 12321 layer_factory.hpp:74] Creating layer s2-conv1
+I0605 18:58:13.566514 12321 net.cpp:87] Creating Layer s2-conv1
+I0605 18:58:13.566515 12321 net.cpp:387] s2-conv1 <- drop2
+I0605 18:58:13.566520 12321 net.cpp:345] s2-conv1 -> s2-conv1
+I0605 18:58:13.566525 12321 net.cpp:116] Setting up s2-conv1
+I0605 18:58:13.567314 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.567324 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.567327 12321 layer_factory.hpp:74] Creating layer s2-conv2
+I0605 18:58:13.567332 12321 net.cpp:87] Creating Layer s2-conv2
+I0605 18:58:13.567335 12321 net.cpp:387] s2-conv2 <- s2-conv1
+I0605 18:58:13.567340 12321 net.cpp:345] s2-conv2 -> s2-conv2
+I0605 18:58:13.567347 12321 net.cpp:116] Setting up s2-conv2
+I0605 18:58:13.568127 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.568140 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.568142 12321 layer_factory.hpp:74] Creating layer s2-conv3
+I0605 18:58:13.568147 12321 net.cpp:87] Creating Layer s2-conv3
+I0605 18:58:13.568150 12321 net.cpp:387] s2-conv3 <- s2-conv2
+I0605 18:58:13.568156 12321 net.cpp:345] s2-conv3 -> s2-conv3
+I0605 18:58:13.568161 12321 net.cpp:116] Setting up s2-conv3
+I0605 18:58:13.568960 12321 net.cpp:123] Top shape: 100 32 12 12 (460800)
+I0605 18:58:13.568970 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.568974 12321 layer_factory.hpp:74] Creating layer pool2
+I0605 18:58:13.568979 12321 net.cpp:87] Creating Layer pool2
+I0605 18:58:13.568981 12321 net.cpp:387] pool2 <- s2-conv3
+I0605 18:58:13.568985 12321 net.cpp:345] pool2 -> pool2
+I0605 18:58:13.568990 12321 net.cpp:116] Setting up pool2
+I0605 18:58:13.569124 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.569130 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.569133 12321 layer_factory.hpp:74] Creating layer drop3
+I0605 18:58:13.569138 12321 net.cpp:87] Creating Layer drop3
+I0605 18:58:13.569140 12321 net.cpp:387] drop3 <- pool2
+I0605 18:58:13.569149 12321 net.cpp:345] drop3 -> drop3
+I0605 18:58:13.569156 12321 net.cpp:116] Setting up drop3
+I0605 18:58:13.569161 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.569164 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.569167 12321 layer_factory.hpp:74] Creating layer s3-conv1
+I0605 18:58:13.569172 12321 net.cpp:87] Creating Layer s3-conv1
+I0605 18:58:13.569175 12321 net.cpp:387] s3-conv1 <- drop3
+I0605 18:58:13.569180 12321 net.cpp:345] s3-conv1 -> s3-conv1
+I0605 18:58:13.569185 12321 net.cpp:116] Setting up s3-conv1
+I0605 18:58:13.569972 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.569980 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.569983 12321 layer_factory.hpp:74] Creating layer s3-conv2
+I0605 18:58:13.569988 12321 net.cpp:87] Creating Layer s3-conv2
+I0605 18:58:13.569991 12321 net.cpp:387] s3-conv2 <- s3-conv1
+I0605 18:58:13.569996 12321 net.cpp:345] s3-conv2 -> s3-conv2
+I0605 18:58:13.570003 12321 net.cpp:116] Setting up s3-conv2
+I0605 18:58:13.570809 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.570819 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.570822 12321 layer_factory.hpp:74] Creating layer s3-conv3
+I0605 18:58:13.570829 12321 net.cpp:87] Creating Layer s3-conv3
+I0605 18:58:13.570832 12321 net.cpp:387] s3-conv3 <- s3-conv2
+I0605 18:58:13.570838 12321 net.cpp:345] s3-conv3 -> s3-conv3
+I0605 18:58:13.570844 12321 net.cpp:116] Setting up s3-conv3
+I0605 18:58:13.571637 12321 net.cpp:123] Top shape: 100 32 6 6 (115200)
+I0605 18:58:13.571650 12321 net.cpp:154] With 18496 trainable parameters
+I0605 18:58:13.571652 12321 layer_factory.hpp:74] Creating layer pool3
+I0605 18:58:13.571657 12321 net.cpp:87] Creating Layer pool3
+I0605 18:58:13.571660 12321 net.cpp:387] pool3 <- s3-conv3
+I0605 18:58:13.571665 12321 net.cpp:345] pool3 -> pool3
+I0605 18:58:13.571669 12321 net.cpp:116] Setting up pool3
+I0605 18:58:13.571709 12321 net.cpp:123] Top shape: 100 32 3 3 (28800)
+I0605 18:58:13.571713 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.571717 12321 layer_factory.hpp:74] Creating layer drop4
+I0605 18:58:13.571720 12321 net.cpp:87] Creating Layer drop4
+I0605 18:58:13.571723 12321 net.cpp:387] drop4 <- pool3
+I0605 18:58:13.571727 12321 net.cpp:345] drop4 -> drop4
+I0605 18:58:13.571732 12321 net.cpp:116] Setting up drop4
+I0605 18:58:13.571737 12321 net.cpp:123] Top shape: 100 32 3 3 (28800)
+I0605 18:58:13.571739 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.571741 12321 layer_factory.hpp:74] Creating layer ip2
+I0605 18:58:13.571748 12321 net.cpp:87] Creating Layer ip2
+I0605 18:58:13.571749 12321 net.cpp:387] ip2 <- drop4
+I0605 18:58:13.571753 12321 net.cpp:345] ip2 -> ip2
+I0605 18:58:13.571759 12321 net.cpp:116] Setting up ip2
+I0605 18:58:13.571825 12321 net.cpp:123] Top shape: 100 10 (1000)
+I0605 18:58:13.571830 12321 net.cpp:154] With 2890 trainable parameters
+I0605 18:58:13.571832 12321 layer_factory.hpp:74] Creating layer ip2_ip2_0_split
+I0605 18:58:13.571836 12321 net.cpp:87] Creating Layer ip2_ip2_0_split
+I0605 18:58:13.571840 12321 net.cpp:387] ip2_ip2_0_split <- ip2
+I0605 18:58:13.571842 12321 net.cpp:345] ip2_ip2_0_split -> ip2_ip2_0_split_0
+I0605 18:58:13.571847 12321 net.cpp:345] ip2_ip2_0_split -> ip2_ip2_0_split_1
+I0605 18:58:13.571851 12321 net.cpp:116] Setting up ip2_ip2_0_split
+I0605 18:58:13.571856 12321 net.cpp:123] Top shape: 100 10 (1000)
+I0605 18:58:13.571858 12321 net.cpp:123] Top shape: 100 10 (1000)
+I0605 18:58:13.571861 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.571863 12321 layer_factory.hpp:74] Creating layer accuracy
+I0605 18:58:13.571868 12321 net.cpp:87] Creating Layer accuracy
+I0605 18:58:13.571871 12321 net.cpp:387] accuracy <- ip2_ip2_0_split_0
+I0605 18:58:13.571874 12321 net.cpp:387] accuracy <- label_mnist_1_split_0
+I0605 18:58:13.571878 12321 net.cpp:345] accuracy -> accuracy
+I0605 18:58:13.571882 12321 net.cpp:116] Setting up accuracy
+I0605 18:58:13.571887 12321 net.cpp:123] Top shape: (1)
+I0605 18:58:13.571892 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.571898 12321 layer_factory.hpp:74] Creating layer loss
+I0605 18:58:13.571903 12321 net.cpp:87] Creating Layer loss
+I0605 18:58:13.571907 12321 net.cpp:387] loss <- ip2_ip2_0_split_1
+I0605 18:58:13.571909 12321 net.cpp:387] loss <- label_mnist_1_split_1
+I0605 18:58:13.571913 12321 net.cpp:345] loss -> loss
+I0605 18:58:13.571918 12321 net.cpp:116] Setting up loss
+I0605 18:58:13.571921 12321 layer_factory.hpp:74] Creating layer loss
+I0605 18:58:13.571969 12321 net.cpp:123] Top shape: (1)
+I0605 18:58:13.571972 12321 net.cpp:125]     with loss weight 1
+I0605 18:58:13.571977 12321 net.cpp:154] With 0 trainable parameters
+I0605 18:58:13.571980 12321 net.cpp:157] The network has total 151690 trainable parameters.
+I0605 18:58:13.571982 12321 net.cpp:174] loss needs backward computation.
+I0605 18:58:13.571985 12321 net.cpp:176] accuracy does not need backward computation.
+I0605 18:58:13.571987 12321 net.cpp:174] ip2_ip2_0_split needs backward computation.
+I0605 18:58:13.571990 12321 net.cpp:174] ip2 needs backward computation.
+I0605 18:58:13.571992 12321 net.cpp:174] drop4 needs backward computation.
+I0605 18:58:13.571995 12321 net.cpp:174] pool3 needs backward computation.
+I0605 18:58:13.571997 12321 net.cpp:174] s3-conv3 needs backward computation.
+I0605 18:58:13.572000 12321 net.cpp:174] s3-conv2 needs backward computation.
+I0605 18:58:13.572002 12321 net.cpp:174] s3-conv1 needs backward computation.
+I0605 18:58:13.572005 12321 net.cpp:174] drop3 needs backward computation.
+I0605 18:58:13.572007 12321 net.cpp:174] pool2 needs backward computation.
+I0605 18:58:13.572010 12321 net.cpp:174] s2-conv3 needs backward computation.
+I0605 18:58:13.572012 12321 net.cpp:174] s2-conv2 needs backward computation.
+I0605 18:58:13.572016 12321 net.cpp:174] s2-conv1 needs backward computation.
+I0605 18:58:13.572017 12321 net.cpp:174] drop2 needs backward computation.
+I0605 18:58:13.572021 12321 net.cpp:174] pool1 needs backward computation.
+I0605 18:58:13.572023 12321 net.cpp:174] s1-conv3 needs backward computation.
+I0605 18:58:13.572026 12321 net.cpp:174] s1-conv2 needs backward computation.
+I0605 18:58:13.572027 12321 net.cpp:174] relu needs backward computation.
+I0605 18:58:13.572031 12321 net.cpp:174] s1-conv1 needs backward computation.
+I0605 18:58:13.572032 12321 net.cpp:176] drop1 does not need backward computation.
+I0605 18:58:13.572036 12321 net.cpp:176] label_mnist_1_split does not need backward computation.
+I0605 18:58:13.572038 12321 net.cpp:176] mnist does not need backward computation.
+I0605 18:58:13.572041 12321 net.cpp:212] This network produces output accuracy
+I0605 18:58:13.572043 12321 net.cpp:212] This network produces output loss
+I0605 18:58:13.572055 12321 net.cpp:454] Collecting Learning Rate and Weight Decay.
+I0605 18:58:13.572060 12321 net.cpp:224] Network initialization done.
+I0605 18:58:13.572062 12321 net.cpp:225] Memory required for data: 41882008
+I0605 18:58:13.572118 12321 solver.cpp:42] Solver scaffolding done.
+I0605 18:58:13.572160 12321 solver.cpp:226] Solving MNIST_Highway
+I0605 18:58:13.572165 12321 solver.cpp:227] Learning Rate Policy: multistep
+I0605 18:58:13.572168 12321 solver.cpp:270] Iteration 0, Testing net (#0)
+I0605 18:58:14.613011 12321 solver.cpp:319]     Test net output #0: accuracy = 0.0654
+I0605 18:58:14.613042 12321 solver.cpp:319]     Test net output #1: loss = 2.51641 (* 1 = 2.51641 loss)
+I0605 18:58:38.492810 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_600.caffemodel
+I0605 18:58:38.495081 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_600.solverstate
+I0605 18:58:38.496580 12321 solver.cpp:270] Iteration 600, Testing net (#0)
+I0605 18:58:39.545517 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9588
+I0605 18:58:39.545558 12321 solver.cpp:319]     Test net output #1: loss = 0.298362 (* 1 = 0.298362 loss)
+I0605 18:59:03.410203 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_1200.caffemodel
+I0605 18:59:03.437800 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_1200.solverstate
+I0605 18:59:03.467700 12321 solver.cpp:270] Iteration 1200, Testing net (#0)
+I0605 18:59:04.515998 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9722
+I0605 18:59:04.516036 12321 solver.cpp:319]     Test net output #1: loss = 0.131745 (* 1 = 0.131745 loss)
+I0605 18:59:28.381335 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_1800.caffemodel
+I0605 18:59:28.423759 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_1800.solverstate
+I0605 18:59:28.464401 12321 solver.cpp:270] Iteration 1800, Testing net (#0)
+I0605 18:59:29.534441 12321 solver.cpp:319]     Test net output #0: accuracy = 0.974
+I0605 18:59:29.534482 12321 solver.cpp:319]     Test net output #1: loss = 0.101803 (* 1 = 0.101803 loss)
+I0605 18:59:53.420771 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_2400.caffemodel
+I0605 18:59:53.453713 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_2400.solverstate
+I0605 18:59:53.455581 12321 solver.cpp:270] Iteration 2400, Testing net (#0)
+I0605 18:59:54.499971 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9816
+I0605 18:59:54.500007 12321 solver.cpp:319]     Test net output #1: loss = 0.100694 (* 1 = 0.100694 loss)
+I0605 19:00:18.348904 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_3000.caffemodel
+I0605 19:00:18.350497 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_3000.solverstate
+I0605 19:00:18.351276 12321 solver.cpp:270] Iteration 3000, Testing net (#0)
+I0605 19:00:19.395570 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9853
+I0605 19:00:19.395602 12321 solver.cpp:319]     Test net output #1: loss = 0.0648693 (* 1 = 0.0648693 loss)
+I0605 19:00:43.287714 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_3600.caffemodel
+I0605 19:00:43.289314 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_3600.solverstate
+I0605 19:00:43.304086 12321 solver.cpp:270] Iteration 3600, Testing net (#0)
+I0605 19:00:44.354897 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9859
+I0605 19:00:44.354933 12321 solver.cpp:319]     Test net output #1: loss = 0.0571087 (* 1 = 0.0571087 loss)
+I0605 19:01:08.225633 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_4200.caffemodel
+I0605 19:01:08.227165 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_4200.solverstate
+I0605 19:01:08.227881 12321 solver.cpp:270] Iteration 4200, Testing net (#0)
+I0605 19:01:09.272034 12321 solver.cpp:319]     Test net output #0: accuracy = 0.985
+I0605 19:01:09.272068 12321 solver.cpp:319]     Test net output #1: loss = 0.0552658 (* 1 = 0.0552658 loss)
+I0605 19:01:33.126796 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_4800.caffemodel
+I0605 19:01:33.150848 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_4800.solverstate
+I0605 19:01:33.183795 12321 solver.cpp:270] Iteration 4800, Testing net (#0)
+I0605 19:01:34.230904 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9853
+I0605 19:01:34.230942 12321 solver.cpp:319]     Test net output #1: loss = 0.0466393 (* 1 = 0.0466393 loss)
+I0605 19:01:58.113642 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_5400.caffemodel
+I0605 19:01:58.145440 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_5400.solverstate
+I0605 19:01:58.146211 12321 solver.cpp:270] Iteration 5400, Testing net (#0)
+I0605 19:01:59.221674 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9864
+I0605 19:01:59.221712 12321 solver.cpp:319]     Test net output #1: loss = 0.0464744 (* 1 = 0.0464744 loss)
+I0605 19:02:23.074322 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_6000.caffemodel
+I0605 19:02:23.075906 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_6000.solverstate
+I0605 19:02:23.076669 12321 solver.cpp:270] Iteration 6000, Testing net (#0)
+I0605 19:02:24.122586 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9875
+I0605 19:02:24.122627 12321 solver.cpp:319]     Test net output #1: loss = 0.04205 (* 1 = 0.04205 loss)
+I0605 19:02:48.021958 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_6600.caffemodel
+I0605 19:02:48.038635 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_6600.solverstate
+I0605 19:02:48.064899 12321 solver.cpp:270] Iteration 6600, Testing net (#0)
+I0605 19:02:49.112054 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9883
+I0605 19:02:49.112092 12321 solver.cpp:319]     Test net output #1: loss = 0.0427717 (* 1 = 0.0427717 loss)
+I0605 19:03:12.961730 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_7200.caffemodel
+I0605 19:03:12.987480 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_7200.solverstate
+I0605 19:03:13.029644 12321 solver.cpp:270] Iteration 7200, Testing net (#0)
+I0605 19:03:14.132604 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9899
+I0605 19:03:14.132652 12321 solver.cpp:319]     Test net output #1: loss = 0.0336783 (* 1 = 0.0336783 loss)
+I0605 19:03:38.460902 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_7800.caffemodel
+I0605 19:03:38.463003 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_7800.solverstate
+I0605 19:03:38.503706 12321 solver.cpp:270] Iteration 7800, Testing net (#0)
+I0605 19:03:39.580592 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9904
+I0605 19:03:39.580632 12321 solver.cpp:319]     Test net output #1: loss = 0.0360853 (* 1 = 0.0360853 loss)
+I0605 19:04:03.480062 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_8400.caffemodel
+I0605 19:04:03.495138 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_8400.solverstate
+I0605 19:04:03.523303 12321 solver.cpp:270] Iteration 8400, Testing net (#0)
+I0605 19:04:04.576992 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9889
+I0605 19:04:04.577028 12321 solver.cpp:319]     Test net output #1: loss = 0.0359224 (* 1 = 0.0359224 loss)
+I0605 19:04:28.445822 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_9000.caffemodel
+I0605 19:04:28.471043 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_9000.solverstate
+I0605 19:04:28.472756 12321 solver.cpp:270] Iteration 9000, Testing net (#0)
+I0605 19:04:29.526454 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9906
+I0605 19:04:29.526489 12321 solver.cpp:319]     Test net output #1: loss = 0.0326039 (* 1 = 0.0326039 loss)
+I0605 19:04:53.381052 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_9600.caffemodel
+I0605 19:04:53.382591 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_9600.solverstate
+I0605 19:04:53.408371 12321 solver.cpp:270] Iteration 9600, Testing net (#0)
+I0605 19:04:54.457567 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9896
+I0605 19:04:54.457600 12321 solver.cpp:319]     Test net output #1: loss = 0.0329963 (* 1 = 0.0329963 loss)
+I0605 19:05:18.312880 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_10200.caffemodel
+I0605 19:05:18.335526 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_10200.solverstate
+I0605 19:05:18.357899 12321 solver.cpp:270] Iteration 10200, Testing net (#0)
+I0605 19:05:19.403969 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9877
+I0605 19:05:19.404008 12321 solver.cpp:319]     Test net output #1: loss = 0.0384541 (* 1 = 0.0384541 loss)
+I0605 19:05:43.315035 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_10800.caffemodel
+I0605 19:05:43.316577 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_10800.solverstate
+I0605 19:05:43.352733 12321 solver.cpp:270] Iteration 10800, Testing net (#0)
+I0605 19:05:44.401649 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9907
+I0605 19:05:44.401690 12321 solver.cpp:319]     Test net output #1: loss = 0.0295817 (* 1 = 0.0295817 loss)
+I0605 19:06:08.292843 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_11400.caffemodel
+I0605 19:06:08.315970 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_11400.solverstate
+I0605 19:06:08.357297 12321 solver.cpp:270] Iteration 11400, Testing net (#0)
+I0605 19:06:09.405763 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9887
+I0605 19:06:09.405802 12321 solver.cpp:319]     Test net output #1: loss = 0.0370204 (* 1 = 0.0370204 loss)
+I0605 19:06:33.265590 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_12000.caffemodel
+I0605 19:06:33.293840 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_12000.solverstate
+I0605 19:06:33.295642 12321 solver.cpp:270] Iteration 12000, Testing net (#0)
+I0605 19:06:34.346045 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9899
+I0605 19:06:34.346082 12321 solver.cpp:319]     Test net output #1: loss = 0.0303933 (* 1 = 0.0303933 loss)
+I0605 19:06:58.241132 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_12600.caffemodel
+I0605 19:06:58.273777 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_12600.solverstate
+I0605 19:06:58.296538 12321 solver.cpp:270] Iteration 12600, Testing net (#0)
+I0605 19:06:59.343070 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9906
+I0605 19:06:59.343113 12321 solver.cpp:319]     Test net output #1: loss = 0.0310071 (* 1 = 0.0310071 loss)
+I0605 19:07:23.211982 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_13200.caffemodel
+I0605 19:07:23.213501 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_13200.solverstate
+I0605 19:07:23.214228 12321 solver.cpp:270] Iteration 13200, Testing net (#0)
+I0605 19:07:24.294442 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9916
+I0605 19:07:24.294487 12321 solver.cpp:319]     Test net output #1: loss = 0.0286966 (* 1 = 0.0286966 loss)
+I0605 19:07:48.642320 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_13800.caffemodel
+I0605 19:07:48.652597 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_13800.solverstate
+I0605 19:07:48.654263 12321 solver.cpp:270] Iteration 13800, Testing net (#0)
+I0605 19:07:49.759840 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9915
+I0605 19:07:49.759878 12321 solver.cpp:319]     Test net output #1: loss = 0.0283535 (* 1 = 0.0283535 loss)
+I0605 19:08:14.081683 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_14400.caffemodel
+I0605 19:08:14.098459 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_14400.solverstate
+I0605 19:08:14.144068 12321 solver.cpp:270] Iteration 14400, Testing net (#0)
+I0605 19:08:15.190321 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9902
+I0605 19:08:15.190357 12321 solver.cpp:319]     Test net output #1: loss = 0.028902 (* 1 = 0.028902 loss)
+I0605 19:08:39.045652 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_15000.caffemodel
+I0605 19:08:39.074983 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_15000.solverstate
+I0605 19:08:39.088479 12321 solver.cpp:270] Iteration 15000, Testing net (#0)
+I0605 19:08:40.149636 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9912
+I0605 19:08:40.149677 12321 solver.cpp:319]     Test net output #1: loss = 0.0285139 (* 1 = 0.0285139 loss)
+I0605 19:09:04.008689 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_15600.caffemodel
+I0605 19:09:04.010231 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_15600.solverstate
+I0605 19:09:04.044209 12321 solver.cpp:270] Iteration 15600, Testing net (#0)
+I0605 19:09:05.089154 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9867
+I0605 19:09:05.089190 12321 solver.cpp:319]     Test net output #1: loss = 0.0375447 (* 1 = 0.0375447 loss)
+I0605 19:09:28.937177 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_16200.caffemodel
+I0605 19:09:28.938683 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_16200.solverstate
+I0605 19:09:28.962911 12321 solver.cpp:270] Iteration 16200, Testing net (#0)
+I0605 19:09:30.010758 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9905
+I0605 19:09:30.010790 12321 solver.cpp:319]     Test net output #1: loss = 0.0311986 (* 1 = 0.0311986 loss)
+I0605 19:09:53.905037 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_16800.caffemodel
+I0605 19:09:53.925112 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_16800.solverstate
+I0605 19:09:53.925866 12321 solver.cpp:270] Iteration 16800, Testing net (#0)
+I0605 19:09:55.000571 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9921
+I0605 19:09:55.000607 12321 solver.cpp:319]     Test net output #1: loss = 0.0274603 (* 1 = 0.0274603 loss)
+I0605 19:10:18.888746 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_17400.caffemodel
+I0605 19:10:18.890293 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_17400.solverstate
+I0605 19:10:18.947722 12321 solver.cpp:270] Iteration 17400, Testing net (#0)
+I0605 19:10:19.993258 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9921
+I0605 19:10:19.993298 12321 solver.cpp:319]     Test net output #1: loss = 0.0247205 (* 1 = 0.0247205 loss)
+I0605 19:10:43.876529 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_18000.caffemodel
+I0605 19:10:43.905890 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_18000.solverstate
+I0605 19:10:43.932658 12321 solver.cpp:270] Iteration 18000, Testing net (#0)
+I0605 19:10:44.977404 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9924
+I0605 19:10:44.977443 12321 solver.cpp:319]     Test net output #1: loss = 0.0259693 (* 1 = 0.0259693 loss)
+I0605 19:11:08.856377 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_18600.caffemodel
+I0605 19:11:08.888185 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_18600.solverstate
+I0605 19:11:08.919594 12321 solver.cpp:270] Iteration 18600, Testing net (#0)
+I0605 19:11:09.969744 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9919
+I0605 19:11:09.969779 12321 solver.cpp:319]     Test net output #1: loss = 0.023415 (* 1 = 0.023415 loss)
+I0605 19:11:33.836988 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_19200.caffemodel
+I0605 19:11:33.861663 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_19200.solverstate
+I0605 19:11:33.899582 12321 solver.cpp:270] Iteration 19200, Testing net (#0)
+I0605 19:11:34.968272 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9903
+I0605 19:11:34.968313 12321 solver.cpp:319]     Test net output #1: loss = 0.0293655 (* 1 = 0.0293655 loss)
+I0605 19:11:58.854898 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_19800.caffemodel
+I0605 19:11:58.856359 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_19800.solverstate
+I0605 19:11:58.857071 12321 solver.cpp:270] Iteration 19800, Testing net (#0)
+I0605 19:11:59.903570 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9913
+I0605 19:11:59.903602 12321 solver.cpp:319]     Test net output #1: loss = 0.0277098 (* 1 = 0.0277098 loss)
+I0605 19:12:23.773782 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_20400.caffemodel
+I0605 19:12:23.803174 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_20400.solverstate
+I0605 19:12:23.803961 12321 solver.cpp:270] Iteration 20400, Testing net (#0)
+I0605 19:12:24.895385 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9916
+I0605 19:12:24.895422 12321 solver.cpp:319]     Test net output #1: loss = 0.0238669 (* 1 = 0.0238669 loss)
+I0605 19:12:48.766767 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_21000.caffemodel
+I0605 19:12:48.791576 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_21000.solverstate
+I0605 19:12:48.793546 12321 solver.cpp:270] Iteration 21000, Testing net (#0)
+I0605 19:12:49.843402 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9904
+I0605 19:12:49.843439 12321 solver.cpp:319]     Test net output #1: loss = 0.0311624 (* 1 = 0.0311624 loss)
+I0605 19:13:13.732699 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_21600.caffemodel
+I0605 19:13:13.764931 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_21600.solverstate
+I0605 19:13:13.766599 12321 solver.cpp:270] Iteration 21600, Testing net (#0)
+I0605 19:13:14.816750 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9926
+I0605 19:13:14.816789 12321 solver.cpp:319]     Test net output #1: loss = 0.023848 (* 1 = 0.023848 loss)
+I0605 19:13:38.694314 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_22200.caffemodel
+I0605 19:13:38.695816 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_22200.solverstate
+I0605 19:13:38.696542 12321 solver.cpp:270] Iteration 22200, Testing net (#0)
+I0605 19:13:39.744822 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9914
+I0605 19:13:39.744859 12321 solver.cpp:319]     Test net output #1: loss = 0.0255071 (* 1 = 0.0255071 loss)
+I0605 19:14:03.671640 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_22800.caffemodel
+I0605 19:14:03.673224 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_22800.solverstate
+I0605 19:14:03.686931 12321 solver.cpp:270] Iteration 22800, Testing net (#0)
+I0605 19:14:04.753041 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9903
+I0605 19:14:04.753075 12321 solver.cpp:319]     Test net output #1: loss = 0.0282207 (* 1 = 0.0282207 loss)
+I0605 19:14:28.629832 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_23400.caffemodel
+I0605 19:14:28.665249 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_23400.solverstate
+I0605 19:14:28.666013 12321 solver.cpp:270] Iteration 23400, Testing net (#0)
+I0605 19:14:29.740551 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9922
+I0605 19:14:29.740589 12321 solver.cpp:319]     Test net output #1: loss = 0.0251416 (* 1 = 0.0251416 loss)
+I0605 19:14:53.606730 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_24000.caffemodel
+I0605 19:14:53.626498 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_24000.solverstate
+I0605 19:14:53.654975 12321 solver.cpp:270] Iteration 24000, Testing net (#0)
+I0605 19:14:54.702299 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9927
+I0605 19:14:54.702330 12321 solver.cpp:319]     Test net output #1: loss = 0.0239132 (* 1 = 0.0239132 loss)
+I0605 19:15:18.573277 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_24600.caffemodel
+I0605 19:15:18.606839 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_24600.solverstate
+I0605 19:15:18.634382 12321 solver.cpp:270] Iteration 24600, Testing net (#0)
+I0605 19:15:19.679852 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9914
+I0605 19:15:19.679891 12321 solver.cpp:319]     Test net output #1: loss = 0.0283288 (* 1 = 0.0283288 loss)
+I0605 19:15:43.539397 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_25200.caffemodel
+I0605 19:15:43.557271 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_25200.solverstate
+I0605 19:15:43.590381 12321 solver.cpp:270] Iteration 25200, Testing net (#0)
+I0605 19:15:44.652297 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9927
+I0605 19:15:44.652331 12321 solver.cpp:319]     Test net output #1: loss = 0.0241884 (* 1 = 0.0241884 loss)
+I0605 19:16:08.563741 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_25800.caffemodel
+I0605 19:16:08.565242 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_25800.solverstate
+I0605 19:16:08.565969 12321 solver.cpp:270] Iteration 25800, Testing net (#0)
+I0605 19:16:09.611098 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9919
+I0605 19:16:09.611131 12321 solver.cpp:319]     Test net output #1: loss = 0.0247232 (* 1 = 0.0247232 loss)
+I0605 19:16:33.488759 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_26400.caffemodel
+I0605 19:16:33.529783 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_26400.solverstate
+I0605 19:16:33.584619 12321 solver.cpp:270] Iteration 26400, Testing net (#0)
+I0605 19:16:34.636898 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9932
+I0605 19:16:34.636950 12321 solver.cpp:319]     Test net output #1: loss = 0.0228772 (* 1 = 0.0228772 loss)
+I0605 19:16:58.502830 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_27000.caffemodel
+I0605 19:16:58.524711 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_27000.solverstate
+I0605 19:16:58.569174 12321 solver.cpp:270] Iteration 27000, Testing net (#0)
+I0605 19:16:59.630084 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9925
+I0605 19:16:59.630121 12321 solver.cpp:319]     Test net output #1: loss = 0.0259828 (* 1 = 0.0259828 loss)
+I0605 19:17:23.483520 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_27600.caffemodel
+I0605 19:17:23.502308 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_27600.solverstate
+I0605 19:17:23.538396 12321 solver.cpp:270] Iteration 27600, Testing net (#0)
+I0605 19:17:24.585499 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9924
+I0605 19:17:24.585537 12321 solver.cpp:319]     Test net output #1: loss = 0.0251598 (* 1 = 0.0251598 loss)
+I0605 19:17:48.478341 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_28200.caffemodel
+I0605 19:17:48.479944 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_28200.solverstate
+I0605 19:17:48.480706 12321 solver.cpp:270] Iteration 28200, Testing net (#0)
+I0605 19:17:49.528645 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9891
+I0605 19:17:49.528686 12321 solver.cpp:319]     Test net output #1: loss = 0.0351306 (* 1 = 0.0351306 loss)
+I0605 19:18:13.419796 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_28800.caffemodel
+I0605 19:18:13.452992 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_28800.solverstate
+I0605 19:18:13.475855 12321 solver.cpp:270] Iteration 28800, Testing net (#0)
+I0605 19:18:14.524483 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9923
+I0605 19:18:14.524525 12321 solver.cpp:319]     Test net output #1: loss = 0.0231014 (* 1 = 0.0231014 loss)
+I0605 19:18:38.382802 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_29400.caffemodel
+I0605 19:18:38.384826 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_29400.solverstate
+I0605 19:18:38.385792 12321 solver.cpp:270] Iteration 29400, Testing net (#0)
+I0605 19:18:39.433953 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9928
+I0605 19:18:39.433992 12321 solver.cpp:319]     Test net output #1: loss = 0.0238286 (* 1 = 0.0238286 loss)
+I0605 19:19:03.313215 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_30000.caffemodel
+I0605 19:19:03.333107 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_30000.solverstate
+I0605 19:19:03.333981 12321 solver.cpp:270] Iteration 30000, Testing net (#0)
+I0605 19:19:04.413256 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9914
+I0605 19:19:04.413292 12321 solver.cpp:319]     Test net output #1: loss = 0.0297412 (* 1 = 0.0297412 loss)
+I0605 19:19:28.314626 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_30600.caffemodel
+I0605 19:19:28.316170 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_30600.solverstate
+I0605 19:19:28.316953 12321 solver.cpp:270] Iteration 30600, Testing net (#0)
+I0605 19:19:29.365480 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9932
+I0605 19:19:29.365525 12321 solver.cpp:319]     Test net output #1: loss = 0.021454 (* 1 = 0.021454 loss)
+I0605 19:19:53.231351 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_31200.caffemodel
+I0605 19:19:53.252969 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_31200.solverstate
+I0605 19:19:53.254752 12321 solver.cpp:270] Iteration 31200, Testing net (#0)
+I0605 19:19:54.302551 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9939
+I0605 19:19:54.302590 12321 solver.cpp:319]     Test net output #1: loss = 0.0212269 (* 1 = 0.0212269 loss)
+I0605 19:20:18.186787 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_31800.caffemodel
+I0605 19:20:18.206320 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_31800.solverstate
+I0605 19:20:18.234850 12321 solver.cpp:270] Iteration 31800, Testing net (#0)
+I0605 19:20:19.280341 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9926
+I0605 19:20:19.280380 12321 solver.cpp:319]     Test net output #1: loss = 0.0242057 (* 1 = 0.0242057 loss)
+I0605 19:20:43.160681 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_32400.caffemodel
+I0605 19:20:43.194630 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_32400.solverstate
+I0605 19:20:43.221966 12321 solver.cpp:270] Iteration 32400, Testing net (#0)
+I0605 19:20:44.292170 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9909
+I0605 19:20:44.292215 12321 solver.cpp:319]     Test net output #1: loss = 0.0243317 (* 1 = 0.0243317 loss)
+I0605 19:21:08.172863 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_33000.caffemodel
+I0605 19:21:08.174549 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_33000.solverstate
+I0605 19:21:08.175304 12321 solver.cpp:270] Iteration 33000, Testing net (#0)
+I0605 19:21:09.221957 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9923
+I0605 19:21:09.221992 12321 solver.cpp:319]     Test net output #1: loss = 0.0233338 (* 1 = 0.0233338 loss)
+I0605 19:21:33.088142 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_33600.caffemodel
+I0605 19:21:33.089658 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_33600.solverstate
+I0605 19:21:33.090360 12321 solver.cpp:270] Iteration 33600, Testing net (#0)
+I0605 19:21:34.135762 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9939
+I0605 19:21:34.135797 12321 solver.cpp:319]     Test net output #1: loss = 0.0202844 (* 1 = 0.0202844 loss)
+I0605 19:21:58.010970 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_34200.caffemodel
+I0605 19:21:58.026638 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_34200.solverstate
+I0605 19:21:58.028373 12321 solver.cpp:270] Iteration 34200, Testing net (#0)
+I0605 19:21:59.079936 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9942
+I0605 19:21:59.079973 12321 solver.cpp:319]     Test net output #1: loss = 0.0203529 (* 1 = 0.0203529 loss)
+I0605 19:22:22.950052 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_34800.caffemodel
+I0605 19:22:22.973736 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_34800.solverstate
+I0605 19:22:22.975666 12321 solver.cpp:270] Iteration 34800, Testing net (#0)
+I0605 19:22:24.021003 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9938
+I0605 19:22:24.021041 12321 solver.cpp:319]     Test net output #1: loss = 0.021794 (* 1 = 0.021794 loss)
+I0605 19:22:47.886613 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_35400.caffemodel
+I0605 19:22:47.906564 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_35400.solverstate
+I0605 19:22:47.940131 12321 solver.cpp:270] Iteration 35400, Testing net (#0)
+I0605 19:22:48.994369 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9935
+I0605 19:22:48.994411 12321 solver.cpp:319]     Test net output #1: loss = 0.0215747 (* 1 = 0.0215747 loss)
+I0605 19:23:12.852298 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_36000.caffemodel
+I0605 19:23:12.853806 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_36000.solverstate
+I0605 19:23:12.877573 12321 solver.cpp:270] Iteration 36000, Testing net (#0)
+I0605 19:23:13.922863 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9916
+I0605 19:23:13.922900 12321 solver.cpp:319]     Test net output #1: loss = 0.0296906 (* 1 = 0.0296906 loss)
+I0605 19:23:37.794443 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_36600.caffemodel
+I0605 19:23:37.814923 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_36600.solverstate
+I0605 19:23:37.846981 12321 solver.cpp:270] Iteration 36600, Testing net (#0)
+I0605 19:23:38.905624 12321 solver.cpp:319]     Test net output #0: accuracy = 0.991
+I0605 19:23:38.905658 12321 solver.cpp:319]     Test net output #1: loss = 0.029217 (* 1 = 0.029217 loss)
+I0605 19:24:02.779757 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_37200.caffemodel
+I0605 19:24:02.781319 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_37200.solverstate
+I0605 19:24:02.782037 12321 solver.cpp:270] Iteration 37200, Testing net (#0)
+I0605 19:24:03.836869 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9918
+I0605 19:24:03.836906 12321 solver.cpp:319]     Test net output #1: loss = 0.0249136 (* 1 = 0.0249136 loss)
+I0605 19:24:27.707875 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_37800.caffemodel
+I0605 19:24:27.709435 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_37800.solverstate
+I0605 19:24:27.710445 12321 solver.cpp:270] Iteration 37800, Testing net (#0)
+I0605 19:24:28.757696 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9916
+I0605 19:24:28.757735 12321 solver.cpp:319]     Test net output #1: loss = 0.0283736 (* 1 = 0.0283736 loss)
+I0605 19:24:52.616832 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_38400.caffemodel
+I0605 19:24:52.637711 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_38400.solverstate
+I0605 19:24:52.676275 12321 solver.cpp:270] Iteration 38400, Testing net (#0)
+I0605 19:24:53.747015 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9928
+I0605 19:24:53.747058 12321 solver.cpp:319]     Test net output #1: loss = 0.0226292 (* 1 = 0.0226292 loss)
+I0605 19:25:17.642148 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_39000.caffemodel
+I0605 19:25:17.643646 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_39000.solverstate
+I0605 19:25:17.645690 12321 solver.cpp:270] Iteration 39000, Testing net (#0)
+I0605 19:25:18.696835 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9882
+I0605 19:25:18.696880 12321 solver.cpp:319]     Test net output #1: loss = 0.0383994 (* 1 = 0.0383994 loss)
+I0605 19:25:42.594498 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_39600.caffemodel
+I0605 19:25:42.618558 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_39600.solverstate
+I0605 19:25:42.619326 12321 solver.cpp:270] Iteration 39600, Testing net (#0)
+I0605 19:25:43.685809 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9931
+I0605 19:25:43.685848 12321 solver.cpp:319]     Test net output #1: loss = 0.0214266 (* 1 = 0.0214266 loss)
+I0605 19:26:07.581847 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_40200.caffemodel
+I0605 19:26:07.583498 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_40200.solverstate
+I0605 19:26:07.584272 12321 solver.cpp:270] Iteration 40200, Testing net (#0)
+I0605 19:26:08.627240 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9932
+I0605 19:26:08.627279 12321 solver.cpp:319]     Test net output #1: loss = 0.0221599 (* 1 = 0.0221599 loss)
+I0605 19:26:32.523854 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_40800.caffemodel
+I0605 19:26:32.565968 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_40800.solverstate
+I0605 19:26:32.567817 12321 solver.cpp:270] Iteration 40800, Testing net (#0)
+I0605 19:26:33.613909 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9924
+I0605 19:26:33.613945 12321 solver.cpp:319]     Test net output #1: loss = 0.0234692 (* 1 = 0.0234692 loss)
+I0605 19:26:57.490201 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_41400.caffemodel
+I0605 19:26:57.491745 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_41400.solverstate
+I0605 19:26:57.492468 12321 solver.cpp:270] Iteration 41400, Testing net (#0)
+I0605 19:26:58.537410 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9927
+I0605 19:26:58.537447 12321 solver.cpp:319]     Test net output #1: loss = 0.0232295 (* 1 = 0.0232295 loss)
+I0605 19:27:22.442364 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_42000.caffemodel
+I0605 19:27:22.471951 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_42000.solverstate
+I0605 19:27:22.491436 12321 solver.cpp:270] Iteration 42000, Testing net (#0)
+I0605 19:27:23.542129 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9938
+I0605 19:27:23.542166 12321 solver.cpp:319]     Test net output #1: loss = 0.0189573 (* 1 = 0.0189573 loss)
+I0605 19:27:47.415264 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_42600.caffemodel
+I0605 19:27:47.441359 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_42600.solverstate
+I0605 19:27:47.443661 12321 solver.cpp:270] Iteration 42600, Testing net (#0)
+I0605 19:27:48.492235 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9933
+I0605 19:27:48.492279 12321 solver.cpp:319]     Test net output #1: loss = 0.021482 (* 1 = 0.021482 loss)
+I0605 19:28:12.401850 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_43200.caffemodel
+I0605 19:28:12.403440 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_43200.solverstate
+I0605 19:28:12.404196 12321 solver.cpp:270] Iteration 43200, Testing net (#0)
+I0605 19:28:13.450531 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9921
+I0605 19:28:13.450564 12321 solver.cpp:319]     Test net output #1: loss = 0.0241977 (* 1 = 0.0241977 loss)
+I0605 19:28:37.324430 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_43800.caffemodel
+I0605 19:28:37.372849 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_43800.solverstate
+I0605 19:28:37.410212 12321 solver.cpp:270] Iteration 43800, Testing net (#0)
+I0605 19:28:38.467703 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9933
+I0605 19:28:38.467736 12321 solver.cpp:319]     Test net output #1: loss = 0.0221726 (* 1 = 0.0221726 loss)
+I0605 19:29:02.345621 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_44400.caffemodel
+I0605 19:29:02.377811 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_44400.solverstate
+I0605 19:29:02.407158 12321 solver.cpp:270] Iteration 44400, Testing net (#0)
+I0605 19:29:03.458029 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9904
+I0605 19:29:03.458067 12321 solver.cpp:319]     Test net output #1: loss = 0.0309471 (* 1 = 0.0309471 loss)
+I0605 19:29:27.323740 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_45000.caffemodel
+I0605 19:29:27.349473 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_45000.solverstate
+I0605 19:29:27.407938 12321 solver.cpp:270] Iteration 45000, Testing net (#0)
+I0605 19:29:28.454015 12321 solver.cpp:319]     Test net output #0: accuracy = 0.992
+I0605 19:29:28.454056 12321 solver.cpp:319]     Test net output #1: loss = 0.0257073 (* 1 = 0.0257073 loss)
+I0605 19:29:52.331872 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_45600.caffemodel
+I0605 19:29:52.355826 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_45600.solverstate
+I0605 19:29:52.357451 12321 solver.cpp:270] Iteration 45600, Testing net (#0)
+I0605 19:29:53.404248 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9912
+I0605 19:29:53.404289 12321 solver.cpp:319]     Test net output #1: loss = 0.0250792 (* 1 = 0.0250792 loss)
+I0605 19:30:17.330694 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_46200.caffemodel
+I0605 19:30:17.332612 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_46200.solverstate
+I0605 19:30:17.333358 12321 solver.cpp:270] Iteration 46200, Testing net (#0)
+I0605 19:30:18.378968 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9937
+I0605 19:30:18.379011 12321 solver.cpp:319]     Test net output #1: loss = 0.0230577 (* 1 = 0.0230577 loss)
+I0605 19:30:42.262905 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_46800.caffemodel
+I0605 19:30:42.264462 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_46800.solverstate
+I0605 19:30:42.313738 12321 solver.cpp:270] Iteration 46800, Testing net (#0)
+I0605 19:30:43.363756 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9923
+I0605 19:30:43.363795 12321 solver.cpp:319]     Test net output #1: loss = 0.0233125 (* 1 = 0.0233125 loss)
+I0605 19:31:07.233301 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_47400.caffemodel
+I0605 19:31:07.256183 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_47400.solverstate
+I0605 19:31:07.294695 12321 solver.cpp:270] Iteration 47400, Testing net (#0)
+I0605 19:31:08.347571 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9919
+I0605 19:31:08.347612 12321 solver.cpp:319]     Test net output #1: loss = 0.0254248 (* 1 = 0.0254248 loss)
+I0605 19:31:32.217178 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_48000.caffemodel
+I0605 19:31:32.234295 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_48000.solverstate
+I0605 19:31:32.268842 12321 solver.cpp:270] Iteration 48000, Testing net (#0)
+I0605 19:31:33.315500 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9933
+I0605 19:31:33.315538 12321 solver.cpp:319]     Test net output #1: loss = 0.0213224 (* 1 = 0.0213224 loss)
+I0605 19:31:57.183399 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_48600.caffemodel
+I0605 19:31:57.206490 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_48600.solverstate
+I0605 19:31:57.207798 12321 solver.cpp:270] Iteration 48600, Testing net (#0)
+I0605 19:31:58.253954 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9926
+I0605 19:31:58.253993 12321 solver.cpp:319]     Test net output #1: loss = 0.0234682 (* 1 = 0.0234682 loss)
+I0605 19:32:22.139613 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_49200.caffemodel
+I0605 19:32:22.159471 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_49200.solverstate
+I0605 19:32:22.176071 12321 solver.cpp:270] Iteration 49200, Testing net (#0)
+I0605 19:32:23.222301 12321 solver.cpp:319]     Test net output #0: accuracy = 0.994
+I0605 19:32:23.222339 12321 solver.cpp:319]     Test net output #1: loss = 0.0204154 (* 1 = 0.0204154 loss)
+I0605 19:32:47.097838 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_49800.caffemodel
+I0605 19:32:47.099407 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_49800.solverstate
+I0605 19:32:47.171718 12321 solver.cpp:270] Iteration 49800, Testing net (#0)
+I0605 19:32:48.220590 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9923
+I0605 19:32:48.220631 12321 solver.cpp:319]     Test net output #1: loss = 0.0248265 (* 1 = 0.0248265 loss)
+I0605 19:33:12.089808 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_50400.caffemodel
+I0605 19:33:12.122632 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_50400.solverstate
+I0605 19:33:12.174705 12321 solver.cpp:270] Iteration 50400, Testing net (#0)
+I0605 19:33:13.232458 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9914
+I0605 19:33:13.232497 12321 solver.cpp:319]     Test net output #1: loss = 0.0277817 (* 1 = 0.0277817 loss)
+I0605 19:33:37.095259 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_51000.caffemodel
+I0605 19:33:37.128022 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_51000.solverstate
+I0605 19:33:37.165109 12321 solver.cpp:270] Iteration 51000, Testing net (#0)
+I0605 19:33:38.257267 12321 solver.cpp:319]     Test net output #0: accuracy = 0.993
+I0605 19:33:38.257308 12321 solver.cpp:319]     Test net output #1: loss = 0.0239912 (* 1 = 0.0239912 loss)
+I0605 19:34:02.135118 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_51600.caffemodel
+I0605 19:34:02.168023 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_51600.solverstate
+I0605 19:34:02.204277 12321 solver.cpp:270] Iteration 51600, Testing net (#0)
+I0605 19:34:03.256902 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9933
+I0605 19:34:03.256937 12321 solver.cpp:319]     Test net output #1: loss = 0.0202023 (* 1 = 0.0202023 loss)
+I0605 19:34:27.139334 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_52200.caffemodel
+I0605 19:34:27.140852 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_52200.solverstate
+I0605 19:34:27.191853 12321 solver.cpp:270] Iteration 52200, Testing net (#0)
+I0605 19:34:28.241257 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9931
+I0605 19:34:28.241293 12321 solver.cpp:319]     Test net output #1: loss = 0.0221243 (* 1 = 0.0221243 loss)
+I0605 19:34:52.119838 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_52800.caffemodel
+I0605 19:34:52.148901 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_52800.solverstate
+I0605 19:34:52.150557 12321 solver.cpp:270] Iteration 52800, Testing net (#0)
+I0605 19:34:53.196276 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9932
+I0605 19:34:53.196318 12321 solver.cpp:319]     Test net output #1: loss = 0.022687 (* 1 = 0.022687 loss)
+I0605 19:35:17.039084 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_53400.caffemodel
+I0605 19:35:17.060967 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_53400.solverstate
+I0605 19:35:17.095489 12321 solver.cpp:270] Iteration 53400, Testing net (#0)
+I0605 19:35:18.143265 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9929
+I0605 19:35:18.143303 12321 solver.cpp:319]     Test net output #1: loss = 0.0217868 (* 1 = 0.0217868 loss)
+I0605 19:35:42.057391 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_54000.caffemodel
+I0605 19:35:42.058909 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_54000.solverstate
+I0605 19:35:42.104600 12321 solver.cpp:270] Iteration 54000, Testing net (#0)
+I0605 19:35:43.155751 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9928
+I0605 19:35:43.155791 12321 solver.cpp:319]     Test net output #1: loss = 0.0246989 (* 1 = 0.0246989 loss)
+I0605 19:36:07.033537 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_54600.caffemodel
+I0605 19:36:07.035084 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_54600.solverstate
+I0605 19:36:07.035800 12321 solver.cpp:270] Iteration 54600, Testing net (#0)
+I0605 19:36:08.081025 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9925
+I0605 19:36:08.081056 12321 solver.cpp:319]     Test net output #1: loss = 0.0236116 (* 1 = 0.0236116 loss)
+I0605 19:36:31.971856 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_55200.caffemodel
+I0605 19:36:32.016850 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_55200.solverstate
+I0605 19:36:32.087697 12321 solver.cpp:270] Iteration 55200, Testing net (#0)
+I0605 19:36:33.134531 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9934
+I0605 19:36:33.134572 12321 solver.cpp:319]     Test net output #1: loss = 0.025076 (* 1 = 0.025076 loss)
+I0605 19:36:57.021241 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_55800.caffemodel
+I0605 19:36:57.047581 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_55800.solverstate
+I0605 19:36:57.049156 12321 solver.cpp:270] Iteration 55800, Testing net (#0)
+I0605 19:36:58.094494 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9934
+I0605 19:36:58.094532 12321 solver.cpp:319]     Test net output #1: loss = 0.0215626 (* 1 = 0.0215626 loss)
+I0605 19:37:21.984829 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_56400.caffemodel
+I0605 19:37:21.986429 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_56400.solverstate
+I0605 19:37:21.987162 12321 solver.cpp:270] Iteration 56400, Testing net (#0)
+I0605 19:37:23.035524 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9928
+I0605 19:37:23.035562 12321 solver.cpp:319]     Test net output #1: loss = 0.024365 (* 1 = 0.024365 loss)
+I0605 19:37:46.937026 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_57000.caffemodel
+I0605 19:37:46.938501 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_57000.solverstate
+I0605 19:37:47.028944 12321 solver.cpp:270] Iteration 57000, Testing net (#0)
+I0605 19:37:48.076458 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9915
+I0605 19:37:48.076491 12321 solver.cpp:319]     Test net output #1: loss = 0.025645 (* 1 = 0.025645 loss)
+I0605 19:38:11.941395 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_57600.caffemodel
+I0605 19:38:11.963652 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_57600.solverstate
+I0605 19:38:12.004645 12321 solver.cpp:270] Iteration 57600, Testing net (#0)
+I0605 19:38:13.052496 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9919
+I0605 19:38:13.052536 12321 solver.cpp:319]     Test net output #1: loss = 0.023694 (* 1 = 0.023694 loss)
+I0605 19:38:36.968821 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_58200.caffemodel
+I0605 19:38:36.992884 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_58200.solverstate
+I0605 19:38:37.024096 12321 solver.cpp:270] Iteration 58200, Testing net (#0)
+I0605 19:38:38.083353 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9941
+I0605 19:38:38.083394 12321 solver.cpp:319]     Test net output #1: loss = 0.020362 (* 1 = 0.020362 loss)
+I0605 19:39:01.961874 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_58800.caffemodel
+I0605 19:39:01.989935 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_58800.solverstate
+I0605 19:39:01.991899 12321 solver.cpp:270] Iteration 58800, Testing net (#0)
+I0605 19:39:03.034754 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9943
+I0605 19:39:03.034792 12321 solver.cpp:319]     Test net output #1: loss = 0.0197428 (* 1 = 0.0197428 loss)
+I0605 19:39:26.922358 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_59400.caffemodel
+I0605 19:39:26.947300 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_59400.solverstate
+I0605 19:39:26.981231 12321 solver.cpp:270] Iteration 59400, Testing net (#0)
+I0605 19:39:28.039731 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9926
+I0605 19:39:28.039767 12321 solver.cpp:319]     Test net output #1: loss = 0.0236604 (* 1 = 0.0236604 loss)
+I0605 19:39:51.920243 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_60000.caffemodel
+I0605 19:39:51.942503 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_60000.solverstate
+I0605 19:39:51.943330 12321 solver.cpp:270] Iteration 60000, Testing net (#0)
+I0605 19:39:52.994206 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9931
+I0605 19:39:52.994242 12321 solver.cpp:319]     Test net output #1: loss = 0.0209845 (* 1 = 0.0209845 loss)
+I0605 19:39:53.008729 12321 solver.cpp:399] MultiStep Status: Iteration 60000, step = 1
+I0605 19:40:16.844324 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_60600.caffemodel
+I0605 19:40:16.870826 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_60600.solverstate
+I0605 19:40:16.906949 12321 solver.cpp:270] Iteration 60600, Testing net (#0)
+I0605 19:40:17.983160 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:40:17.983209 12321 solver.cpp:319]     Test net output #1: loss = 0.0165896 (* 1 = 0.0165896 loss)
+I0605 19:40:41.882158 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_61200.caffemodel
+I0605 19:40:41.883744 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_61200.solverstate
+I0605 19:40:41.884476 12321 solver.cpp:270] Iteration 61200, Testing net (#0)
+I0605 19:40:42.931598 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 19:40:42.931635 12321 solver.cpp:319]     Test net output #1: loss = 0.0154657 (* 1 = 0.0154657 loss)
+I0605 19:41:06.811010 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_61800.caffemodel
+I0605 19:41:06.812561 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_61800.solverstate
+I0605 19:41:06.813297 12321 solver.cpp:270] Iteration 61800, Testing net (#0)
+I0605 19:41:07.858535 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 19:41:07.858572 12321 solver.cpp:319]     Test net output #1: loss = 0.0158706 (* 1 = 0.0158706 loss)
+I0605 19:41:31.722494 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_62400.caffemodel
+I0605 19:41:31.724036 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_62400.solverstate
+I0605 19:41:31.724761 12321 solver.cpp:270] Iteration 62400, Testing net (#0)
+I0605 19:41:32.770262 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 19:41:32.770297 12321 solver.cpp:319]     Test net output #1: loss = 0.015706 (* 1 = 0.015706 loss)
+I0605 19:41:56.624807 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_63000.caffemodel
+I0605 19:41:56.657443 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_63000.solverstate
+I0605 19:41:56.679133 12321 solver.cpp:270] Iteration 63000, Testing net (#0)
+I0605 19:41:57.732147 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 19:41:57.732185 12321 solver.cpp:319]     Test net output #1: loss = 0.015864 (* 1 = 0.015864 loss)
+I0605 19:42:21.611667 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_63600.caffemodel
+I0605 19:42:21.637425 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_63600.solverstate
+I0605 19:42:21.675346 12321 solver.cpp:270] Iteration 63600, Testing net (#0)
+I0605 19:42:22.732935 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 19:42:22.732971 12321 solver.cpp:319]     Test net output #1: loss = 0.0152783 (* 1 = 0.0152783 loss)
+I0605 19:42:46.601634 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_64200.caffemodel
+I0605 19:42:46.603160 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_64200.solverstate
+I0605 19:42:46.603863 12321 solver.cpp:270] Iteration 64200, Testing net (#0)
+I0605 19:42:47.652422 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:42:47.652462 12321 solver.cpp:319]     Test net output #1: loss = 0.0151023 (* 1 = 0.0151023 loss)
+I0605 19:43:11.532840 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_64800.caffemodel
+I0605 19:43:11.552358 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_64800.solverstate
+I0605 19:43:11.586915 12321 solver.cpp:270] Iteration 64800, Testing net (#0)
+I0605 19:43:12.632592 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:43:12.632633 12321 solver.cpp:319]     Test net output #1: loss = 0.0159392 (* 1 = 0.0159392 loss)
+I0605 19:43:36.483681 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_65400.caffemodel
+I0605 19:43:36.485214 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_65400.solverstate
+I0605 19:43:36.520784 12321 solver.cpp:270] Iteration 65400, Testing net (#0)
+I0605 19:43:37.568660 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 19:43:37.568694 12321 solver.cpp:319]     Test net output #1: loss = 0.0154956 (* 1 = 0.0154956 loss)
+I0605 19:44:01.421864 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_66000.caffemodel
+I0605 19:44:01.454886 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_66000.solverstate
+I0605 19:44:01.457707 12321 solver.cpp:270] Iteration 66000, Testing net (#0)
+I0605 19:44:02.502684 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 19:44:02.502725 12321 solver.cpp:319]     Test net output #1: loss = 0.0153233 (* 1 = 0.0153233 loss)
+I0605 19:44:26.381626 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_66600.caffemodel
+I0605 19:44:26.383147 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_66600.solverstate
+I0605 19:44:26.383898 12321 solver.cpp:270] Iteration 66600, Testing net (#0)
+I0605 19:44:27.429173 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 19:44:27.429204 12321 solver.cpp:319]     Test net output #1: loss = 0.0163027 (* 1 = 0.0163027 loss)
+I0605 19:44:51.309698 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_67200.caffemodel
+I0605 19:44:51.326709 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_67200.solverstate
+I0605 19:44:51.343873 12321 solver.cpp:270] Iteration 67200, Testing net (#0)
+I0605 19:44:52.386924 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:44:52.386961 12321 solver.cpp:319]     Test net output #1: loss = 0.0157686 (* 1 = 0.0157686 loss)
+I0605 19:45:16.274662 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_67800.caffemodel
+I0605 19:45:16.276259 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_67800.solverstate
+I0605 19:45:16.276990 12321 solver.cpp:270] Iteration 67800, Testing net (#0)
+I0605 19:45:17.326122 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 19:45:17.326155 12321 solver.cpp:319]     Test net output #1: loss = 0.0158066 (* 1 = 0.0158066 loss)
+I0605 19:45:41.197072 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_68400.caffemodel
+I0605 19:45:41.198711 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_68400.solverstate
+I0605 19:45:41.199460 12321 solver.cpp:270] Iteration 68400, Testing net (#0)
+I0605 19:45:42.249106 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 19:45:42.249143 12321 solver.cpp:319]     Test net output #1: loss = 0.0155665 (* 1 = 0.0155665 loss)
+I0605 19:46:06.143055 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_69000.caffemodel
+I0605 19:46:06.144628 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_69000.solverstate
+I0605 19:46:06.205750 12321 solver.cpp:270] Iteration 69000, Testing net (#0)
+I0605 19:46:07.257558 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9945
+I0605 19:46:07.257601 12321 solver.cpp:319]     Test net output #1: loss = 0.0165673 (* 1 = 0.0165673 loss)
+I0605 19:46:31.149587 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_69600.caffemodel
+I0605 19:46:31.151222 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_69600.solverstate
+I0605 19:46:31.151968 12321 solver.cpp:270] Iteration 69600, Testing net (#0)
+I0605 19:46:32.204450 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:46:32.204491 12321 solver.cpp:319]     Test net output #1: loss = 0.0168634 (* 1 = 0.0168634 loss)
+I0605 19:46:56.079377 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_70200.caffemodel
+I0605 19:46:56.101073 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_70200.solverstate
+I0605 19:46:56.102743 12321 solver.cpp:270] Iteration 70200, Testing net (#0)
+I0605 19:46:57.149569 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 19:46:57.149606 12321 solver.cpp:319]     Test net output #1: loss = 0.016438 (* 1 = 0.016438 loss)
+I0605 19:47:21.031219 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_70800.caffemodel
+I0605 19:47:21.032757 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_70800.solverstate
+I0605 19:47:21.033473 12321 solver.cpp:270] Iteration 70800, Testing net (#0)
+I0605 19:47:22.085175 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 19:47:22.085207 12321 solver.cpp:319]     Test net output #1: loss = 0.0154231 (* 1 = 0.0154231 loss)
+I0605 19:47:45.941249 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_71400.caffemodel
+I0605 19:47:45.942754 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_71400.solverstate
+I0605 19:47:45.943470 12321 solver.cpp:270] Iteration 71400, Testing net (#0)
+I0605 19:47:46.990026 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 19:47:46.990066 12321 solver.cpp:319]     Test net output #1: loss = 0.0161272 (* 1 = 0.0161272 loss)
+I0605 19:48:10.855674 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_72000.caffemodel
+I0605 19:48:10.857228 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_72000.solverstate
+I0605 19:48:10.857955 12321 solver.cpp:270] Iteration 72000, Testing net (#0)
+I0605 19:48:11.906227 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:48:11.906268 12321 solver.cpp:319]     Test net output #1: loss = 0.016196 (* 1 = 0.016196 loss)
+I0605 19:48:35.818621 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_72600.caffemodel
+I0605 19:48:35.839280 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_72600.solverstate
+I0605 19:48:35.841539 12321 solver.cpp:270] Iteration 72600, Testing net (#0)
+I0605 19:48:36.886266 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 19:48:36.886306 12321 solver.cpp:319]     Test net output #1: loss = 0.0158502 (* 1 = 0.0158502 loss)
+I0605 19:49:00.747020 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_73200.caffemodel
+I0605 19:49:00.748632 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_73200.solverstate
+I0605 19:49:00.749404 12321 solver.cpp:270] Iteration 73200, Testing net (#0)
+I0605 19:49:01.794961 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 19:49:01.794999 12321 solver.cpp:319]     Test net output #1: loss = 0.015076 (* 1 = 0.015076 loss)
+I0605 19:49:25.656008 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_73800.caffemodel
+I0605 19:49:25.683675 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_73800.solverstate
+I0605 19:49:25.738487 12321 solver.cpp:270] Iteration 73800, Testing net (#0)
+I0605 19:49:26.787477 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:49:26.787518 12321 solver.cpp:319]     Test net output #1: loss = 0.0156961 (* 1 = 0.0156961 loss)
+I0605 19:49:50.650193 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_74400.caffemodel
+I0605 19:49:50.651725 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_74400.solverstate
+I0605 19:49:50.675508 12321 solver.cpp:270] Iteration 74400, Testing net (#0)
+I0605 19:49:51.719867 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 19:49:51.719903 12321 solver.cpp:319]     Test net output #1: loss = 0.0156437 (* 1 = 0.0156437 loss)
+I0605 19:50:15.560019 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_75000.caffemodel
+I0605 19:50:15.561645 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_75000.solverstate
+I0605 19:50:15.562428 12321 solver.cpp:270] Iteration 75000, Testing net (#0)
+I0605 19:50:16.606458 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:50:16.606497 12321 solver.cpp:319]     Test net output #1: loss = 0.0159586 (* 1 = 0.0159586 loss)
+I0605 19:50:40.515239 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_75600.caffemodel
+I0605 19:50:40.516773 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_75600.solverstate
+I0605 19:50:40.517487 12321 solver.cpp:270] Iteration 75600, Testing net (#0)
+I0605 19:50:41.564043 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 19:50:41.564075 12321 solver.cpp:319]     Test net output #1: loss = 0.0154032 (* 1 = 0.0154032 loss)
+I0605 19:51:05.425547 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_76200.caffemodel
+I0605 19:51:05.455145 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_76200.solverstate
+I0605 19:51:05.493260 12321 solver.cpp:270] Iteration 76200, Testing net (#0)
+I0605 19:51:06.538200 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 19:51:06.538239 12321 solver.cpp:319]     Test net output #1: loss = 0.0164162 (* 1 = 0.0164162 loss)
+I0605 19:51:30.399727 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_76800.caffemodel
+I0605 19:51:30.431408 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_76800.solverstate
+I0605 19:51:30.479521 12321 solver.cpp:270] Iteration 76800, Testing net (#0)
+I0605 19:51:31.528146 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 19:51:31.528185 12321 solver.cpp:319]     Test net output #1: loss = 0.0160686 (* 1 = 0.0160686 loss)
+I0605 19:51:55.412046 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_77400.caffemodel
+I0605 19:51:55.434267 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_77400.solverstate
+I0605 19:51:55.435597 12321 solver.cpp:270] Iteration 77400, Testing net (#0)
+I0605 19:51:56.482799 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 19:51:56.482837 12321 solver.cpp:319]     Test net output #1: loss = 0.0159901 (* 1 = 0.0159901 loss)
+I0605 19:52:20.362572 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_78000.caffemodel
+I0605 19:52:20.382293 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_78000.solverstate
+I0605 19:52:20.399077 12321 solver.cpp:270] Iteration 78000, Testing net (#0)
+I0605 19:52:21.448284 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 19:52:21.448324 12321 solver.cpp:319]     Test net output #1: loss = 0.0157548 (* 1 = 0.0157548 loss)
+I0605 19:52:45.353629 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_78600.caffemodel
+I0605 19:52:45.355171 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_78600.solverstate
+I0605 19:52:45.374727 12321 solver.cpp:270] Iteration 78600, Testing net (#0)
+I0605 19:52:46.425865 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:52:46.425904 12321 solver.cpp:319]     Test net output #1: loss = 0.0163822 (* 1 = 0.0163822 loss)
+I0605 19:53:10.288746 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_79200.caffemodel
+I0605 19:53:10.392241 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_79200.solverstate
+I0605 19:53:10.393448 12321 solver.cpp:270] Iteration 79200, Testing net (#0)
+I0605 19:53:11.440297 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 19:53:11.440338 12321 solver.cpp:319]     Test net output #1: loss = 0.0160841 (* 1 = 0.0160841 loss)
+I0605 19:53:35.306843 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_79800.caffemodel
+I0605 19:53:35.308327 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_79800.solverstate
+I0605 19:53:35.347816 12321 solver.cpp:270] Iteration 79800, Testing net (#0)
+I0605 19:53:36.398983 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 19:53:36.399019 12321 solver.cpp:319]     Test net output #1: loss = 0.0156238 (* 1 = 0.0156238 loss)
+I0605 19:54:00.257349 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_80400.caffemodel
+I0605 19:54:00.258901 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_80400.solverstate
+I0605 19:54:00.259618 12321 solver.cpp:270] Iteration 80400, Testing net (#0)
+I0605 19:54:01.305891 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9957
+I0605 19:54:01.305924 12321 solver.cpp:319]     Test net output #1: loss = 0.0156671 (* 1 = 0.0156671 loss)
+I0605 19:54:25.173432 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_81000.caffemodel
+I0605 19:54:25.174916 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_81000.solverstate
+I0605 19:54:25.175631 12321 solver.cpp:270] Iteration 81000, Testing net (#0)
+I0605 19:54:26.222005 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:54:26.222049 12321 solver.cpp:319]     Test net output #1: loss = 0.0163733 (* 1 = 0.0163733 loss)
+I0605 19:54:50.112670 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_81600.caffemodel
+I0605 19:54:50.146234 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_81600.solverstate
+I0605 19:54:50.147548 12321 solver.cpp:270] Iteration 81600, Testing net (#0)
+I0605 19:54:51.192934 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 19:54:51.192983 12321 solver.cpp:319]     Test net output #1: loss = 0.0159941 (* 1 = 0.0159941 loss)
+I0605 19:55:15.052798 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_82200.caffemodel
+I0605 19:55:15.054322 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_82200.solverstate
+I0605 19:55:15.055057 12321 solver.cpp:270] Iteration 82200, Testing net (#0)
+I0605 19:55:16.105705 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 19:55:16.105741 12321 solver.cpp:319]     Test net output #1: loss = 0.0162003 (* 1 = 0.0162003 loss)
+I0605 19:55:39.976543 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_82800.caffemodel
+I0605 19:55:40.010404 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_82800.solverstate
+I0605 19:55:40.011168 12321 solver.cpp:270] Iteration 82800, Testing net (#0)
+I0605 19:55:41.086520 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 19:55:41.086560 12321 solver.cpp:319]     Test net output #1: loss = 0.016143 (* 1 = 0.016143 loss)
+I0605 19:56:04.950131 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_83400.caffemodel
+I0605 19:56:04.971629 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_83400.solverstate
+I0605 19:56:05.004848 12321 solver.cpp:270] Iteration 83400, Testing net (#0)
+I0605 19:56:06.048043 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 19:56:06.048084 12321 solver.cpp:319]     Test net output #1: loss = 0.015276 (* 1 = 0.015276 loss)
+I0605 19:56:29.938467 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_84000.caffemodel
+I0605 19:56:29.967133 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_84000.solverstate
+I0605 19:56:30.014991 12321 solver.cpp:270] Iteration 84000, Testing net (#0)
+I0605 19:56:31.061734 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 19:56:31.061772 12321 solver.cpp:319]     Test net output #1: loss = 0.016336 (* 1 = 0.016336 loss)
+I0605 19:56:54.935089 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_84600.caffemodel
+I0605 19:56:54.955806 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_84600.solverstate
+I0605 19:56:54.957165 12321 solver.cpp:270] Iteration 84600, Testing net (#0)
+I0605 19:56:56.005019 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9945
+I0605 19:56:56.005059 12321 solver.cpp:319]     Test net output #1: loss = 0.0174481 (* 1 = 0.0174481 loss)
+I0605 19:57:19.881441 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_85200.caffemodel
+I0605 19:57:19.911260 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_85200.solverstate
+I0605 19:57:19.912051 12321 solver.cpp:270] Iteration 85200, Testing net (#0)
+I0605 19:57:20.982466 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 19:57:20.982506 12321 solver.cpp:319]     Test net output #1: loss = 0.0163174 (* 1 = 0.0163174 loss)
+I0605 19:57:44.835850 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_85800.caffemodel
+I0605 19:57:44.855500 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_85800.solverstate
+I0605 19:57:44.873564 12321 solver.cpp:270] Iteration 85800, Testing net (#0)
+I0605 19:57:45.925897 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 19:57:45.925935 12321 solver.cpp:319]     Test net output #1: loss = 0.015465 (* 1 = 0.015465 loss)
+I0605 19:58:09.802767 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_86400.caffemodel
+I0605 19:58:09.804246 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_86400.solverstate
+I0605 19:58:09.842270 12321 solver.cpp:270] Iteration 86400, Testing net (#0)
+I0605 19:58:10.888557 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 19:58:10.888592 12321 solver.cpp:319]     Test net output #1: loss = 0.0158491 (* 1 = 0.0158491 loss)
+I0605 19:58:34.753317 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_87000.caffemodel
+I0605 19:58:34.777504 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_87000.solverstate
+I0605 19:58:34.778259 12321 solver.cpp:270] Iteration 87000, Testing net (#0)
+I0605 19:58:35.831864 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9946
+I0605 19:58:35.831902 12321 solver.cpp:319]     Test net output #1: loss = 0.0150096 (* 1 = 0.0150096 loss)
+I0605 19:58:59.720224 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_87600.caffemodel
+I0605 19:58:59.721716 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_87600.solverstate
+I0605 19:58:59.723453 12321 solver.cpp:270] Iteration 87600, Testing net (#0)
+I0605 19:59:00.767628 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 19:59:00.767663 12321 solver.cpp:319]     Test net output #1: loss = 0.0154335 (* 1 = 0.0154335 loss)
+I0605 19:59:24.638306 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_88200.caffemodel
+I0605 19:59:24.667163 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_88200.solverstate
+I0605 19:59:24.669189 12321 solver.cpp:270] Iteration 88200, Testing net (#0)
+I0605 19:59:25.714031 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 19:59:25.714066 12321 solver.cpp:319]     Test net output #1: loss = 0.0154964 (* 1 = 0.0154964 loss)
+I0605 19:59:49.607563 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_88800.caffemodel
+I0605 19:59:49.609109 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_88800.solverstate
+I0605 19:59:49.609828 12321 solver.cpp:270] Iteration 88800, Testing net (#0)
+I0605 19:59:50.657045 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 19:59:50.657078 12321 solver.cpp:319]     Test net output #1: loss = 0.0158659 (* 1 = 0.0158659 loss)
+I0605 20:00:14.525452 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_89400.caffemodel
+I0605 20:00:14.526934 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_89400.solverstate
+I0605 20:00:14.527647 12321 solver.cpp:270] Iteration 89400, Testing net (#0)
+I0605 20:00:15.571616 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:00:15.571656 12321 solver.cpp:319]     Test net output #1: loss = 0.0163909 (* 1 = 0.0163909 loss)
+I0605 20:00:39.464340 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_90000.caffemodel
+I0605 20:00:39.465879 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_90000.solverstate
+I0605 20:00:39.501576 12321 solver.cpp:270] Iteration 90000, Testing net (#0)
+I0605 20:00:40.553539 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:00:40.553576 12321 solver.cpp:319]     Test net output #1: loss = 0.0155794 (* 1 = 0.0155794 loss)
+I0605 20:01:04.438036 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_90600.caffemodel
+I0605 20:01:04.464717 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_90600.solverstate
+I0605 20:01:04.499447 12321 solver.cpp:270] Iteration 90600, Testing net (#0)
+I0605 20:01:05.544867 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:01:05.544909 12321 solver.cpp:319]     Test net output #1: loss = 0.0158017 (* 1 = 0.0158017 loss)
+I0605 20:01:29.419419 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_91200.caffemodel
+I0605 20:01:29.442611 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_91200.solverstate
+I0605 20:01:29.461498 12321 solver.cpp:270] Iteration 91200, Testing net (#0)
+I0605 20:01:30.510920 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:01:30.510957 12321 solver.cpp:319]     Test net output #1: loss = 0.0158888 (* 1 = 0.0158888 loss)
+I0605 20:01:54.413921 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_91800.caffemodel
+I0605 20:01:54.438724 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_91800.solverstate
+I0605 20:01:54.439532 12321 solver.cpp:270] Iteration 91800, Testing net (#0)
+I0605 20:01:55.489725 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:01:55.489763 12321 solver.cpp:319]     Test net output #1: loss = 0.0157829 (* 1 = 0.0157829 loss)
+I0605 20:02:19.350539 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_92400.caffemodel
+I0605 20:02:19.390117 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_92400.solverstate
+I0605 20:02:19.428164 12321 solver.cpp:270] Iteration 92400, Testing net (#0)
+I0605 20:02:20.475126 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:02:20.475167 12321 solver.cpp:319]     Test net output #1: loss = 0.0169367 (* 1 = 0.0169367 loss)
+I0605 20:02:44.375958 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_93000.caffemodel
+I0605 20:02:44.377558 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_93000.solverstate
+I0605 20:02:44.378322 12321 solver.cpp:270] Iteration 93000, Testing net (#0)
+I0605 20:02:45.432791 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:02:45.432829 12321 solver.cpp:319]     Test net output #1: loss = 0.0157399 (* 1 = 0.0157399 loss)
+I0605 20:03:09.294973 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_93600.caffemodel
+I0605 20:03:09.312507 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_93600.solverstate
+I0605 20:03:09.313743 12321 solver.cpp:270] Iteration 93600, Testing net (#0)
+I0605 20:03:10.361531 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:03:10.361572 12321 solver.cpp:319]     Test net output #1: loss = 0.0168529 (* 1 = 0.0168529 loss)
+I0605 20:03:34.250939 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_94200.caffemodel
+I0605 20:03:34.252954 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_94200.solverstate
+I0605 20:03:34.254107 12321 solver.cpp:270] Iteration 94200, Testing net (#0)
+I0605 20:03:35.305078 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:03:35.305119 12321 solver.cpp:319]     Test net output #1: loss = 0.0159404 (* 1 = 0.0159404 loss)
+I0605 20:03:59.215226 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_94800.caffemodel
+I0605 20:03:59.239435 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_94800.solverstate
+I0605 20:03:59.240253 12321 solver.cpp:270] Iteration 94800, Testing net (#0)
+I0605 20:04:00.313845 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:04:00.313886 12321 solver.cpp:319]     Test net output #1: loss = 0.0160517 (* 1 = 0.0160517 loss)
+I0605 20:04:24.205068 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_95400.caffemodel
+I0605 20:04:24.246145 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_95400.solverstate
+I0605 20:04:24.247810 12321 solver.cpp:270] Iteration 95400, Testing net (#0)
+I0605 20:04:25.296398 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:04:25.296433 12321 solver.cpp:319]     Test net output #1: loss = 0.0167109 (* 1 = 0.0167109 loss)
+I0605 20:04:49.182966 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_96000.caffemodel
+I0605 20:04:49.184471 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_96000.solverstate
+I0605 20:04:49.185185 12321 solver.cpp:270] Iteration 96000, Testing net (#0)
+I0605 20:04:50.236738 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:04:50.236778 12321 solver.cpp:319]     Test net output #1: loss = 0.0151679 (* 1 = 0.0151679 loss)
+I0605 20:05:14.098680 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_96600.caffemodel
+I0605 20:05:14.130638 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_96600.solverstate
+I0605 20:05:14.157480 12321 solver.cpp:270] Iteration 96600, Testing net (#0)
+I0605 20:05:15.203469 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:05:15.203512 12321 solver.cpp:319]     Test net output #1: loss = 0.0156097 (* 1 = 0.0156097 loss)
+I0605 20:05:39.088649 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_97200.caffemodel
+I0605 20:05:39.121511 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_97200.solverstate
+I0605 20:05:39.175849 12321 solver.cpp:270] Iteration 97200, Testing net (#0)
+I0605 20:05:40.225873 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:05:40.225913 12321 solver.cpp:319]     Test net output #1: loss = 0.0160581 (* 1 = 0.0160581 loss)
+I0605 20:06:04.096117 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_97800.caffemodel
+I0605 20:06:04.124755 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_97800.solverstate
+I0605 20:06:04.157305 12321 solver.cpp:270] Iteration 97800, Testing net (#0)
+I0605 20:06:05.206060 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9957
+I0605 20:06:05.206095 12321 solver.cpp:319]     Test net output #1: loss = 0.0153996 (* 1 = 0.0153996 loss)
+I0605 20:06:29.091361 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_98400.caffemodel
+I0605 20:06:29.113464 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_98400.solverstate
+I0605 20:06:29.143338 12321 solver.cpp:270] Iteration 98400, Testing net (#0)
+I0605 20:06:30.197322 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:06:30.197361 12321 solver.cpp:319]     Test net output #1: loss = 0.0146999 (* 1 = 0.0146999 loss)
+I0605 20:06:54.082037 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_99000.caffemodel
+I0605 20:06:54.083575 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_99000.solverstate
+I0605 20:06:54.085505 12321 solver.cpp:270] Iteration 99000, Testing net (#0)
+I0605 20:06:55.131526 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:06:55.131561 12321 solver.cpp:319]     Test net output #1: loss = 0.0160681 (* 1 = 0.0160681 loss)
+I0605 20:07:19.008806 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_99600.caffemodel
+I0605 20:07:19.033141 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_99600.solverstate
+I0605 20:07:19.058476 12321 solver.cpp:270] Iteration 99600, Testing net (#0)
+I0605 20:07:20.109419 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:07:20.109458 12321 solver.cpp:319]     Test net output #1: loss = 0.0145777 (* 1 = 0.0145777 loss)
+I0605 20:07:43.979744 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_100200.caffemodel
+I0605 20:07:43.996387 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_100200.solverstate
+I0605 20:07:43.997642 12321 solver.cpp:270] Iteration 100200, Testing net (#0)
+I0605 20:07:45.041580 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:07:45.041618 12321 solver.cpp:319]     Test net output #1: loss = 0.0160009 (* 1 = 0.0160009 loss)
+I0605 20:08:08.935673 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_100800.caffemodel
+I0605 20:08:08.937206 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_100800.solverstate
+I0605 20:08:08.966514 12321 solver.cpp:270] Iteration 100800, Testing net (#0)
+I0605 20:08:10.017985 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:08:10.018025 12321 solver.cpp:319]     Test net output #1: loss = 0.0159753 (* 1 = 0.0159753 loss)
+I0605 20:08:33.894263 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_101400.caffemodel
+I0605 20:08:33.918503 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_101400.solverstate
+I0605 20:08:33.919680 12321 solver.cpp:270] Iteration 101400, Testing net (#0)
+I0605 20:08:34.967015 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 20:08:34.967054 12321 solver.cpp:319]     Test net output #1: loss = 0.015765 (* 1 = 0.015765 loss)
+I0605 20:08:58.866114 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_102000.caffemodel
+I0605 20:08:58.868180 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_102000.solverstate
+I0605 20:08:58.896178 12321 solver.cpp:270] Iteration 102000, Testing net (#0)
+I0605 20:08:59.941812 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:08:59.941854 12321 solver.cpp:319]     Test net output #1: loss = 0.0160513 (* 1 = 0.0160513 loss)
+I0605 20:09:23.838999 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_102600.caffemodel
+I0605 20:09:23.840474 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_102600.solverstate
+I0605 20:09:23.860913 12321 solver.cpp:270] Iteration 102600, Testing net (#0)
+I0605 20:09:24.910277 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:09:24.910316 12321 solver.cpp:319]     Test net output #1: loss = 0.0168944 (* 1 = 0.0168944 loss)
+I0605 20:09:48.802469 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_103200.caffemodel
+I0605 20:09:48.804091 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_103200.solverstate
+I0605 20:09:48.804850 12321 solver.cpp:270] Iteration 103200, Testing net (#0)
+I0605 20:09:49.850771 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:09:49.850803 12321 solver.cpp:319]     Test net output #1: loss = 0.0153663 (* 1 = 0.0153663 loss)
+I0605 20:10:13.728287 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_103800.caffemodel
+I0605 20:10:13.729840 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_103800.solverstate
+I0605 20:10:13.730566 12321 solver.cpp:270] Iteration 103800, Testing net (#0)
+I0605 20:10:14.779431 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:10:14.779470 12321 solver.cpp:319]     Test net output #1: loss = 0.0156977 (* 1 = 0.0156977 loss)
+I0605 20:10:38.655318 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_104400.caffemodel
+I0605 20:10:38.676826 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_104400.solverstate
+I0605 20:10:38.678611 12321 solver.cpp:270] Iteration 104400, Testing net (#0)
+I0605 20:10:39.723863 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:10:39.723901 12321 solver.cpp:319]     Test net output #1: loss = 0.0159555 (* 1 = 0.0159555 loss)
+I0605 20:11:03.628983 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_105000.caffemodel
+I0605 20:11:03.650799 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_105000.solverstate
+I0605 20:11:03.695343 12321 solver.cpp:270] Iteration 105000, Testing net (#0)
+I0605 20:11:04.744977 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:11:04.745019 12321 solver.cpp:319]     Test net output #1: loss = 0.0154551 (* 1 = 0.0154551 loss)
+I0605 20:11:28.597411 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_105600.caffemodel
+I0605 20:11:28.598966 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_105600.solverstate
+I0605 20:11:28.599681 12321 solver.cpp:270] Iteration 105600, Testing net (#0)
+I0605 20:11:29.648552 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:11:29.648588 12321 solver.cpp:319]     Test net output #1: loss = 0.0163952 (* 1 = 0.0163952 loss)
+I0605 20:11:53.519762 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_106200.caffemodel
+I0605 20:11:53.550446 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_106200.solverstate
+I0605 20:11:53.551622 12321 solver.cpp:270] Iteration 106200, Testing net (#0)
+I0605 20:11:54.603668 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9946
+I0605 20:11:54.603713 12321 solver.cpp:319]     Test net output #1: loss = 0.0166165 (* 1 = 0.0166165 loss)
+I0605 20:12:18.458060 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_106800.caffemodel
+I0605 20:12:18.484501 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_106800.solverstate
+I0605 20:12:18.518687 12321 solver.cpp:270] Iteration 106800, Testing net (#0)
+I0605 20:12:19.582614 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:12:19.582653 12321 solver.cpp:319]     Test net output #1: loss = 0.0167204 (* 1 = 0.0167204 loss)
+I0605 20:12:43.453457 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_107400.caffemodel
+I0605 20:12:43.479015 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_107400.solverstate
+I0605 20:12:43.502641 12321 solver.cpp:270] Iteration 107400, Testing net (#0)
+I0605 20:12:44.549825 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9946
+I0605 20:12:44.549857 12321 solver.cpp:319]     Test net output #1: loss = 0.0166804 (* 1 = 0.0166804 loss)
+I0605 20:13:08.440349 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_108000.caffemodel
+I0605 20:13:08.441865 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_108000.solverstate
+I0605 20:13:08.442584 12321 solver.cpp:270] Iteration 108000, Testing net (#0)
+I0605 20:13:09.488200 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 20:13:09.488239 12321 solver.cpp:319]     Test net output #1: loss = 0.0175429 (* 1 = 0.0175429 loss)
+I0605 20:13:33.389588 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_108600.caffemodel
+I0605 20:13:33.391109 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_108600.solverstate
+I0605 20:13:33.391841 12321 solver.cpp:270] Iteration 108600, Testing net (#0)
+I0605 20:13:34.440646 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:13:34.440683 12321 solver.cpp:319]     Test net output #1: loss = 0.016182 (* 1 = 0.016182 loss)
+I0605 20:13:58.331177 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_109200.caffemodel
+I0605 20:13:58.350069 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_109200.solverstate
+I0605 20:13:58.396203 12321 solver.cpp:270] Iteration 109200, Testing net (#0)
+I0605 20:13:59.458627 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9942
+I0605 20:13:59.458662 12321 solver.cpp:319]     Test net output #1: loss = 0.0173636 (* 1 = 0.0173636 loss)
+I0605 20:14:23.334470 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_109800.caffemodel
+I0605 20:14:23.349539 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_109800.solverstate
+I0605 20:14:23.351603 12321 solver.cpp:270] Iteration 109800, Testing net (#0)
+I0605 20:14:24.403424 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:14:24.403466 12321 solver.cpp:319]     Test net output #1: loss = 0.0156657 (* 1 = 0.0156657 loss)
+I0605 20:14:48.289412 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_110400.caffemodel
+I0605 20:14:48.313287 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_110400.solverstate
+I0605 20:14:48.350283 12321 solver.cpp:270] Iteration 110400, Testing net (#0)
+I0605 20:14:49.396998 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 20:14:49.397034 12321 solver.cpp:319]     Test net output #1: loss = 0.0153555 (* 1 = 0.0153555 loss)
+I0605 20:15:13.288480 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_111000.caffemodel
+I0605 20:15:13.318742 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_111000.solverstate
+I0605 20:15:13.320924 12321 solver.cpp:270] Iteration 111000, Testing net (#0)
+I0605 20:15:14.371799 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:15:14.371840 12321 solver.cpp:319]     Test net output #1: loss = 0.0159976 (* 1 = 0.0159976 loss)
+I0605 20:15:38.255431 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_111600.caffemodel
+I0605 20:15:38.290959 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_111600.solverstate
+I0605 20:15:38.334262 12321 solver.cpp:270] Iteration 111600, Testing net (#0)
+I0605 20:15:39.379683 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9947
+I0605 20:15:39.379721 12321 solver.cpp:319]     Test net output #1: loss = 0.016413 (* 1 = 0.016413 loss)
+I0605 20:16:03.239315 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_112200.caffemodel
+I0605 20:16:03.266777 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_112200.solverstate
+I0605 20:16:03.267590 12321 solver.cpp:270] Iteration 112200, Testing net (#0)
+I0605 20:16:04.338150 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:16:04.338191 12321 solver.cpp:319]     Test net output #1: loss = 0.0163388 (* 1 = 0.0163388 loss)
+I0605 20:16:28.207590 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_112800.caffemodel
+I0605 20:16:28.243252 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_112800.solverstate
+I0605 20:16:28.245131 12321 solver.cpp:270] Iteration 112800, Testing net (#0)
+I0605 20:16:29.295771 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:16:29.295810 12321 solver.cpp:319]     Test net output #1: loss = 0.0174071 (* 1 = 0.0174071 loss)
+I0605 20:16:53.230789 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_113400.caffemodel
+I0605 20:16:53.232357 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_113400.solverstate
+I0605 20:16:53.233111 12321 solver.cpp:270] Iteration 113400, Testing net (#0)
+I0605 20:16:54.287248 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:16:54.287288 12321 solver.cpp:319]     Test net output #1: loss = 0.0156368 (* 1 = 0.0156368 loss)
+I0605 20:17:18.182780 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_114000.caffemodel
+I0605 20:17:18.184368 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_114000.solverstate
+I0605 20:17:18.185127 12321 solver.cpp:270] Iteration 114000, Testing net (#0)
+I0605 20:17:19.239675 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:17:19.239707 12321 solver.cpp:319]     Test net output #1: loss = 0.0160557 (* 1 = 0.0160557 loss)
+I0605 20:17:43.131505 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_114600.caffemodel
+I0605 20:17:43.155473 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_114600.solverstate
+I0605 20:17:43.156328 12321 solver.cpp:270] Iteration 114600, Testing net (#0)
+I0605 20:17:44.202289 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9945
+I0605 20:17:44.202333 12321 solver.cpp:319]     Test net output #1: loss = 0.0177162 (* 1 = 0.0177162 loss)
+I0605 20:18:08.078778 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_115200.caffemodel
+I0605 20:18:08.100045 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_115200.solverstate
+I0605 20:18:08.130671 12321 solver.cpp:270] Iteration 115200, Testing net (#0)
+I0605 20:18:09.180649 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:18:09.180680 12321 solver.cpp:319]     Test net output #1: loss = 0.015261 (* 1 = 0.015261 loss)
+I0605 20:18:33.088526 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_115800.caffemodel
+I0605 20:18:33.121656 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_115800.solverstate
+I0605 20:18:33.123389 12321 solver.cpp:270] Iteration 115800, Testing net (#0)
+I0605 20:18:34.167716 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:18:34.167755 12321 solver.cpp:319]     Test net output #1: loss = 0.0171726 (* 1 = 0.0171726 loss)
+I0605 20:18:58.051396 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_116400.caffemodel
+I0605 20:18:58.052896 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_116400.solverstate
+I0605 20:18:58.053609 12321 solver.cpp:270] Iteration 116400, Testing net (#0)
+I0605 20:18:59.106570 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:18:59.106605 12321 solver.cpp:319]     Test net output #1: loss = 0.0171031 (* 1 = 0.0171031 loss)
+I0605 20:19:22.983948 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_117000.caffemodel
+I0605 20:19:22.985479 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_117000.solverstate
+I0605 20:19:23.007669 12321 solver.cpp:270] Iteration 117000, Testing net (#0)
+I0605 20:19:24.054951 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9945
+I0605 20:19:24.054986 12321 solver.cpp:319]     Test net output #1: loss = 0.0161061 (* 1 = 0.0161061 loss)
+I0605 20:19:47.968878 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_117600.caffemodel
+I0605 20:19:47.994966 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_117600.solverstate
+I0605 20:19:48.045929 12321 solver.cpp:270] Iteration 117600, Testing net (#0)
+I0605 20:19:49.095641 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9941
+I0605 20:19:49.095679 12321 solver.cpp:319]     Test net output #1: loss = 0.017784 (* 1 = 0.017784 loss)
+I0605 20:20:12.967551 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_118200.caffemodel
+I0605 20:20:12.991914 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_118200.solverstate
+I0605 20:20:12.992697 12321 solver.cpp:270] Iteration 118200, Testing net (#0)
+I0605 20:20:14.060696 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:20:14.060736 12321 solver.cpp:319]     Test net output #1: loss = 0.0163486 (* 1 = 0.0163486 loss)
+I0605 20:20:37.947238 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_118800.caffemodel
+I0605 20:20:37.972283 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_118800.solverstate
+I0605 20:20:38.017843 12321 solver.cpp:270] Iteration 118800, Testing net (#0)
+I0605 20:20:39.065944 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9935
+I0605 20:20:39.065982 12321 solver.cpp:319]     Test net output #1: loss = 0.0175119 (* 1 = 0.0175119 loss)
+I0605 20:21:02.965438 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_119400.caffemodel
+I0605 20:21:02.986932 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_119400.solverstate
+I0605 20:21:02.987764 12321 solver.cpp:270] Iteration 119400, Testing net (#0)
+I0605 20:21:04.040897 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:21:04.040931 12321 solver.cpp:319]     Test net output #1: loss = 0.0154938 (* 1 = 0.0154938 loss)
+I0605 20:21:27.910233 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_120000.caffemodel
+I0605 20:21:27.941524 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_120000.solverstate
+I0605 20:21:27.983738 12321 solver.cpp:270] Iteration 120000, Testing net (#0)
+I0605 20:21:29.029947 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:21:29.029989 12321 solver.cpp:319]     Test net output #1: loss = 0.0173382 (* 1 = 0.0173382 loss)
+I0605 20:21:29.044317 12321 solver.cpp:399] MultiStep Status: Iteration 120000, step = 2
+I0605 20:21:52.896863 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_120600.caffemodel
+I0605 20:21:52.898392 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_120600.solverstate
+I0605 20:21:52.899107 12321 solver.cpp:270] Iteration 120600, Testing net (#0)
+I0605 20:21:53.945437 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9948
+I0605 20:21:53.945469 12321 solver.cpp:319]     Test net output #1: loss = 0.015728 (* 1 = 0.015728 loss)
+I0605 20:22:17.825458 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_121200.caffemodel
+I0605 20:22:17.858197 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_121200.solverstate
+I0605 20:22:17.911430 12321 solver.cpp:270] Iteration 121200, Testing net (#0)
+I0605 20:22:18.959463 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:22:18.959502 12321 solver.cpp:319]     Test net output #1: loss = 0.0155132 (* 1 = 0.0155132 loss)
+I0605 20:22:42.813243 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_121800.caffemodel
+I0605 20:22:42.814728 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_121800.solverstate
+I0605 20:22:42.815449 12321 solver.cpp:270] Iteration 121800, Testing net (#0)
+I0605 20:22:43.860829 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:22:43.860862 12321 solver.cpp:319]     Test net output #1: loss = 0.0152196 (* 1 = 0.0152196 loss)
+I0605 20:23:07.754998 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_122400.caffemodel
+I0605 20:23:07.779675 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_122400.solverstate
+I0605 20:23:07.780393 12321 solver.cpp:270] Iteration 122400, Testing net (#0)
+I0605 20:23:08.823076 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:23:08.823108 12321 solver.cpp:319]     Test net output #1: loss = 0.0154128 (* 1 = 0.0154128 loss)
+I0605 20:23:32.667371 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_123000.caffemodel
+I0605 20:23:32.689851 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_123000.solverstate
+I0605 20:23:32.691570 12321 solver.cpp:270] Iteration 123000, Testing net (#0)
+I0605 20:23:33.740123 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:23:33.740156 12321 solver.cpp:319]     Test net output #1: loss = 0.0150461 (* 1 = 0.0150461 loss)
+I0605 20:23:57.604326 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_123600.caffemodel
+I0605 20:23:57.632182 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_123600.solverstate
+I0605 20:23:57.634320 12321 solver.cpp:270] Iteration 123600, Testing net (#0)
+I0605 20:23:58.681314 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:23:58.681355 12321 solver.cpp:319]     Test net output #1: loss = 0.0151299 (* 1 = 0.0151299 loss)
+I0605 20:24:22.545085 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_124200.caffemodel
+I0605 20:24:22.585075 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_124200.solverstate
+I0605 20:24:22.631620 12321 solver.cpp:270] Iteration 124200, Testing net (#0)
+I0605 20:24:23.679630 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:24:23.679672 12321 solver.cpp:319]     Test net output #1: loss = 0.0150043 (* 1 = 0.0150043 loss)
+I0605 20:24:47.557574 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_124800.caffemodel
+I0605 20:24:47.588088 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_124800.solverstate
+I0605 20:24:47.620306 12321 solver.cpp:270] Iteration 124800, Testing net (#0)
+I0605 20:24:48.667894 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:24:48.667935 12321 solver.cpp:319]     Test net output #1: loss = 0.0147654 (* 1 = 0.0147654 loss)
+I0605 20:25:12.586872 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_125400.caffemodel
+I0605 20:25:12.615823 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_125400.solverstate
+I0605 20:25:12.638737 12321 solver.cpp:270] Iteration 125400, Testing net (#0)
+I0605 20:25:13.684219 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:25:13.684255 12321 solver.cpp:319]     Test net output #1: loss = 0.0151135 (* 1 = 0.0151135 loss)
+I0605 20:25:37.572002 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_126000.caffemodel
+I0605 20:25:37.573505 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_126000.solverstate
+I0605 20:25:37.574211 12321 solver.cpp:270] Iteration 126000, Testing net (#0)
+I0605 20:25:38.617318 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:25:38.617352 12321 solver.cpp:319]     Test net output #1: loss = 0.0149787 (* 1 = 0.0149787 loss)
+I0605 20:26:02.514397 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_126600.caffemodel
+I0605 20:26:02.542551 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_126600.solverstate
+I0605 20:26:02.575808 12321 solver.cpp:270] Iteration 126600, Testing net (#0)
+I0605 20:26:03.624837 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:26:03.624876 12321 solver.cpp:319]     Test net output #1: loss = 0.0152809 (* 1 = 0.0152809 loss)
+I0605 20:26:27.503568 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_127200.caffemodel
+I0605 20:26:27.505164 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_127200.solverstate
+I0605 20:26:27.505884 12321 solver.cpp:270] Iteration 127200, Testing net (#0)
+I0605 20:26:28.552587 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:26:28.552623 12321 solver.cpp:319]     Test net output #1: loss = 0.0149074 (* 1 = 0.0149074 loss)
+I0605 20:26:52.419383 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_127800.caffemodel
+I0605 20:26:52.453395 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_127800.solverstate
+I0605 20:26:52.454895 12321 solver.cpp:270] Iteration 127800, Testing net (#0)
+I0605 20:26:53.503674 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:26:53.503710 12321 solver.cpp:319]     Test net output #1: loss = 0.0147681 (* 1 = 0.0147681 loss)
+I0605 20:27:17.398510 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_128400.caffemodel
+I0605 20:27:17.426463 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_128400.solverstate
+I0605 20:27:17.428398 12321 solver.cpp:270] Iteration 128400, Testing net (#0)
+I0605 20:27:18.476511 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:27:18.476546 12321 solver.cpp:319]     Test net output #1: loss = 0.0150118 (* 1 = 0.0150118 loss)
+I0605 20:27:42.374589 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_129000.caffemodel
+I0605 20:27:42.391546 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_129000.solverstate
+I0605 20:27:42.423054 12321 solver.cpp:270] Iteration 129000, Testing net (#0)
+I0605 20:27:43.474081 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:27:43.474120 12321 solver.cpp:319]     Test net output #1: loss = 0.015019 (* 1 = 0.015019 loss)
+I0605 20:28:07.361558 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_129600.caffemodel
+I0605 20:28:07.386391 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_129600.solverstate
+I0605 20:28:07.406003 12321 solver.cpp:270] Iteration 129600, Testing net (#0)
+I0605 20:28:08.451261 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:28:08.451303 12321 solver.cpp:319]     Test net output #1: loss = 0.0149158 (* 1 = 0.0149158 loss)
+I0605 20:28:32.330114 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_130200.caffemodel
+I0605 20:28:32.349953 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_130200.solverstate
+I0605 20:28:32.373958 12321 solver.cpp:270] Iteration 130200, Testing net (#0)
+I0605 20:28:33.422798 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:28:33.422837 12321 solver.cpp:319]     Test net output #1: loss = 0.0150296 (* 1 = 0.0150296 loss)
+I0605 20:28:57.273846 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_130800.caffemodel
+I0605 20:28:57.308588 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_130800.solverstate
+I0605 20:28:57.340924 12321 solver.cpp:270] Iteration 130800, Testing net (#0)
+I0605 20:28:58.388000 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:28:58.388032 12321 solver.cpp:319]     Test net output #1: loss = 0.0149246 (* 1 = 0.0149246 loss)
+I0605 20:29:22.293166 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_131400.caffemodel
+I0605 20:29:22.319794 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_131400.solverstate
+I0605 20:29:22.321728 12321 solver.cpp:270] Iteration 131400, Testing net (#0)
+I0605 20:29:23.365360 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:29:23.365393 12321 solver.cpp:319]     Test net output #1: loss = 0.0150201 (* 1 = 0.0150201 loss)
+I0605 20:29:47.252670 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_132000.caffemodel
+I0605 20:29:47.282881 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_132000.solverstate
+I0605 20:29:47.317822 12321 solver.cpp:270] Iteration 132000, Testing net (#0)
+I0605 20:29:48.363358 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:29:48.363392 12321 solver.cpp:319]     Test net output #1: loss = 0.0148034 (* 1 = 0.0148034 loss)
+I0605 20:30:12.249760 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_132600.caffemodel
+I0605 20:30:12.279948 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_132600.solverstate
+I0605 20:30:12.281621 12321 solver.cpp:270] Iteration 132600, Testing net (#0)
+I0605 20:30:13.331957 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9949
+I0605 20:30:13.331995 12321 solver.cpp:319]     Test net output #1: loss = 0.0148209 (* 1 = 0.0148209 loss)
+I0605 20:30:37.219105 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_133200.caffemodel
+I0605 20:30:37.220624 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_133200.solverstate
+I0605 20:30:37.221351 12321 solver.cpp:270] Iteration 133200, Testing net (#0)
+I0605 20:30:38.269765 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:30:38.269804 12321 solver.cpp:319]     Test net output #1: loss = 0.0147473 (* 1 = 0.0147473 loss)
+I0605 20:31:02.167528 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_133800.caffemodel
+I0605 20:31:02.174134 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_133800.solverstate
+I0605 20:31:02.190688 12321 solver.cpp:270] Iteration 133800, Testing net (#0)
+I0605 20:31:03.236930 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:31:03.236965 12321 solver.cpp:319]     Test net output #1: loss = 0.0144264 (* 1 = 0.0144264 loss)
+I0605 20:31:27.135612 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_134400.caffemodel
+I0605 20:31:27.154570 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_134400.solverstate
+I0605 20:31:27.178638 12321 solver.cpp:270] Iteration 134400, Testing net (#0)
+I0605 20:31:28.226799 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:31:28.226837 12321 solver.cpp:319]     Test net output #1: loss = 0.0145859 (* 1 = 0.0145859 loss)
+I0605 20:31:52.105558 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_135000.caffemodel
+I0605 20:31:52.107125 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_135000.solverstate
+I0605 20:31:52.107834 12321 solver.cpp:270] Iteration 135000, Testing net (#0)
+I0605 20:31:53.154866 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:31:53.154907 12321 solver.cpp:319]     Test net output #1: loss = 0.0148956 (* 1 = 0.0148956 loss)
+I0605 20:32:17.026902 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_135600.caffemodel
+I0605 20:32:17.057013 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_135600.solverstate
+I0605 20:32:17.059401 12321 solver.cpp:270] Iteration 135600, Testing net (#0)
+I0605 20:32:18.104724 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:32:18.104763 12321 solver.cpp:319]     Test net output #1: loss = 0.014396 (* 1 = 0.014396 loss)
+I0605 20:32:42.006887 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_136200.caffemodel
+I0605 20:32:42.008422 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_136200.solverstate
+I0605 20:32:42.043424 12321 solver.cpp:270] Iteration 136200, Testing net (#0)
+I0605 20:32:43.091486 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:32:43.091521 12321 solver.cpp:319]     Test net output #1: loss = 0.0144661 (* 1 = 0.0144661 loss)
+I0605 20:33:06.954017 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_136800.caffemodel
+I0605 20:33:06.955567 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_136800.solverstate
+I0605 20:33:06.956295 12321 solver.cpp:270] Iteration 136800, Testing net (#0)
+I0605 20:33:08.001061 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:33:08.001094 12321 solver.cpp:319]     Test net output #1: loss = 0.0147312 (* 1 = 0.0147312 loss)
+I0605 20:33:31.899585 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_137400.caffemodel
+I0605 20:33:31.926281 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_137400.solverstate
+I0605 20:33:31.962579 12321 solver.cpp:270] Iteration 137400, Testing net (#0)
+I0605 20:33:33.014729 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:33:33.014763 12321 solver.cpp:319]     Test net output #1: loss = 0.0147313 (* 1 = 0.0147313 loss)
+I0605 20:33:56.895722 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_138000.caffemodel
+I0605 20:33:56.939573 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_138000.solverstate
+I0605 20:33:56.941781 12321 solver.cpp:270] Iteration 138000, Testing net (#0)
+I0605 20:33:57.988911 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:33:57.988951 12321 solver.cpp:319]     Test net output #1: loss = 0.0146385 (* 1 = 0.0146385 loss)
+I0605 20:34:21.855170 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_138600.caffemodel
+I0605 20:34:21.879493 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_138600.solverstate
+I0605 20:34:21.911048 12321 solver.cpp:270] Iteration 138600, Testing net (#0)
+I0605 20:34:22.957180 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:34:22.957221 12321 solver.cpp:319]     Test net output #1: loss = 0.0145959 (* 1 = 0.0145959 loss)
+I0605 20:34:46.842718 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_139200.caffemodel
+I0605 20:34:46.866195 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_139200.solverstate
+I0605 20:34:46.886008 12321 solver.cpp:270] Iteration 139200, Testing net (#0)
+I0605 20:34:47.959319 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:34:47.959357 12321 solver.cpp:319]     Test net output #1: loss = 0.0146675 (* 1 = 0.0146675 loss)
+I0605 20:35:11.865913 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_139800.caffemodel
+I0605 20:35:11.867403 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_139800.solverstate
+I0605 20:35:11.935094 12321 solver.cpp:270] Iteration 139800, Testing net (#0)
+I0605 20:35:12.989001 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:35:12.989039 12321 solver.cpp:319]     Test net output #1: loss = 0.0149939 (* 1 = 0.0149939 loss)
+I0605 20:35:36.908820 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_140400.caffemodel
+I0605 20:35:36.934471 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_140400.solverstate
+I0605 20:35:36.954638 12321 solver.cpp:270] Iteration 140400, Testing net (#0)
+I0605 20:35:38.003012 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:35:38.003051 12321 solver.cpp:319]     Test net output #1: loss = 0.0148547 (* 1 = 0.0148547 loss)
+I0605 20:36:01.853502 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_141000.caffemodel
+I0605 20:36:01.882716 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_141000.solverstate
+I0605 20:36:01.884522 12321 solver.cpp:270] Iteration 141000, Testing net (#0)
+I0605 20:36:02.930372 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:36:02.930416 12321 solver.cpp:319]     Test net output #1: loss = 0.0148543 (* 1 = 0.0148543 loss)
+I0605 20:36:26.814894 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_141600.caffemodel
+I0605 20:36:26.816419 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_141600.solverstate
+I0605 20:36:26.817116 12321 solver.cpp:270] Iteration 141600, Testing net (#0)
+I0605 20:36:27.861838 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:36:27.861874 12321 solver.cpp:319]     Test net output #1: loss = 0.0150734 (* 1 = 0.0150734 loss)
+I0605 20:36:51.745352 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_142200.caffemodel
+I0605 20:36:51.780165 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_142200.solverstate
+I0605 20:36:51.782145 12321 solver.cpp:270] Iteration 142200, Testing net (#0)
+I0605 20:36:52.834432 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:36:52.834475 12321 solver.cpp:319]     Test net output #1: loss = 0.0147425 (* 1 = 0.0147425 loss)
+I0605 20:37:16.696853 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_142800.caffemodel
+I0605 20:37:16.724649 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_142800.solverstate
+I0605 20:37:16.725368 12321 solver.cpp:270] Iteration 142800, Testing net (#0)
+I0605 20:37:17.777446 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:37:17.777478 12321 solver.cpp:319]     Test net output #1: loss = 0.0146389 (* 1 = 0.0146389 loss)
+I0605 20:37:41.635923 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_143400.caffemodel
+I0605 20:37:41.637418 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_143400.solverstate
+I0605 20:37:41.638139 12321 solver.cpp:270] Iteration 143400, Testing net (#0)
+I0605 20:37:42.683732 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:37:42.683770 12321 solver.cpp:319]     Test net output #1: loss = 0.0149061 (* 1 = 0.0149061 loss)
+I0605 20:38:06.553454 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_144000.caffemodel
+I0605 20:38:06.574357 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_144000.solverstate
+I0605 20:38:06.576333 12321 solver.cpp:270] Iteration 144000, Testing net (#0)
+I0605 20:38:07.624019 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:38:07.624059 12321 solver.cpp:319]     Test net output #1: loss = 0.014635 (* 1 = 0.014635 loss)
+I0605 20:38:31.545338 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_144600.caffemodel
+I0605 20:38:31.579777 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_144600.solverstate
+I0605 20:38:31.581434 12321 solver.cpp:270] Iteration 144600, Testing net (#0)
+I0605 20:38:32.627843 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:38:32.627876 12321 solver.cpp:319]     Test net output #1: loss = 0.0148618 (* 1 = 0.0148618 loss)
+I0605 20:38:56.496569 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_145200.caffemodel
+I0605 20:38:56.524468 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_145200.solverstate
+I0605 20:38:56.526058 12321 solver.cpp:270] Iteration 145200, Testing net (#0)
+I0605 20:38:57.568361 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:38:57.568400 12321 solver.cpp:319]     Test net output #1: loss = 0.014286 (* 1 = 0.014286 loss)
+I0605 20:39:21.450259 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_145800.caffemodel
+I0605 20:39:21.481134 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_145800.solverstate
+I0605 20:39:21.508481 12321 solver.cpp:270] Iteration 145800, Testing net (#0)
+I0605 20:39:22.564592 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:39:22.564625 12321 solver.cpp:319]     Test net output #1: loss = 0.0146455 (* 1 = 0.0146455 loss)
+I0605 20:39:46.441704 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_146400.caffemodel
+I0605 20:39:46.443306 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_146400.solverstate
+I0605 20:39:46.444042 12321 solver.cpp:270] Iteration 146400, Testing net (#0)
+I0605 20:39:47.488500 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:39:47.488534 12321 solver.cpp:319]     Test net output #1: loss = 0.0142713 (* 1 = 0.0142713 loss)
+I0605 20:40:11.368551 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_147000.caffemodel
+I0605 20:40:11.403360 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_147000.solverstate
+I0605 20:40:11.404901 12321 solver.cpp:270] Iteration 147000, Testing net (#0)
+I0605 20:40:12.452275 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:40:12.452319 12321 solver.cpp:319]     Test net output #1: loss = 0.0146236 (* 1 = 0.0146236 loss)
+I0605 20:40:36.342615 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_147600.caffemodel
+I0605 20:40:36.365073 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_147600.solverstate
+I0605 20:40:36.399788 12321 solver.cpp:270] Iteration 147600, Testing net (#0)
+I0605 20:40:37.454154 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:40:37.454188 12321 solver.cpp:319]     Test net output #1: loss = 0.0143544 (* 1 = 0.0143544 loss)
+I0605 20:41:01.308290 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_148200.caffemodel
+I0605 20:41:01.309877 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_148200.solverstate
+I0605 20:41:01.310648 12321 solver.cpp:270] Iteration 148200, Testing net (#0)
+I0605 20:41:02.360625 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:41:02.360654 12321 solver.cpp:319]     Test net output #1: loss = 0.0145462 (* 1 = 0.0145462 loss)
+I0605 20:41:26.243186 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_148800.caffemodel
+I0605 20:41:26.244738 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_148800.solverstate
+I0605 20:41:26.245450 12321 solver.cpp:270] Iteration 148800, Testing net (#0)
+I0605 20:41:27.291856 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:41:27.291894 12321 solver.cpp:319]     Test net output #1: loss = 0.0146847 (* 1 = 0.0146847 loss)
+I0605 20:41:51.144593 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_149400.caffemodel
+I0605 20:41:51.176070 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_149400.solverstate
+I0605 20:41:51.204041 12321 solver.cpp:270] Iteration 149400, Testing net (#0)
+I0605 20:41:52.253895 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:41:52.253926 12321 solver.cpp:319]     Test net output #1: loss = 0.0140964 (* 1 = 0.0140964 loss)
+I0605 20:42:16.160786 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_150000.caffemodel
+I0605 20:42:16.184399 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_150000.solverstate
+I0605 20:42:16.186240 12321 solver.cpp:270] Iteration 150000, Testing net (#0)
+I0605 20:42:17.232352 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:42:17.232390 12321 solver.cpp:319]     Test net output #1: loss = 0.0143512 (* 1 = 0.0143512 loss)
+I0605 20:42:41.109556 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_150600.caffemodel
+I0605 20:42:41.142065 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_150600.solverstate
+I0605 20:42:41.186738 12321 solver.cpp:270] Iteration 150600, Testing net (#0)
+I0605 20:42:42.233350 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:42:42.233382 12321 solver.cpp:319]     Test net output #1: loss = 0.014602 (* 1 = 0.014602 loss)
+I0605 20:43:06.099861 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_151200.caffemodel
+I0605 20:43:06.101407 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_151200.solverstate
+I0605 20:43:06.127861 12321 solver.cpp:270] Iteration 151200, Testing net (#0)
+I0605 20:43:07.173552 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:43:07.173586 12321 solver.cpp:319]     Test net output #1: loss = 0.0142057 (* 1 = 0.0142057 loss)
+I0605 20:43:31.054517 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_151800.caffemodel
+I0605 20:43:31.056107 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_151800.solverstate
+I0605 20:43:31.056864 12321 solver.cpp:270] Iteration 151800, Testing net (#0)
+I0605 20:43:32.104064 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:43:32.104104 12321 solver.cpp:319]     Test net output #1: loss = 0.014759 (* 1 = 0.014759 loss)
+I0605 20:43:55.971531 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_152400.caffemodel
+I0605 20:43:55.996028 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_152400.solverstate
+I0605 20:43:55.997845 12321 solver.cpp:270] Iteration 152400, Testing net (#0)
+I0605 20:43:57.042026 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9957
+I0605 20:43:57.042065 12321 solver.cpp:319]     Test net output #1: loss = 0.0145305 (* 1 = 0.0145305 loss)
+I0605 20:44:20.937816 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_153000.caffemodel
+I0605 20:44:20.965620 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_153000.solverstate
+I0605 20:44:20.967591 12321 solver.cpp:270] Iteration 153000, Testing net (#0)
+I0605 20:44:22.012986 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:44:22.013023 12321 solver.cpp:319]     Test net output #1: loss = 0.0143984 (* 1 = 0.0143984 loss)
+I0605 20:44:45.892648 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_153600.caffemodel
+I0605 20:44:45.894403 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_153600.solverstate
+I0605 20:44:45.896219 12321 solver.cpp:270] Iteration 153600, Testing net (#0)
+I0605 20:44:46.950955 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:44:46.950989 12321 solver.cpp:319]     Test net output #1: loss = 0.0148275 (* 1 = 0.0148275 loss)
+I0605 20:45:10.842016 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_154200.caffemodel
+I0605 20:45:10.843575 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_154200.solverstate
+I0605 20:45:10.844301 12321 solver.cpp:270] Iteration 154200, Testing net (#0)
+I0605 20:45:11.891957 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9957
+I0605 20:45:11.891995 12321 solver.cpp:319]     Test net output #1: loss = 0.0146447 (* 1 = 0.0146447 loss)
+I0605 20:45:35.797140 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_154800.caffemodel
+I0605 20:45:35.798738 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_154800.solverstate
+I0605 20:45:35.799450 12321 solver.cpp:270] Iteration 154800, Testing net (#0)
+I0605 20:45:36.848587 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:45:36.848620 12321 solver.cpp:319]     Test net output #1: loss = 0.0143371 (* 1 = 0.0143371 loss)
+I0605 20:46:00.713749 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_155400.caffemodel
+I0605 20:46:00.715368 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_155400.solverstate
+I0605 20:46:00.716130 12321 solver.cpp:270] Iteration 155400, Testing net (#0)
+I0605 20:46:01.767164 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9957
+I0605 20:46:01.767205 12321 solver.cpp:319]     Test net output #1: loss = 0.0143562 (* 1 = 0.0143562 loss)
+I0605 20:46:25.645484 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_156000.caffemodel
+I0605 20:46:25.674131 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_156000.solverstate
+I0605 20:46:25.710122 12321 solver.cpp:270] Iteration 156000, Testing net (#0)
+I0605 20:46:26.762131 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:46:26.762171 12321 solver.cpp:319]     Test net output #1: loss = 0.0145531 (* 1 = 0.0145531 loss)
+I0605 20:46:50.648725 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_156600.caffemodel
+I0605 20:46:50.679533 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_156600.solverstate
+I0605 20:46:50.696101 12321 solver.cpp:270] Iteration 156600, Testing net (#0)
+I0605 20:46:51.756820 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:46:51.756856 12321 solver.cpp:319]     Test net output #1: loss = 0.014538 (* 1 = 0.014538 loss)
+I0605 20:47:15.619436 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_157200.caffemodel
+I0605 20:47:15.644175 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_157200.solverstate
+I0605 20:47:15.677518 12321 solver.cpp:270] Iteration 157200, Testing net (#0)
+I0605 20:47:16.723080 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:47:16.723119 12321 solver.cpp:319]     Test net output #1: loss = 0.0144545 (* 1 = 0.0144545 loss)
+I0605 20:47:40.611100 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_157800.caffemodel
+I0605 20:47:40.640347 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_157800.solverstate
+I0605 20:47:40.641194 12321 solver.cpp:270] Iteration 157800, Testing net (#0)
+I0605 20:47:41.714164 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:47:41.714211 12321 solver.cpp:319]     Test net output #1: loss = 0.0146864 (* 1 = 0.0146864 loss)
+I0605 20:48:05.572262 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_158400.caffemodel
+I0605 20:48:05.600849 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_158400.solverstate
+I0605 20:48:05.612593 12321 solver.cpp:270] Iteration 158400, Testing net (#0)
+I0605 20:48:06.655853 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:48:06.655894 12321 solver.cpp:319]     Test net output #1: loss = 0.014438 (* 1 = 0.014438 loss)
+I0605 20:48:30.539085 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_159000.caffemodel
+I0605 20:48:30.541079 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_159000.solverstate
+I0605 20:48:30.561369 12321 solver.cpp:270] Iteration 159000, Testing net (#0)
+I0605 20:48:31.609729 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:48:31.609767 12321 solver.cpp:319]     Test net output #1: loss = 0.0141402 (* 1 = 0.0141402 loss)
+I0605 20:48:55.491822 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_159600.caffemodel
+I0605 20:48:55.493388 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_159600.solverstate
+I0605 20:48:55.494106 12321 solver.cpp:270] Iteration 159600, Testing net (#0)
+I0605 20:48:56.545568 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:48:56.545608 12321 solver.cpp:319]     Test net output #1: loss = 0.0147627 (* 1 = 0.0147627 loss)
+I0605 20:49:20.411622 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_160200.caffemodel
+I0605 20:49:20.413235 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_160200.solverstate
+I0605 20:49:20.441103 12321 solver.cpp:270] Iteration 160200, Testing net (#0)
+I0605 20:49:21.486436 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:49:21.486476 12321 solver.cpp:319]     Test net output #1: loss = 0.0143575 (* 1 = 0.0143575 loss)
+I0605 20:49:45.411191 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_160800.caffemodel
+I0605 20:49:45.445847 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_160800.solverstate
+I0605 20:49:45.489094 12321 solver.cpp:270] Iteration 160800, Testing net (#0)
+I0605 20:49:46.542157 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:49:46.542194 12321 solver.cpp:319]     Test net output #1: loss = 0.0148913 (* 1 = 0.0148913 loss)
+I0605 20:50:10.446280 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_161400.caffemodel
+I0605 20:50:10.447813 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_161400.solverstate
+I0605 20:50:10.448537 12321 solver.cpp:270] Iteration 161400, Testing net (#0)
+I0605 20:50:11.496755 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:50:11.496789 12321 solver.cpp:319]     Test net output #1: loss = 0.0145753 (* 1 = 0.0145753 loss)
+I0605 20:50:35.370695 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_162000.caffemodel
+I0605 20:50:35.397444 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_162000.solverstate
+I0605 20:50:35.429076 12321 solver.cpp:270] Iteration 162000, Testing net (#0)
+I0605 20:50:36.481149 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:50:36.481209 12321 solver.cpp:319]     Test net output #1: loss = 0.0151463 (* 1 = 0.0151463 loss)
+I0605 20:51:00.405441 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_162600.caffemodel
+I0605 20:51:00.407019 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_162600.solverstate
+I0605 20:51:00.407739 12321 solver.cpp:270] Iteration 162600, Testing net (#0)
+I0605 20:51:01.452353 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:51:01.452395 12321 solver.cpp:319]     Test net output #1: loss = 0.0148772 (* 1 = 0.0148772 loss)
+I0605 20:51:25.321609 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_163200.caffemodel
+I0605 20:51:25.349128 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_163200.solverstate
+I0605 20:51:25.350831 12321 solver.cpp:270] Iteration 163200, Testing net (#0)
+I0605 20:51:26.394726 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:51:26.394769 12321 solver.cpp:319]     Test net output #1: loss = 0.0151629 (* 1 = 0.0151629 loss)
+I0605 20:51:50.257789 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_163800.caffemodel
+I0605 20:51:50.279058 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_163800.solverstate
+I0605 20:51:50.294775 12321 solver.cpp:270] Iteration 163800, Testing net (#0)
+I0605 20:51:51.348335 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:51:51.348376 12321 solver.cpp:319]     Test net output #1: loss = 0.014801 (* 1 = 0.014801 loss)
+I0605 20:52:15.244339 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_164400.caffemodel
+I0605 20:52:15.278961 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_164400.solverstate
+I0605 20:52:15.279850 12321 solver.cpp:270] Iteration 164400, Testing net (#0)
+I0605 20:52:16.340534 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9957
+I0605 20:52:16.340569 12321 solver.cpp:319]     Test net output #1: loss = 0.0145637 (* 1 = 0.0145637 loss)
+I0605 20:52:40.224320 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_165000.caffemodel
+I0605 20:52:40.248536 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_165000.solverstate
+I0605 20:52:40.259647 12321 solver.cpp:270] Iteration 165000, Testing net (#0)
+I0605 20:52:41.306252 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:52:41.306290 12321 solver.cpp:319]     Test net output #1: loss = 0.0147987 (* 1 = 0.0147987 loss)
+I0605 20:53:05.163671 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_165600.caffemodel
+I0605 20:53:05.165302 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_165600.solverstate
+I0605 20:53:05.166100 12321 solver.cpp:270] Iteration 165600, Testing net (#0)
+I0605 20:53:06.211190 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 20:53:06.211221 12321 solver.cpp:319]     Test net output #1: loss = 0.0149293 (* 1 = 0.0149293 loss)
+I0605 20:53:30.091276 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_166200.caffemodel
+I0605 20:53:30.116010 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_166200.solverstate
+I0605 20:53:30.129578 12321 solver.cpp:270] Iteration 166200, Testing net (#0)
+I0605 20:53:31.183569 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:53:31.183619 12321 solver.cpp:319]     Test net output #1: loss = 0.0148232 (* 1 = 0.0148232 loss)
+I0605 20:53:55.075423 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_166800.caffemodel
+I0605 20:53:55.098808 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_166800.solverstate
+I0605 20:53:55.120641 12321 solver.cpp:270] Iteration 166800, Testing net (#0)
+I0605 20:53:56.166781 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:53:56.166813 12321 solver.cpp:319]     Test net output #1: loss = 0.0145973 (* 1 = 0.0145973 loss)
+I0605 20:54:20.046933 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_167400.caffemodel
+I0605 20:54:20.085171 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_167400.solverstate
+I0605 20:54:20.094079 12321 solver.cpp:270] Iteration 167400, Testing net (#0)
+I0605 20:54:21.142463 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:54:21.142504 12321 solver.cpp:319]     Test net output #1: loss = 0.0150261 (* 1 = 0.0150261 loss)
+I0605 20:54:45.018244 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_168000.caffemodel
+I0605 20:54:45.039080 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_168000.solverstate
+I0605 20:54:45.067378 12321 solver.cpp:270] Iteration 168000, Testing net (#0)
+I0605 20:54:46.127782 12321 solver.cpp:319]     Test net output #0: accuracy = 0.995
+I0605 20:54:46.127823 12321 solver.cpp:319]     Test net output #1: loss = 0.0145791 (* 1 = 0.0145791 loss)
+I0605 20:55:10.013064 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_168600.caffemodel
+I0605 20:55:10.045989 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_168600.solverstate
+I0605 20:55:10.088011 12321 solver.cpp:270] Iteration 168600, Testing net (#0)
+I0605 20:55:11.139441 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:55:11.139473 12321 solver.cpp:319]     Test net output #1: loss = 0.0145049 (* 1 = 0.0145049 loss)
+I0605 20:55:35.023296 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_169200.caffemodel
+I0605 20:55:35.024843 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_169200.solverstate
+I0605 20:55:35.039569 12321 solver.cpp:270] Iteration 169200, Testing net (#0)
+I0605 20:55:36.092327 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:55:36.092368 12321 solver.cpp:319]     Test net output #1: loss = 0.014396 (* 1 = 0.014396 loss)
+I0605 20:55:59.997571 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_169800.caffemodel
+I0605 20:55:59.999097 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_169800.solverstate
+I0605 20:55:59.999842 12321 solver.cpp:270] Iteration 169800, Testing net (#0)
+I0605 20:56:01.046412 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:56:01.046452 12321 solver.cpp:319]     Test net output #1: loss = 0.0152435 (* 1 = 0.0152435 loss)
+I0605 20:56:24.916574 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_170400.caffemodel
+I0605 20:56:24.933954 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_170400.solverstate
+I0605 20:56:24.965560 12321 solver.cpp:270] Iteration 170400, Testing net (#0)
+I0605 20:56:26.014133 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:56:26.014173 12321 solver.cpp:319]     Test net output #1: loss = 0.0148538 (* 1 = 0.0148538 loss)
+I0605 20:56:49.886281 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_171000.caffemodel
+I0605 20:56:49.913934 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_171000.solverstate
+I0605 20:56:49.945533 12321 solver.cpp:270] Iteration 171000, Testing net (#0)
+I0605 20:56:50.991600 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:56:50.991641 12321 solver.cpp:319]     Test net output #1: loss = 0.0148887 (* 1 = 0.0148887 loss)
+I0605 20:57:14.851263 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_171600.caffemodel
+I0605 20:57:14.868947 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_171600.solverstate
+I0605 20:57:14.901844 12321 solver.cpp:270] Iteration 171600, Testing net (#0)
+I0605 20:57:15.954993 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9952
+I0605 20:57:15.955029 12321 solver.cpp:319]     Test net output #1: loss = 0.0143679 (* 1 = 0.0143679 loss)
+I0605 20:57:39.845659 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_172200.caffemodel
+I0605 20:57:39.874840 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_172200.solverstate
+I0605 20:57:39.907793 12321 solver.cpp:270] Iteration 172200, Testing net (#0)
+I0605 20:57:40.964339 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9951
+I0605 20:57:40.964372 12321 solver.cpp:319]     Test net output #1: loss = 0.0142978 (* 1 = 0.0142978 loss)
+I0605 20:58:04.825438 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_172800.caffemodel
+I0605 20:58:04.845607 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_172800.solverstate
+I0605 20:58:04.847354 12321 solver.cpp:270] Iteration 172800, Testing net (#0)
+I0605 20:58:05.895341 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:58:05.895375 12321 solver.cpp:319]     Test net output #1: loss = 0.0147698 (* 1 = 0.0147698 loss)
+I0605 20:58:29.757838 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_173400.caffemodel
+I0605 20:58:29.759515 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_173400.solverstate
+I0605 20:58:29.811025 12321 solver.cpp:270] Iteration 173400, Testing net (#0)
+I0605 20:58:30.858614 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 20:58:30.858652 12321 solver.cpp:319]     Test net output #1: loss = 0.0154348 (* 1 = 0.0154348 loss)
+I0605 20:58:54.720005 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_174000.caffemodel
+I0605 20:58:54.747256 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_174000.solverstate
+I0605 20:58:54.775580 12321 solver.cpp:270] Iteration 174000, Testing net (#0)
+I0605 20:58:55.819463 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:58:55.819504 12321 solver.cpp:319]     Test net output #1: loss = 0.0150747 (* 1 = 0.0150747 loss)
+I0605 20:59:19.681875 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_174600.caffemodel
+I0605 20:59:19.719717 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_174600.solverstate
+I0605 20:59:19.756722 12321 solver.cpp:270] Iteration 174600, Testing net (#0)
+I0605 20:59:20.801388 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 20:59:20.801426 12321 solver.cpp:319]     Test net output #1: loss = 0.014601 (* 1 = 0.014601 loss)
+I0605 20:59:44.725720 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_175200.caffemodel
+I0605 20:59:44.748888 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_175200.solverstate
+I0605 20:59:44.776448 12321 solver.cpp:270] Iteration 175200, Testing net (#0)
+I0605 20:59:45.823506 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9956
+I0605 20:59:45.823544 12321 solver.cpp:319]     Test net output #1: loss = 0.0149441 (* 1 = 0.0149441 loss)
+I0605 21:00:09.741454 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_175800.caffemodel
+I0605 21:00:09.742977 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_175800.solverstate
+I0605 21:00:09.757762 12321 solver.cpp:270] Iteration 175800, Testing net (#0)
+I0605 21:00:10.812863 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 21:00:10.812901 12321 solver.cpp:319]     Test net output #1: loss = 0.0147723 (* 1 = 0.0147723 loss)
+I0605 21:00:34.673388 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_176400.caffemodel
+I0605 21:00:34.675055 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_176400.solverstate
+I0605 21:00:34.676055 12321 solver.cpp:270] Iteration 176400, Testing net (#0)
+I0605 21:00:35.723568 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9958
+I0605 21:00:35.723606 12321 solver.cpp:319]     Test net output #1: loss = 0.0144648 (* 1 = 0.0144648 loss)
+I0605 21:00:59.613672 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_177000.caffemodel
+I0605 21:00:59.639610 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_177000.solverstate
+I0605 21:00:59.641607 12321 solver.cpp:270] Iteration 177000, Testing net (#0)
+I0605 21:01:00.688643 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9953
+I0605 21:01:00.688683 12321 solver.cpp:319]     Test net output #1: loss = 0.0143892 (* 1 = 0.0143892 loss)
+I0605 21:01:24.558843 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_177600.caffemodel
+I0605 21:01:24.585487 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_177600.solverstate
+I0605 21:01:24.624629 12321 solver.cpp:270] Iteration 177600, Testing net (#0)
+I0605 21:01:25.675856 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 21:01:25.675899 12321 solver.cpp:319]     Test net output #1: loss = 0.0147762 (* 1 = 0.0147762 loss)
+I0605 21:01:49.567625 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_178200.caffemodel
+I0605 21:01:49.587056 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_178200.solverstate
+I0605 21:01:49.614965 12321 solver.cpp:270] Iteration 178200, Testing net (#0)
+I0605 21:01:50.675952 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 21:01:50.675986 12321 solver.cpp:319]     Test net output #1: loss = 0.0143248 (* 1 = 0.0143248 loss)
+I0605 21:02:14.522760 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_178800.caffemodel
+I0605 21:02:14.524291 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_178800.solverstate
+I0605 21:02:14.542261 12321 solver.cpp:270] Iteration 178800, Testing net (#0)
+I0605 21:02:15.590487 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9955
+I0605 21:02:15.590522 12321 solver.cpp:319]     Test net output #1: loss = 0.0144042 (* 1 = 0.0144042 loss)
+I0605 21:02:39.483204 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_179400.caffemodel
+I0605 21:02:39.501570 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_179400.solverstate
+I0605 21:02:39.503703 12321 solver.cpp:270] Iteration 179400, Testing net (#0)
+I0605 21:02:40.549721 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 21:02:40.549762 12321 solver.cpp:319]     Test net output #1: loss = 0.0140648 (* 1 = 0.0140648 loss)
+I0605 21:03:04.414554 12321 solver.cpp:337] Snapshotting to examples/highways/mnist-10layers_iter_180000.caffemodel
+I0605 21:03:04.431946 12321 solver.cpp:345] Snapshotting solver state to examples/highways/mnist-10layers_iter_180000.solverstate
+I0605 21:03:04.462512 12321 solver.cpp:270] Iteration 180000, Testing net (#0)
+I0605 21:03:05.508973 12321 solver.cpp:319]     Test net output #0: accuracy = 0.9954
+I0605 21:03:05.509008 12321 solver.cpp:319]     Test net output #1: loss = 0.0143603 (* 1 = 0.0143603 loss)
+I0605 21:03:05.509014 12321 solver.cpp:257] Optimization Done.
+I0605 21:03:05.509017 12321 caffe.cpp:134] Optimization Done.
