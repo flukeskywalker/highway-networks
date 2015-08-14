@@ -16,7 +16,7 @@ Srivastava, R. K., Greff, K., & Schmidhuber, J. (2015). Training Very Deep Netwo
 ## Data
 
 You can get preprocessed datasets (CIFAR-10/100 were global contrast normalized and padded with 8 pixels each side) at the links below.
-Caffe's data generation scripts do not generation validation sets. The provided data below includes splits into training and validation sets.
+Caffe's data generation scripts do not generate validation sets. The provided data below includes splits into training and validation sets.
 
 [CIFAR-10](https://www.dropbox.com/s/r9zuhhhii4uzi24/cifar10-gcn-leveldb-splits.tar.bz2?dl=0) ~ 2.27 GB
 
