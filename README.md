@@ -1,8 +1,8 @@
 # Highway Networks
 
-This is sample code for convolutional **Highway Networks**, implemented in Caffe checked out at [this](https://github.com/BVLC/caffe/tree/e20498ebf985322bab2f4f28f0f6365ecde80c29) state. It runs only on the NVIDIA GPUs and requires CUDNN. The original Caffe README is reproduced below the line.
+This is sample code for convolutional **Highway Networks**, implemented in Caffe checked out at [this](https://github.com/BVLC/caffe/tree/e20498ebf985322bab2f4f28f0f6365ecde80c29) state. It runs only on the NVIDIA GPUs and requires NVIDIA's cuDNN v2. The original Caffe README is reproduced below the line.
 
-Highway Networks utilize the idea of *information highways*, in turn inspired by LSTM networks [[1](ftp://ftp.idsia.ch/pub/juergen/lstm.pdf), [2](ftp://ftp.idsia.ch/pub/juergen/FgGates-NC.pdf), [3](http://arxiv.org/abs/1503.04069)].
+Highway Networks utilize the idea of *information highways*, in turn inspired by LSTM networks [[1](http://www.bioinf.at/publications/older/2604.pdf), [2](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.55.5709&rep=rep1&type=pdf), [3](http://arxiv.org/abs/1503.04069)].
 Our experiments on highway networks show that when designed correctly, neural networks with tens, even hundreds of layers can be trained directly with stochastic gradient descent, thereby providing a promising solution to the vanishing gradient problem. More information is available on the [Project Website](http://people.idsia.ch/~rupesh/very_deep_learning/).
 
 Highway Networks were introduced in the following paper:
